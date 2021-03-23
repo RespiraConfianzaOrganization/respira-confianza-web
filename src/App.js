@@ -1,12 +1,13 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { Provider } from "react-redux";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import store from "./store/store";
+import { loadUser } from "./actions/auth";
 import Page from "./components/Layout/Page";
-import { Login } from "./components/Login";
-import { Home } from "./components/Home";
+import Login from "./components/Login";
+import { NavBarCustumer, DrawnerCustumer } from "./components/Layout/Layout";
 import "./App.css";
 import { cssVariables, theme } from "./theme";
 
@@ -17,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
     overflow: "hidden",
     fontFamily: theme.fontFamily,
+    backgroundColor: "#edf1f6"
   },
   appFrame: {
     display: "flex",
@@ -27,14 +29,20 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexGrow: 1,
     width: "100%",
+    height: "92vh",
     overflowY: "auto",
     marginTop: 48,
     textAlign: "center",
     justifyContent: "center",
+    alignItems: "center"
   },
 }));
 
 function App() {
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    store.dispatch(loadUser());
+  });
   const classes = useStyles();
 
   return (
@@ -43,11 +51,12 @@ function App() {
         <ThemeProvider theme={{ ...theme, ...cssVariables }}>
           <div className={classes.root}>
             <div className={classes.appFrame}>
+              <NavBarCustumer open={open} setOpen={setOpen} />
+              <DrawnerCustumer open={open} setOpen={setOpen} />
               <main className={classes.content}>
                 <Switch>
-                  <Route exact path="/inicio/" component={Home} />
-                  <Route exact path="/ingresar/" component={Login} />
-                  <Route path="/" component={Page} />
+                  <Route exact path="/" component={Login} />
+                  <Route path="/admin" component={Page} />
                 </Switch>
               </main>
             </div>

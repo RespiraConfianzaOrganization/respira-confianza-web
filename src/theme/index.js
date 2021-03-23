@@ -1,20 +1,19 @@
 import { createMuiTheme } from "@material-ui/core/styles";
 
 export const cssVariables = {
-    colorTheme: "#267EBF",
+    colorTheme: "#293B4E",
 };
 
 export const theme = createMuiTheme({
     palette: {
         primary: {
-            500: "#267EBF",
+            500: "#293B4E",
         },
         secondary: {
-            main: "#909497",
+            main: "#fffff",
         },
     },
     typography: {
-        fontFamily: "MyriadPro-Regular !important",
     },
 });
 
