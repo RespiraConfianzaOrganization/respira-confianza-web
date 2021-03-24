@@ -1,0 +1,34 @@
+.Container{
+    padding: 10px 32px;
+    height: inherit;
+}
+
+.Container__items{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.HomeItem{
+    width: 200px;
+    margin:20px;
+    padding: 32px;
+    border-radius: 8%;
+    text-align: center;
+    background:  var(--colorTheme);
+}
+
+.HomeItem__icon{
+    color:white;
+    font-size: 60px !important;
+}
+
+.HomeItem__text{
+    color:white;
+}
+
+@media(max-width:400px){
+    .HomeItem{
+        width: 140px;
+        padding: 20px;
+    }
+}

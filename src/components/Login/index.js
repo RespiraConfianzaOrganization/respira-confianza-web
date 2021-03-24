@@ -66,52 +66,53 @@ export class Login extends React.Component {
             return <Redirect to="/admin" />;
         }
         return (
-            <div className="login-container">
-                <h3 className="login-title">Respira Confianza</h3>
-                <form className="login-form" onSubmit={this.onSubmit}>
-                    <div className="login-errors">
-                        <span>{this.state.errorLogin}</span>
-                        <span>{this.state.errors.username} </span>
-                        <span>{this.state.errors.password} </span>
-                    </div>
-                    <Grid container spacing={1} >
-                        <Grid item xs={12}>
-                            <TextField
-                                className="white-textfield"
-                                variant="outlined"
-                                size="small"
-                                name="username"
-                                placeholder="Usuario"
-                                onChange={this.onChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                type="password"
-                                className="white-textfield"
-                                variant="outlined"
-                                size="small"
-                                name="password"
-                                placeholder="Contraseña"
-                                onChange={this.onChange}
-                            />
-                        </Grid>
-                        <Grid item xs={12} >
-                            <Button
-                                type="submit"
-                                className="submit-login-button"
-                                variant="outlined"
-                                onClick={this.onSubmit}>
-                                Ingresar
+            <div className="root">
+                <div className="login-container">
+                    <h3 className="login-title">Respira Confianza</h3>
+                    <form className="login-form" onSubmit={this.onSubmit}>
+                        <div className="login-errors">
+                            <span>{this.state.errorLogin}</span>
+                            <span>{this.state.errors.username} </span>
+                            <span>{this.state.errors.password} </span>
+                        </div>
+                        <Grid container spacing={1} >
+                            <Grid item xs={12}>
+                                <TextField
+                                    className="white-textfield"
+                                    variant="outlined"
+                                    size="small"
+                                    name="username"
+                                    placeholder="Usuario"
+                                    onChange={this.onChange}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <TextField
+                                    type="password"
+                                    className="white-textfield"
+                                    variant="outlined"
+                                    size="small"
+                                    name="password"
+                                    placeholder="Contraseña"
+                                    onChange={this.onChange}
+                                />
+                            </Grid>
+                            <Grid item xs={12} >
+                                <Button
+                                    type="submit"
+                                    className="submit-login-button"
+                                    variant="outlined"
+                                    onClick={this.onSubmit}>
+                                    Ingresar
                             </Button>
-                        </Grid>
+                            </Grid>
 
-                        <Grid item xs={12} >
-                            <Link to="/ingresar/recuperar-contraseña" className="link"> He olvidado contraseña</Link>
+                            <Grid item xs={12} >
+                                <Link to="/ingresar/recuperar-contraseña" className="link"> He olvidado contraseña</Link>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </form>
-
+                    </form>
+                </div>
             </div>
         )
     }

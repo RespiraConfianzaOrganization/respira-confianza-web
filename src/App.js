@@ -29,10 +29,8 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexGrow: 1,
     width: "100%",
-    height: "92vh",
     overflowY: "auto",
     marginTop: 48,
-    textAlign: "center",
     justifyContent: "center",
     alignItems: "center"
   },
