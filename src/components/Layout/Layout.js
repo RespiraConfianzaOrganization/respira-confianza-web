@@ -1,4 +1,4 @@
-import { React } from "react";
+import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { logout } from "../../actions/auth";
 import {
@@ -9,20 +9,21 @@ import {
     List,
     ListItemIcon,
     ListItemText,
-    Typography,
+    Menu,
+    MenuItem,
     Toolbar,
 } from "@material-ui/core";
 import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, } from "@material-ui/core/styles";
 import {
     Home as HomeIcon,
     Menu as MenuIcon,
-    People as PeopleIcon,
-    AccountCircle as AccountCircleIcon,
-    QuestionAnswer as QuestionAnswerIcon,
-    VideoLibrary as VideoLibraryIcon,
-    FileCopy as FileCopyIcon,
-    MenuBook as MenuBookIcon,
+    AccountCircle,
+    SupervisorAccount as AdminIcon,
+    Equalizer as Umbrals,
+    Storage as Readings,
+    SettingsRemote as Station,
+    NetworkCheck as Sensor
 } from "@material-ui/icons";
 
 import { connect } from "react-redux";
@@ -47,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
         left: "0px",
         top: "0px",
         zIndex: "1",
+        backgroundColor: theme.colorTheme
     },
     drawerOpen: {
         width: drawerWidth,
@@ -55,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
             duration: theme.transitions.duration.enteringScreen,
         }),
         top: "48px",
-        backgroundColor: "#FFFFFF",
+        backgroundColor: theme.colorTheme,
         boxShadow: "5px 0px 4px -1px rgb(0 0 0 / 20%)",
     },
     drawerClose: {
@@ -69,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
             width: theme.spacing(7) + 1,
         },
         top: "48px",
-        backgroundColor: "#FFFFFF",
+        backgroundColor: theme.colorTheme,
         boxShadow: "5px 0px 4px -1px rgb(0 0 0 / 20%)",
     },
     customerToolbar: {
@@ -78,7 +80,7 @@ const useStyles = makeStyles((theme) => ({
         paddingLeft: "20px",
         minHeight: 48,
         height: "48px !important",
-        background: theme.colorTema,
+        background: theme.colorTheme,
     },
     content: {
         flexGrow: 1,
@@ -99,12 +101,12 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     itemDrawner: {
-        color: theme.colorTema,
+        color: "#ffff",
         textDecoration: "none",
-        marginBottom: "20px",
+        marginBottom: "10px",
     },
     iconDrawner: {
-        color: theme.colorTema,
+        color: "#ffff",
         fontSize: "25px",
     },
     linksContainer: {
@@ -116,7 +118,6 @@ const useStyles = makeStyles((theme) => ({
     logo: {
         height: "40px",
     },
-
     "@media (max-width:480px)": {
         // eslint-disable-line no-useless-computed-key
         itemDrawner: {
@@ -126,23 +127,54 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function LogedInView(props) {
-    const { logout, classLink, usuario, classLinksContainer } = props;
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const { logout, classLinksContainer } = props;
     const history = useHistory();
+
     function handleClick() {
-        history.push("/perfil/");
+        history.push("/admin/perfil/");
     }
+
     return (
         <div className={classLinksContainer}>
-            <Typography
-                variant="body1"
-                className={classLink}
-                onClick={() => handleClick()}
-            >
-                {usuario.primer_nombre + " " + usuario.apellido_paterno}
-            </Typography>
-            <Typography variant="body1" onClick={logout} className={classLink}>
-                Cerrar Sesión
-      </Typography>
+            <div>
+                <IconButton
+                    aria-label="account of current user"
+                    aria-controls="menu-appbar"
+                    aria-haspopup="true"
+                    onClick={handleMenu}
+                    color="inherit"
+                >
+                    <AccountCircle />
+                </IconButton>
+                <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    keepMounted
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
+                    open={open}
+                    onClose={handleClose}
+                >
+                    <MenuItem onClick={handleClick}>Mi cuenta</MenuItem>
+                    <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
+                </Menu>
+            </div>
         </div>
     );
 }
@@ -176,22 +208,12 @@ function Drawner(props) {
             {/* <Divider /> */}
             <List>
                 {[
-                    { text: "Inicio", Icon: HomeIcon, url: "/" },
-                    {
-                        text: "Biblioteca Docente",
-                        Icon: FileCopyIcon,
-                        url: "/biblioteca-docente/",
-                    },
-                    { text: "Manuales", Icon: MenuBookIcon, url: "/manuales/" },
-                    { text: "Cápsulas", Icon: VideoLibraryIcon, url: "/capsulas/" },
-                    { text: "Foro", Icon: QuestionAnswerIcon, url: "/foro/" },
-                    { text: "Comunidad Docente", Icon: PeopleIcon, url: "/comunidad/" },
-                    {
-                        text: "Bibiblioteca Académica",
-                        Icon: FileCopyIcon,
-                        url: "/biblioteca-academica/",
-                    },
-                    { text: "Perfil", Icon: AccountCircleIcon, url: "/perfil/" },
+                    { text: "Inicio", Icon: HomeIcon, url: "/admin" },
+                    { text: "Administradores", Icon: AdminIcon, url: "/admin/administradores" },
+                    { text: "Estaciones", Icon: Station, url: "/admin/estaciones" },
+                    { text: "Sensores", Icon: Sensor, url: "/admin/sensores" },
+                    { text: "Umbrales", Icon: Umbrals, url: "/admin/umbrales" },
+                    { text: "Lecturas", Icon: Readings, url: "/admin/lecturas" },
                 ].map((item) => {
                     const Icon = item.Icon;
                     return (
@@ -224,14 +246,13 @@ function Drawner(props) {
 
 function NavBar(props) {
     const classes = useStyles();
-    const { isAuthenticated, usuario } = props.auth;
+    const { isAuthenticated, user } = props.auth;
     const { logout, open, setOpen } = props;
 
     const authLinks = (
         <LogedInView
-            usuario={usuario}
+            user={user}
             logout={logout}
-            classLink={classes.link}
             classLinksContainer={classes.linksContainer}
         />
     );

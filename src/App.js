@@ -42,7 +42,7 @@ function App() {
   const [open, setOpen] = useState(false);
   useEffect(() => {
     store.dispatch(loadUser());
-  });
+  }, []);
   const classes = useStyles();
 
   return (

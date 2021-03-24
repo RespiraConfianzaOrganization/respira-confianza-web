@@ -13,8 +13,9 @@ import {
 export const loadUser = () => (dispatch, getState) => {
     // User Loading
     dispatch({ type: USER_LOADING });
+
     axios
-        .get(process.env.REACT_APP_API_URL + '/auth/user', tokenConfig(getState))
+        .get(`${process.env.REACT_APP_API_URL}/api/auth/isAuthenticatedAdmin`, tokenConfig(getState))
         .then((res) => {
             dispatch({
                 type: USER_LOADED,
@@ -29,24 +30,17 @@ export const loadUser = () => (dispatch, getState) => {
 };
 
 // LOGIN USER
-export const login = (email, password) => async (dispatch) => {
-    // Headers
-    const config = {
-        headers: {
-            "Content-Type": "application/json",
-        },
-    };
-
+export const login = (username, password) => async (dispatch) => {
     // Request Body
-    const body = {
-        email: email,
-        password: password,
+    const data = {
+        username,
+        password,
     };
 
     await axios
-        .post(process.env.REACT_APP_API_URL + "/login/", body, config)
+        .post(`${process.env.REACT_APP_API_URL}/api/auth/login`, data)
         .then((res) => {
-            if (res.data.statusCode === 200) {
+            if (res.status === 200) {
                 dispatch({
                     type: LOGIN_SUCCESS,
                     payload: res.data,
@@ -54,7 +48,7 @@ export const login = (email, password) => async (dispatch) => {
             } else {
                 dispatch({
                     type: LOGIN_FAIL,
-                    payload: "Usuario y/o contraseña incorrectos",
+                    payload: res.data.message
                 });
             }
         })
@@ -68,16 +62,10 @@ export const login = (email, password) => async (dispatch) => {
 
 // LOGOUT USER
 export const logout = () => async (dispatch, getState) => {
-    await axios
-        .post(`${process.env.REACT_APP_API_URL}/logout/`)
-        .then((res) => {
-            dispatch({
-                type: LOGOUT_SUCCESS,
-            });
-        })
-        .catch((err) => {
-            console.log(err);
-        });
+    dispatch({
+        type: LOGOUT_SUCCESS,
+    });
+
 };
 
 // Setup config with token

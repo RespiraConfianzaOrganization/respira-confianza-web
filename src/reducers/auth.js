@@ -11,7 +11,7 @@ const initialState = {
     access_token: localStorage.getItem("access_token"),
     isAuthenticated: null,
     isLoading: true,
-    usuario: null,
+    user: null,
     error: null,
 };
 
@@ -20,21 +20,19 @@ function auth(state = initialState, action) {
         case USER_LOADING:
             return { ...state, isLoading: true, error: null };
         case USER_LOADED:
-            localStorage.setItem("access_token", action.payload.access);
             return {
                 ...state,
                 isAuthenticated: true,
                 isLoading: false,
                 error: null,
-                access_token: action.payload.access,
-                usuario: action.payload.usuario,
+                user: action.payload.user,
             };
         case LOGIN_SUCCESS:
-            localStorage.setItem("access_token", action.payload.access);
+            localStorage.setItem("access_token", action.payload.token);
             return {
                 ...state,
-                access_token: action.payload.access,
-                usuario: action.payload.usuario,
+                access_token: action.payload.token,
+                user: action.payload.user,
                 error: null,
                 isAuthenticated: true,
                 isLoading: false,
@@ -45,7 +43,7 @@ function auth(state = initialState, action) {
                 ...state,
                 error: action.payload,
                 access_token: null,
-                usuario: null,
+                user: null,
                 isAuthenticated: false,
                 isLoading: false,
             };
@@ -54,7 +52,7 @@ function auth(state = initialState, action) {
                 ...state,
                 error: action.payload,
                 access_token: null,
-                usuario: null,
+                user: null,
                 isAuthenticated: false,
                 isLoading: false,
             };
@@ -64,7 +62,7 @@ function auth(state = initialState, action) {
                 ...state,
                 error: null,
                 access_token: null,
-                usuario: null,
+                user: null,
                 isAuthenticated: false,
                 isLoading: false,
             };

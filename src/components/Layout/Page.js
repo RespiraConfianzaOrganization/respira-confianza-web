@@ -1,7 +1,7 @@
 import React from "react";
 import { Switch } from "react-router-dom";
-//import PrivateRoute from "../../common/PrivateRoute";
-//import LandingPage from "../LandingPage/LandingPage";
+import PrivateRoute from "../../common/PrivateRoute";
+import Home from "../Home";
 // import FooterPage from "./Footer";
 
 export default class Page extends React.Component {
@@ -9,8 +9,7 @@ export default class Page extends React.Component {
         return (
             <div style={{ width: "100%", paddingLeft: "58px" }}>
                 <Switch>
-                    {/*  <PrivateRoute exact path="/" component={LandingPage} />*/}
-
+                    <PrivateRoute exact path="/admin/" component={Home} />
                 </Switch>
             </div>
         );

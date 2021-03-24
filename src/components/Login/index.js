@@ -50,7 +50,7 @@ export class Login extends React.Component {
             errors.password = "Debe ingresar contraseña"
         }
         this.setState({
-            errors
+            errors, errorLogin: ""
         })
         if (!errors.username && !errors.password) {
             await this.props.login(this.state.form.username, this.state.form.password);
@@ -70,6 +70,7 @@ export class Login extends React.Component {
                 <h3 className="login-title">Respira Confianza</h3>
                 <form className="login-form" onSubmit={this.onSubmit}>
                     <div className="login-errors">
+                        <span>{this.state.errorLogin}</span>
                         <span>{this.state.errors.username} </span>
                         <span>{this.state.errors.password} </span>
                     </div>
@@ -86,6 +87,7 @@ export class Login extends React.Component {
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
+                                type="password"
                                 className="white-textfield"
                                 variant="outlined"
                                 size="small"
