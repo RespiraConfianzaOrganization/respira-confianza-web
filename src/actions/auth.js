@@ -55,8 +55,9 @@ export const login = (username, password) => async (dispatch) => {
         .catch((err) => {
             dispatch({
                 type: LOGIN_FAIL,
-                payload: "Usuario y/o contraseña incorrectos",
+                payload: err.response.data.message,
             });
+
         });
 };
 

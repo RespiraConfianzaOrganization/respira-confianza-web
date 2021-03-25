@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
         position: "absolute",
         left: "0px",
         top: "0px",
-        zIndex: "1",
+        zIndex: "1250",
         backgroundColor: theme.colorTheme
     },
     drawerOpen: {

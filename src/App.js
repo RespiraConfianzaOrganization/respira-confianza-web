@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     minHeight: "100vh",
-    zIndex: 1,
+    zIndex: 1251,
     overflow: "hidden",
     fontFamily: theme.fontFamily,
     backgroundColor: "#edf1f6"
