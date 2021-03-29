@@ -1,9 +1,10 @@
 import React from "react"
 import { Link, Redirect } from "react-router-dom"
-import { postRequest } from "../../../utils/axios"
+import { postRequest } from "../../../../utils/axios"
 import { Button, Divider, Grid, Snackbar, TextField } from "@material-ui/core"
 import MuiAlert from '@material-ui/lab/Alert';
-import { validateEmail, validateUsername } from "../../../utils/validator"
+import { validateEmail, validateUsername } from "../../../../utils/validator"
+import "./newAdmin.css"
 
 function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;

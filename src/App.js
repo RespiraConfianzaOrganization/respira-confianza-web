@@ -6,7 +6,7 @@ import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import store from "./store/store";
 import { loadUser } from "./actions/auth";
 import Page from "./components/Layout/Page";
-import Login from "./components/Login";
+import Login from "./views/Login";
 import { NavBarCustumer, DrawnerCustumer } from "./components/Layout/Layout";
 import "./App.css";
 import { cssVariables, theme } from "./theme";
