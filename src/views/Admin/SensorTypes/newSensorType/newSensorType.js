@@ -86,7 +86,7 @@ export default class newSensorType extends React.Component {
                 </Snackbar>
                 <div className="Container__header">
                     <div className="Container__header_row">
-                        <h3>Nueva estación</h3>
+                        <h3>Nuevo tipo de sensor</h3>
                         <div className="Container__header_row_button">
                             <Button color="primary" variant="contained" component={Link} to="/admin/tipos-de-sensores/"> Volver</Button>
                         </div>

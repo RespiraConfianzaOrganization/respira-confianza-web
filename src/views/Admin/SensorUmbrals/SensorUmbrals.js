@@ -2,26 +2,27 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { getRequest } from "../../../utils/axios"
 import { Button, Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
-import "./Stations.css"
+import "./SensorUmbrals.css"
 
-class Stations extends React.Component {
+class SensorUmbrals extends React.Component {
     state = {
         page: 0,
         rowsPerPage: 10,
-        stations: [],
+        sensorUmbrals: [],
         columns: [
-            { id: 'name', label: 'Nombre', minWidth: 270 },
-            { id: 'country', label: 'País', minWidth: 170 },
-            { id: 'city', label: 'Ciudad', minWidth: 170 },
-            { id: 'latitude', label: 'Latitud', minWidth: 170 },
-            { id: 'longitude', label: 'Longitud', minWidth: 170 },
-            { id: 'status', label: 'Estado', minWidth: 170 },
+            { id: 'type', label: 'Sensor', minWidth: 270 },
+            { id: 'unit', label: 'Unidad', minWidth: 170 },
+            { id: 'good', label: 'Bueno', minWidth: 170 },
+            { id: 'moderate', label: 'Moderado', minWidth: 170 },
+            { id: 'unhealthy', label: 'No saludable', minWidth: 170 },
+            { id: 'very_unhealthy', label: 'Muy insalubre', minWidth: 170 },
+            { id: 'dangerous', label: 'Peligroso', minWidth: 170 },
         ]
     }
     async componentDidMount() {
-        const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/stations`);
+        const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals`);
         if (response.status === 200) {
-            this.setState({ stations: response.data.stations })
+            this.setState({ sensorUmbrals: response.data.sensorUmbrals })
         }
     }
 
@@ -38,9 +39,9 @@ class Stations extends React.Component {
             <div className="Container">
                 <div className="Container__header">
                     <div className="Container__header_row">
-                        <h3>Estaciones</h3>
+                        <h3>Umbrales de Salud de Sensores</h3>
                         <div className="Container__header_row_button">
-                            <Button color="primary" variant="contained" component={Link} to="/admin/estaciones/nueva"> Nueva</Button>
+                            <Button color="primary" variant="contained" component={Link} to="/admin/umbrales-sensores/nuevo"> Nuevo</Button>
                         </div>
                     </div>
                     <Divider />
@@ -63,10 +64,18 @@ class Stations extends React.Component {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {this.state.stations.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row) => {
+                                {this.state.sensorUmbrals.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row) => {
                                     return (
                                         <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                                             {this.state.columns.map((column) => {
+
+                                                if (column.id === 'type' || column.id === 'unit') {
+                                                    return (
+                                                        <TableCell key={column.id} align={column.align}>
+                                                            {row['Sensor_Type'][column.id]}
+                                                        </TableCell>
+                                                    );
+                                                }
                                                 const value = row[column.id];
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
@@ -83,7 +92,7 @@ class Stations extends React.Component {
                     <TablePagination
                         rowsPerPageOptions={[10, 25, 100]}
                         component="div"
-                        count={this.state.stations.length}
+                        count={this.state.sensorUmbrals.length}
                         rowsPerPage={this.state.rowsPerPage}
                         page={this.state.page}
                         onChangePage={this.handleChangePage}
@@ -95,4 +104,4 @@ class Stations extends React.Component {
     }
 }
 
-export default Stations
+export default SensorUmbrals
