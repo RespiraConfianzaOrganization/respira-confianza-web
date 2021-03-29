@@ -2,25 +2,22 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { getRequest } from "../../../utils/axios"
 import { Button, Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
-import "./Admins.css"
+import "./SensorTypes.css"
 
-class Admins extends React.Component {
+class SensorTypes extends React.Component {
     state = {
         page: 0,
         rowsPerPage: 10,
-        admins: [],
+        sensorTypes: [],
         columns: [
-            { id: 'first_name', label: 'Nombre', minWidth: 170 },
-            { id: 'last_name', label: 'Apellido', minWidth: 170 },
-            { id: 'email', label: 'Correo', minWidth: 170 },
-            { id: 'country', label: 'Pais', minWidth: 170 },
-            { id: 'city', label: 'Ciudad', minWidth: 170 },
+            { id: 'type', label: 'Tipo', minWidth: 170 },
+            { id: 'unit', label: 'Unidad', minWidth: 170 },
         ]
     }
     async componentDidMount() {
-        const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/admins`);
+        const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/sensor-types`);
         if (response.status === 200) {
-            this.setState({ admins: response.data.admins })
+            this.setState({ sensorTypes: response.data.sensorTypes })
         }
     }
 
@@ -37,9 +34,9 @@ class Admins extends React.Component {
             <div className="Container">
                 <div className="Container__header">
                     <div className="Container__header_row">
-                        <h3>Administradores</h3>
+                        <h3>Tipos de Sensores</h3>
                         <div className="Container__header_row_button">
-                            <Button color="primary" variant="contained" component={Link} to="/admin/administradores/nuevo"> Nuevo</Button>
+                            <Button color="primary" variant="contained" component={Link} to="/admin/tipos-de-sensores/nuevo"> Nuevo</Button>
                         </div>
                     </div>
                     <Divider />
@@ -62,7 +59,7 @@ class Admins extends React.Component {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {this.state.admins.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row) => {
+                                {this.state.sensorTypes.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row) => {
                                     return (
                                         <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                                             {this.state.columns.map((column) => {
@@ -82,7 +79,7 @@ class Admins extends React.Component {
                     <TablePagination
                         rowsPerPageOptions={[10, 25, 100]}
                         component="div"
-                        count={this.state.admins.length}
+                        count={this.state.sensorTypes.length}
                         rowsPerPage={this.state.rowsPerPage}
                         page={this.state.page}
                         onChangePage={this.handleChangePage}
@@ -94,4 +91,4 @@ class Admins extends React.Component {
     }
 }
 
-export default Admins
+export default SensorTypes

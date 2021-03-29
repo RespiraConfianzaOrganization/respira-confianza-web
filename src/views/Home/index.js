@@ -34,7 +34,7 @@ class Home extends React.Component {
         homeItems: [
             { text: "Administradores", Icon: AdminIcon, url: "/admin/administradores" },
             { text: "Estaciones", Icon: Station, url: "/admin/estaciones" },
-            { text: "Sensores", Icon: Sensor, url: "/admin/sensores" },
+            { text: "Sensores", Icon: Sensor, url: "/admin/tipos-de-sensores" },
             { text: "Umbrales", Icon: Umbrals, url: "/admin/umbrales" },
             { text: "Lecturas", Icon: Readings, url: "/admin/lecturas" },
         ]

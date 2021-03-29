@@ -4,6 +4,7 @@ import PrivateRoute from "../../common/PrivateRoute";
 import Home from "../../views/Home";
 import { Admins, newAdmin } from "../../views/Admin/Admins"
 import { Stations, newStation } from "../../views/Admin/Stations"
+import { SensorTypes, newSensorType } from "../../views/Admin/SensorTypes"
 // import FooterPage from "./Footer";
 
 export default class Page extends React.Component {
@@ -19,6 +20,9 @@ export default class Page extends React.Component {
                     {/*  Stations   */}
                     <PrivateRoute exact path="/admin/estaciones" component={Stations} />
                     <PrivateRoute exact path="/admin/estaciones/nueva" component={newStation} />
+                    {/*  SensorTypes   */}
+                    <PrivateRoute exact path="/admin/tipos-de-sensores" component={SensorTypes} />
+                    <PrivateRoute exact path="/admin/tipos-de-sensores/nuevo" component={newSensorType} />
                 </Switch>
             </div>
         );
