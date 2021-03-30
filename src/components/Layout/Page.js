@@ -5,7 +5,7 @@ import Home from "../../views/Home";
 import { Admins, newAdmin } from "../../views/Admin/Admins"
 import { Stations, newStation, editStation } from "../../views/Admin/Stations"
 import { SensorTypes, newSensorType, editSensorType } from "../../views/Admin/SensorTypes"
-import { SensorUmbrals, newSensorUmbrals } from "../../views/Admin/SensorUmbrals"
+import { SensorUmbrals, newSensorUmbrals, editSensorUmbrals } from "../../views/Admin/SensorUmbrals"
 // import FooterPage from "./Footer";
 
 export default class Page extends React.Component {
@@ -29,6 +29,7 @@ export default class Page extends React.Component {
                     {/*  SensorUmbrals   */}
                     <PrivateRoute exact path="/admin/umbrales-sensores" component={SensorUmbrals} />
                     <PrivateRoute exact path="/admin/umbrales-sensores/nuevo" component={newSensorUmbrals} />
+                    <PrivateRoute exact path="/admin/umbrales-sensores/:id/editar/" component={editSensorUmbrals} />
                 </Switch>
             </div>
         );

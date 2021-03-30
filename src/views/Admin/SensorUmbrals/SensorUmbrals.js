@@ -94,7 +94,7 @@ class SensorUmbrals extends React.Component {
                                                 );
                                             })}
                                             <TableCell key="acciones" className="Action_buttons">
-                                                <IconButton className="Edit__button"
+                                                <IconButton className="Edit__button" to={`/admin/umbrales-sensores/${row.id}/editar/`} component={Link}
                                                 >
                                                     <SvgIcon fontSize="small">
                                                         <EditIcon />
