@@ -79,8 +79,8 @@ export default class editStationeditStation extends React.Component {
                 isValid = false
             }
         })
-        if (form.name.length < 8 || form.name.length > 40) {
-            errors.name = "Nombre debe tener entre 8 a 40 carácteres"
+        if (form.name.length < 4 || form.name.length > 40) {
+            errors.name = "Nombre debe tener entre 4 a 40 carácteres"
             isValid = false
         }
         if (!Number(form.latitude)) {

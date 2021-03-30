@@ -1,5 +1,5 @@
 .Table__container{
-    height: 600px;
+    min-height: 600px;
 }
 
 .Paper_container{
