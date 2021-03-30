@@ -27,6 +27,7 @@ export default class newStation extends React.Component {
             longitude: "",
             status: "",
         },
+        statusOptions: [{ type: "Seleccionar" }, { type: "Habilitada" }, { type: "Deshabilitada" }, { type: "En construcción" }],
         openSnackbar: false,
         snackMessage: { message: "", success: false },
         submitted: false
@@ -60,8 +61,8 @@ export default class newStation extends React.Component {
                 isValid = false
             }
         })
-        if (form.name.length < 8 || form.name.length > 15) {
-            errors.username = "Nombre debe tener entre 8 a 15 carácteres"
+        if (form.name.length < 8 || form.name.length > 40) {
+            errors.name = "Nombre debe tener entre 8 a 40 carácteres"
             isValid = false
         }
         if (!Number(form.latitude)) {
@@ -72,7 +73,7 @@ export default class newStation extends React.Component {
             errors.longitude = "Debe ingresar una longitud correcta. Ej: -71.67 "
             isValid = false
         }
-        if (!form.status) {
+        if (!form.status || form.status === "Seleccionar") {
             errors.status = "Debe ingresar un estado"
             isValid = false
         }
@@ -128,8 +129,17 @@ export default class newStation extends React.Component {
                             <TextField name="name" label="Nombre" variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.name} error={Boolean(this.state.errors.name)} />
                         </Grid>
                         <Grid item xs={12} md={5}>
-                            <TextField name="status" label="Estado" variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.status} error={Boolean(this.state.errors.status)} />
+                            <TextField name="status" label="Estado" select
+                                SelectProps={{ native: true }} value={this.state.form.status} variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.status} error={Boolean(this.state.errors.status)} >
+                                {this.state.statusOptions.map((option) => (
+                                    <option key={option.type} value={option.type}>
+                                        {option.type}
+                                    </option>
+                                ))}
+                            </TextField>
                         </Grid>
+
+
                     </Grid>
                     <h4 className="text__left">Ubicación:</h4>
                     <Grid container spacing={4} justify="center">

@@ -18,7 +18,7 @@ class HomeItem extends React.Component {
     render() {
         const Icon = this.props.item.Icon
         return (
-            <Link to={this.state.url}>
+            <Link to={this.state.url} className="HomeItem__text">
                 <div className="HomeItem">
                     <Icon className="HomeItem__icon" />
                     <h4 className="HomeItem__text">{this.state.text}</h4>

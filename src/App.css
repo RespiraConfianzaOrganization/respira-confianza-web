@@ -1,10 +1,19 @@
 :root{
-  --colorTheme: #293B4E
+  --colorTheme: #2b3e4d
 }
-
 
 .App {
   text-align: center;
+}
+.MuiTableCell-head {
+  background-color: #DEDEDE !important;
+  cursor:default;
+  font-weight: bolder !important;
+  text-transform: uppercase;
+}
+
+.MuiInputBase-root{
+  background-color: white;
 }
 
 .App-logo {

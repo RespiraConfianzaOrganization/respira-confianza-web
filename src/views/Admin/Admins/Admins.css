@@ -12,10 +12,7 @@
 
 .Container__header_row{
     display: flex;
-}
-.Container__header_row_button{
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
 }

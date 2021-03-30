@@ -162,6 +162,7 @@ export default class newSensorUmbrals extends React.Component {
                         <Grid item xs={12} md={5}>
                             <TextField className="filled" name="sensor_unit" label="Unidad" variant="outlined" fullWidth size="small" value={this.state.sensor_unit} InputProps={{
                                 readOnly: true,
+                                className: "filled"
                             }} />
                         </Grid>
                     </Grid>

@@ -11,7 +11,7 @@
     padding: 40px 20px;
     border-radius: 13px;
     color:white !important;
-    background-color: #293B4E;
+    background-color: var(--colorTheme);
     text-align: center;
 }
 

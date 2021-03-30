@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1251,
     overflow: "hidden",
     fontFamily: theme.fontFamily,
-    backgroundColor: "#edf1f6"
+    backgroundColor: "#f5f8fb"
   },
   appFrame: {
     display: "flex",
