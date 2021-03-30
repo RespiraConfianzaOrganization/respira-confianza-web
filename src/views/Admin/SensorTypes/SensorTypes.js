@@ -1,7 +1,11 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { getRequest } from "../../../utils/axios"
-import { Button, Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
+import { Button, IconButton, SvgIcon, Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
+import {
+    Edit as EditIcon,
+    Delete as DeleteIcon,
+} from "@material-ui/icons";
 import "./SensorTypes.css"
 
 class SensorTypes extends React.Component {
@@ -56,6 +60,12 @@ class SensorTypes extends React.Component {
                                             {column.label}
                                         </TableCell>
                                     ))}
+                                    <TableCell
+                                        key={"admin"}
+                                        style={{ width: '170px' }}
+                                    >
+                                        Acciones
+                                        </TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -70,6 +80,20 @@ class SensorTypes extends React.Component {
                                                     </TableCell>
                                                 );
                                             })}
+                                            <TableCell key="acciones" className="Action_buttons">
+                                                <IconButton className="Edit__button"
+                                                >
+                                                    <SvgIcon fontSize="small">
+                                                        <EditIcon />
+                                                    </SvgIcon>
+                                                </IconButton>
+                                                <IconButton className="Delete__button"
+                                                >
+                                                    <SvgIcon fontSize="small">
+                                                        <DeleteIcon />
+                                                    </SvgIcon>
+                                                </IconButton>
+                                            </TableCell>
                                         </TableRow>
                                     );
                                 })}

@@ -5,6 +5,7 @@
 .App {
   text-align: center;
 }
+/*   CSS GLOBAL */
 .MuiTableCell-head {
   background-color: #DEDEDE !important;
   cursor:default;
@@ -14,6 +15,24 @@
 
 .MuiInputBase-root{
   background-color: white;
+}
+
+
+.Watch__button{
+  background:var(--colorTheme) !important;
+  color:white !important;
+  border-radius: 8% !important;
+}
+.Edit__button{
+  background:#f3b340 !important;
+  color:white !important;
+  border-radius: 8% !important;
+}
+
+.Delete__button{
+  background:#D9000B !important;
+  color:white !important;
+  border-radius: 8% !important;
 }
 
 .App-logo {
