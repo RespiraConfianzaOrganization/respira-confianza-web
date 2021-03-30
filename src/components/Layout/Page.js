@@ -3,7 +3,7 @@ import { Switch } from "react-router-dom";
 import PrivateRoute from "../../common/PrivateRoute";
 import Home from "../../views/Home";
 import { Admins, newAdmin } from "../../views/Admin/Admins"
-import { Stations, newStation } from "../../views/Admin/Stations"
+import { Stations, newStation, editStation } from "../../views/Admin/Stations"
 import { SensorTypes, newSensorType } from "../../views/Admin/SensorTypes"
 import { SensorUmbrals, newSensorUmbrals } from "../../views/Admin/SensorUmbrals"
 // import FooterPage from "./Footer";
@@ -21,6 +21,7 @@ export default class Page extends React.Component {
                     {/*  Stations   */}
                     <PrivateRoute exact path="/admin/estaciones" component={Stations} />
                     <PrivateRoute exact path="/admin/estaciones/nueva" component={newStation} />
+                    <PrivateRoute exact path="/admin/estaciones/:id/editar/" component={editStation} />
                     {/*  SensorTypes   */}
                     <PrivateRoute exact path="/admin/tipos-de-sensores" component={SensorTypes} />
                     <PrivateRoute exact path="/admin/tipos-de-sensores/nuevo" component={newSensorType} />

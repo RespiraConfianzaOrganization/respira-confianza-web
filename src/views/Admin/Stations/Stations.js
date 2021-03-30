@@ -94,7 +94,7 @@ class Stations extends React.Component {
                                                     </SvgIcon>
                                                 </IconButton>
 
-                                                <IconButton className="Edit__button"
+                                                <IconButton className="Edit__button" to={`/admin/estaciones/${row.id}/editar/`} component={Link}
                                                 >
                                                     <SvgIcon fontSize="small">
                                                         <EditIcon />
