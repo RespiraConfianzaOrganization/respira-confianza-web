@@ -1,16 +1,12 @@
 import React from "react"
 import { Link, Redirect } from "react-router-dom"
 import { postRequest } from "../../../../utils/axios"
-import { Button, Divider, Grid, Snackbar, TextField } from "@material-ui/core"
-import MuiAlert from '@material-ui/lab/Alert';
+import { Button, Divider, Grid, TextField } from "@material-ui/core"
 import { validateEmail, validateUsername } from "../../../../utils/validator"
+import { withSnackbar } from 'notistack';
 import "./newAdmin.css"
 
-function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
-export default class newAdmin extends React.Component {
+class NewAdmin extends React.Component {
     state = {
         form: {
             first_name: "",
@@ -32,8 +28,6 @@ export default class newAdmin extends React.Component {
             country: "",
             city: ""
         },
-        openSnackbar: false,
-        snackMessage: { message: "", success: false },
         submitted: false
     }
 
@@ -94,24 +88,14 @@ export default class newAdmin extends React.Component {
             try {
                 const response = await postRequest(`${process.env.REACT_APP_API_URL}/api/admins/new`, form);
                 if (response.status === 201) {
-                    this.setState({ snackMessage: { message: "Administrador creado!", success: true }, submitted: true, })
+                    this.props.enqueueSnackbar('Administrador creado correctamente!');
+                    this.setState({ submitted: true, })
                 }
             } catch (e) {
-                this.setState({
-                    snackMessage: { message: e.response.data.message, success: false }, openSnackbar: true
-                })
+                this.props.enqueueSnackbar(e.response.data.message,);
             }
-
-
         }
     }
-    handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        this.setState({ openSnackbar: false });
-    };
 
     render() {
         if (this.state.submitted) {
@@ -119,11 +103,6 @@ export default class newAdmin extends React.Component {
         }
         return (
             <div className="Container">
-                <Snackbar open={this.state.openSnackbar} autoHideDuration={6000} onClose={this.handleClose}>
-                    <Alert onClose={this.handleClose} severity={this.state.snackMessage.success ? "success" : "error"}>
-                        {this.state.snackMessage.message}
-                    </Alert>
-                </Snackbar>
                 <div className="Container__header">
                     <div className="Container__header_row">
                         <h3>Nuevo administrador</h3>
@@ -173,3 +152,5 @@ export default class newAdmin extends React.Component {
         )
     }
 }
+
+export default withSnackbar(NewAdmin)
