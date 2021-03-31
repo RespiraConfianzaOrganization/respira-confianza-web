@@ -8,12 +8,16 @@ import {
     Delete as DeleteIcon,
 } from "@material-ui/icons";
 import "./Stations.css"
+import DeleteStation from "./deleteStation/deleteStation"
+
 
 class Stations extends React.Component {
     state = {
         page: 0,
         rowsPerPage: 10,
         stations: [],
+        openModal: false,
+        selectedStation: null,
         columns: [
             { id: 'name', label: 'Nombre', minWidth: 270 },
             { id: 'country', label: 'País', minWidth: 170 },
@@ -24,6 +28,10 @@ class Stations extends React.Component {
         ]
     }
     async componentDidMount() {
+        await this.getStations();
+    }
+
+    getStations = async () => {
         const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/stations`);
         if (response.status === 200) {
             this.setState({ stations: response.data.stations })
@@ -38,6 +46,10 @@ class Stations extends React.Component {
         this.setState({ page: 0, rowsPerPage: +event.target.value });
     };
 
+    handleDeleteClick = (value, selected) => {
+        this.setState({ openModal: value, selectedStation: selected });
+    };
+
     render() {
         return (
             <div className="Container">
@@ -50,7 +62,13 @@ class Stations extends React.Component {
                     </div>
                     <Divider />
                 </div>
-
+                {this.state.openModal ? (
+                    <DeleteStation
+                        openModal={this.state.openModal}
+                        handleDeleteClick={this.handleDeleteClick}
+                        station={this.state.selectedStation}
+                        getStations={this.getStations} />
+                ) : null}
                 <Paper className="Paper_container">
                     <TableContainer className="Table__container">
                         <Table stickyHeader aria-label="sticky table">
@@ -100,7 +118,7 @@ class Stations extends React.Component {
                                                         <EditIcon />
                                                     </SvgIcon>
                                                 </IconButton>
-                                                <IconButton className="Delete__button"
+                                                <IconButton className="Delete__button" onClick={() => this.handleDeleteClick(true, row)}
                                                 >
                                                     <SvgIcon fontSize="small">
                                                         <DeleteIcon />

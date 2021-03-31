@@ -49,7 +49,6 @@ class SensorUmbrals extends React.Component {
         this.setState({ openModal: value, selectedSensorUmbrals: selected });
     };
 
-
     render() {
         return (
             <div className="Container">
