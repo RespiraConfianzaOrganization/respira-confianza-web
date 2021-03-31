@@ -32,7 +32,7 @@ class DeleteSensorType extends React.Component {
     const response = await deleteRequest(`${process.env.REACT_APP_API_URL}/api/sensor-types/${this.state.sensorType.id}`)
     if (response.status === 200) {
       await this.state.getSensorTypes();
-      this.props.enqueueSnackbar('Tipo de sensor eliminado correctamente!');
+      this.props.enqueueSnackbar(`Tipo de sensor ${this.state.sensorType.type} eliminado correctamente!`);
       this.state.handleDeleteClick(false, null);
     }
     else {

@@ -32,7 +32,7 @@ class DeleteSensorUmbrals extends React.Component {
     const response = await deleteRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals/${this.state.sensorUmbrals.id}`)
     if (response.status === 200) {
       await this.state.getUmbrals();
-      this.props.enqueueSnackbar('Umbrales de sensor eliminados correctamente!');
+      this.props.enqueueSnackbar(`Umbrales de sensor ${this.state.sensorUmbrals.Sensor_Type.type} eliminados correctamente!`);
       this.state.handleDeleteClick(false, null);
     }
     else {
