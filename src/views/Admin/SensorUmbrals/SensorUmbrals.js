@@ -7,12 +7,15 @@ import {
     Delete as DeleteIcon,
 } from "@material-ui/icons";
 import "./SensorUmbrals.css"
+import DeleteSensorUmbrals from "./deleteSensorUmbrals/deleteSensorUmbrals"
 
 class SensorUmbrals extends React.Component {
     state = {
         page: 0,
         rowsPerPage: 10,
         sensorUmbrals: [],
+        openModal: false,
+        selectedSensorUmbrals: null,
         columns: [
             { id: 'type', label: 'Sensor', minWidth: 270 },
             { id: 'unit', label: 'Unidad', minWidth: 170 },
@@ -24,6 +27,11 @@ class SensorUmbrals extends React.Component {
         ]
     }
     async componentDidMount() {
+        await this.getUmbrals();
+
+    }
+
+    getUmbrals = async () => {
         const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals`);
         if (response.status === 200) {
             this.setState({ sensorUmbrals: response.data.sensorUmbrals })
@@ -38,6 +46,11 @@ class SensorUmbrals extends React.Component {
         this.setState({ page: 0, rowsPerPage: +event.target.value });
     };
 
+    handleClick = (value, selected) => {
+        this.setState({ openModal: value, selectedSensorUmbrals: selected });
+    };
+
+
     render() {
         return (
             <div className="Container">
@@ -50,7 +63,13 @@ class SensorUmbrals extends React.Component {
                     </div>
                     <Divider />
                 </div>
-
+                {this.state.openModal ? (
+                    <DeleteSensorUmbrals
+                        openModal={this.state.openModal}
+                        handleClick={this.handleClick}
+                        sensorUmbrals={this.state.selectedSensorUmbrals}
+                        getUmbrals={this.getUmbrals} />
+                ) : null}
                 <Paper className="Paper_container">
                     <TableContainer className="Table__container">
                         <Table stickyHeader aria-label="sticky table">
@@ -100,7 +119,7 @@ class SensorUmbrals extends React.Component {
                                                         <EditIcon />
                                                     </SvgIcon>
                                                 </IconButton>
-                                                <IconButton className="Delete__button"
+                                                <IconButton className="Delete__button" onClick={() => this.handleClick(true, row)}
                                                 >
                                                     <SvgIcon fontSize="small">
                                                         <DeleteIcon />
