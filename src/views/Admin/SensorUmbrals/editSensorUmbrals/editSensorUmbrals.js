@@ -8,7 +8,6 @@ import { withSnackbar } from 'notistack';
 class EditSensorUmbrals extends React.Component {
     state = {
         form: {
-            sensor_type_id: -1,
             good: "",
             moderate: "",
             unhealthy: "",
@@ -16,41 +15,39 @@ class EditSensorUmbrals extends React.Component {
             dangerous: "",
         },
         errors: {
-            sensor_type_id: "",
             good: "",
             moderate: "",
             unhealthy: "",
             very_unhealthy: "",
             dangerous: "",
         },
-        sensorUmbrals_id: this.props.match.params.id,
-        sensor_unit: "",
-        sensorTypes: [{ id: -1, type: "Selecciona", unit: "" }],
+        sensorType: {
+            id: this.props.match.params.id,
+            type: "",
+            unit: ""
+        },
         submitted: false
     }
 
     async componentDidMount() {
-        const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/sensor-types`);
-        if (response.status === 200) {
-            let res_sensorTypes = response.data.sensorTypes;
-            res_sensorTypes.unshift({ id: -1, type: "Seleccionar", unit: "" });
-            this.setState({ sensorTypes: res_sensorTypes })
-        }
-
-        const responseSensorUmbrals = await getRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals/${this.state.sensorUmbrals_id}`);
-        if (response.status === 200) {
+        const responseSensorUmbrals = await getRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals/${this.state.sensorType.id}`);
+        if (responseSensorUmbrals.status === 200) {
             let sensorUmbrals = responseSensorUmbrals.data.sensorUmbrals;
             this.setState({
                 form: {
-                    sensor_type_id: sensorUmbrals.Sensor_Type.id,
                     good: sensorUmbrals.good,
                     moderate: sensorUmbrals.moderate,
                     unhealthy: sensorUmbrals.unhealthy,
                     very_unhealthy: sensorUmbrals.very_unhealthy,
                     dangerous: sensorUmbrals.dangerous,
                 },
-                sensor_unit: sensorUmbrals.Sensor_Type.unit
+                sensorType: {
+                    ...this.state.sensorType,
+                    type: sensorUmbrals.Sensor_Type.type,
+                    unit: sensorUmbrals.Sensor_Type.unit
+                }
             })
+
         }
     }
 
@@ -63,27 +60,9 @@ class EditSensorUmbrals extends React.Component {
         })
     }
 
-
-    onChangeSensor = (e) => {
-        let id = +e.target.value
-        const sensor = this.state.sensorTypes.filter(sensor => sensor.id === id)
-        let unit = ""
-        if (sensor.length > 0) {
-            unit = sensor[0].unit
-        }
-        this.setState({
-            form: {
-                ...this.state.form,
-                [e.target.name]: id
-            },
-            sensor_unit: unit
-        })
-    }
-
     handleSubmit = async (e) => {
         e.preventDefault()
         let errors = {
-            sensor_type_id: "",
             good: "",
             moderate: "",
             unhealthy: "",
@@ -105,15 +84,11 @@ class EditSensorUmbrals extends React.Component {
                 isValid = false
             }
         })
-        if (form.sensor_type_id === -1) {
-            errors.sensor_type_id = "Debe seleccionar un sensor"
-            isValid = false
-        }
         this.setState({ errors })
         if (isValid) {
             //Post
             try {
-                const response = await putRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals/${this.state.sensorUmbrals_id}`, form);
+                const response = await putRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals/${this.state.sensorType.id}`, form);
                 if (response.status === 200) {
                     this.props.enqueueSnackbar('Umbrales de sensor editados correctamente!');
                     this.setState({ submitted: true, })
@@ -146,22 +121,20 @@ class EditSensorUmbrals extends React.Component {
                 </div>
                 <form className="form">
                     <ul className="text__left">
+                        <li>Sólo se pueden editar los umbrales. Si se desea, puedes eliminar los umbrales para este sensor.</li>
                         <li>A partir de un tipo de sensor se definirán las umbrales de salud para mostrarlos en la aplicación</li>
                     </ul>
                     <h4 className="text__left">Sensor:</h4>
                     <Grid container spacing={4} justify="center">
                         <Grid item xs={12} md={5}>
-                            <TextField name="sensor_type_id" label="Sensor" select type="number"
-                                SelectProps={{ native: true }} value={this.state.form.sensor_type_id} variant="outlined" fullWidth size="small" onChange={this.onChangeSensor} helperText={this.state.errors.sensor_type_id} error={Boolean(this.state.errors.sensor_type_id)} >
-                                {this.state.sensorTypes.map((option) => (
-                                    <option key={option.id} value={option.id}>
-                                        {option.type}
-                                    </option>
-                                ))}
-                            </TextField>
+                            <TextField name="sensor_type_id" label="Sensor" value={this.state.sensorType.type} variant="outlined" fullWidth size="small" onChange={this.onChangeSensor} helperText={this.state.errors.sensor_type_id} error={Boolean(this.state.errors.sensor_type_id)}
+                                InputProps={{
+                                    readOnly: true,
+                                    className: "filled"
+                                }} />
                         </Grid>
                         <Grid item xs={12} md={5}>
-                            <TextField className="filled" name="sensor_unit" label="Unidad" variant="outlined" fullWidth size="small" value={this.state.sensor_unit} InputProps={{
+                            <TextField className="filled" name="sensor_unit" label="Unidad" variant="outlined" fullWidth size="small" value={this.state.sensorType.unit} InputProps={{
                                 readOnly: true,
                                 className: "filled"
                             }} />

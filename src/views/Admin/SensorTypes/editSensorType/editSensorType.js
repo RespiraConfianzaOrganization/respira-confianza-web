@@ -91,13 +91,16 @@ class EditSensorType extends React.Component {
         </div>
         <form className="form">
           <ul className="text__left">
-            <li>El tipo de sensor puede ser de Presión, Temperatura, NOX, CO2,etc</li>
+            <li>El tipo de sensor ya no se puede cambiar, ya que esto puede generar errores no deseados si ya se usa una instancia de este en las estaciones. Si lo deseas, puedes eliminarlo.</li>
             <li>La unidad se refiere a la unidad de medida con la que el sensor enviará los datos (°C, Pa, ect)</li>
           </ul>
           <h4 className="text__left">Información:</h4>
           <Grid container spacing={4} justify="center">
             <Grid item xs={12} md={5}>
-              <TextField name="type" label="Tipo" value={this.state.form.type} variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.type} error={Boolean(this.state.errors.type)} />
+              <TextField name="type" label="Tipo" value={this.state.form.type} variant="outlined" fullWidth size="small" InputProps={{
+                readOnly: true,
+                className: "filled"
+              }} onChange={this.onChange} helperText={this.state.errors.type} error={Boolean(this.state.errors.type)} />
             </Grid>
             <Grid item xs={12} md={5}>
               <TextField name="unit" label="Unidad" value={this.state.form.unit} variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.unit} error={Boolean(this.state.errors.unit)} />
