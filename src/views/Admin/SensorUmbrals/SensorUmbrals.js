@@ -28,7 +28,6 @@ class SensorUmbrals extends React.Component {
     }
     async componentDidMount() {
         await this.getUmbrals();
-
     }
 
     getUmbrals = async () => {
@@ -46,7 +45,7 @@ class SensorUmbrals extends React.Component {
         this.setState({ page: 0, rowsPerPage: +event.target.value });
     };
 
-    handleClick = (value, selected) => {
+    handleDeleteClick = (value, selected) => {
         this.setState({ openModal: value, selectedSensorUmbrals: selected });
     };
 
@@ -66,7 +65,7 @@ class SensorUmbrals extends React.Component {
                 {this.state.openModal ? (
                     <DeleteSensorUmbrals
                         openModal={this.state.openModal}
-                        handleClick={this.handleClick}
+                        handleDeleteClick={this.handleDeleteClick}
                         sensorUmbrals={this.state.selectedSensorUmbrals}
                         getUmbrals={this.getUmbrals} />
                 ) : null}
@@ -119,7 +118,7 @@ class SensorUmbrals extends React.Component {
                                                         <EditIcon />
                                                     </SvgIcon>
                                                 </IconButton>
-                                                <IconButton className="Delete__button" onClick={() => this.handleClick(true, row)}
+                                                <IconButton className="Delete__button" onClick={() => this.handleDeleteClick(true, row)}
                                                 >
                                                     <SvgIcon fontSize="small">
                                                         <DeleteIcon />

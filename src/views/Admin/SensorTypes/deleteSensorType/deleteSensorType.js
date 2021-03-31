@@ -9,17 +9,17 @@ import {
 } from "@material-ui/core";
 import { deleteRequest } from "../../../../utils/axios"
 import { withSnackbar } from 'notistack';
-import "./deleteSensorUmbrals.css"
+import "./deleteSensorType.css"
 
-class DeleteSensorUmbrals extends React.Component {
+class DeleteSensorType extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       openModal: this.props.openModal,
       handleDeleteClick: this.props.handleDeleteClick,
-      getUmbrals: this.props.getUmbrals,
+      getSensorTypes: this.props.getSensorTypes,
       delete: false,
-      sensorUmbrals: this.props.sensorUmbrals,
+      sensorType: this.props.sensorType,
     };
   }
 
@@ -29,10 +29,10 @@ class DeleteSensorUmbrals extends React.Component {
   };
 
   handleDelete = async () => {
-    const response = await deleteRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals/${this.state.sensorUmbrals.id}`)
+    const response = await deleteRequest(`${process.env.REACT_APP_API_URL}/api/sensor-types/${this.state.sensorType.id}`)
     if (response.status === 200) {
-      await this.state.getUmbrals();
-      this.props.enqueueSnackbar('Umbrales de sensor eliminados correctamente!');
+      await this.state.getSensorTypes();
+      this.props.enqueueSnackbar('Tipo de sensor eliminado correctamente!');
       this.state.handleDeleteClick(false, null);
     }
     else {
@@ -51,15 +51,17 @@ class DeleteSensorUmbrals extends React.Component {
           maxWidth="md"
         >
           <DialogTitle id="responsive-dialog-title">
-            Confirmación de eliminación de umbrales de sensor
-                    </DialogTitle>
+            Confirmación de eliminación de tipo de sensor
+          </DialogTitle>
           <DialogContent>
             <DialogContentText>
               <span>{this.state.error}</span>
-              ¿Estas seguro de eliminar los umbrales para el sensor
-              <span className="Text__bolder"> {this.state.sensorUmbrals.Sensor_Type.type} </span>
-              con unidad {this.state.sensorUmbrals.Sensor_Type.unit} ?
-                    </DialogContentText>
+              ¿Estas seguro de eliminar el tipo de sensor
+              <span className="Text__bolder"> {this.state.sensorType.type} </span>
+              con unidad {this.state.sensorType.unit} ?
+              <span className="Text__bolder">
+                {" "}Al eliminar un tipo de sensor, se eliminará los umbrales definidos para ese sensor y las instancias de sensores en las estaciones.
+              </span>   </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button
@@ -85,4 +87,4 @@ class DeleteSensorUmbrals extends React.Component {
   }
 }
 
-export default withSnackbar(DeleteSensorUmbrals);
+export default withSnackbar(DeleteSensorType);
