@@ -8,9 +8,10 @@ import {
   DialogContent,
 } from "@material-ui/core";
 import { deleteRequest } from "../../../../utils/axios"
+import { withSnackbar } from 'notistack';
 import "./deleteSensorUmbrals.css"
 
-export default class DeleteSensorUmbrals extends React.Component {
+class DeleteSensorUmbrals extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,7 +20,6 @@ export default class DeleteSensorUmbrals extends React.Component {
       getUmbrals: this.props.getUmbrals,
       delete: false,
       sensorUmbrals: this.props.sensorUmbrals,
-      error: 'No se pudo eliminar'
     };
   }
 
@@ -32,10 +32,11 @@ export default class DeleteSensorUmbrals extends React.Component {
     const response = await deleteRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals/${this.state.sensorUmbrals.id}`)
     if (response.status === 200) {
       await this.state.getUmbrals();
+      this.props.enqueueSnackbar('Umbrales de sensor eliminados correctamente!');
       this.state.handleClick(false, null);
     }
     else {
-      this.setState({ error: 'No se pudo eliminar' })
+      this.props.enqueueSnackbar('No se pudo eliminar');
     }
   }
 
@@ -83,3 +84,5 @@ export default class DeleteSensorUmbrals extends React.Component {
     );
   }
 }
+
+export default withSnackbar(DeleteSensorUmbrals);

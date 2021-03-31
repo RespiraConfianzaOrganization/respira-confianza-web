@@ -2,14 +2,10 @@ import React from "react"
 import './newSensorUmbrals.css'
 import { Link, Redirect } from "react-router-dom"
 import { getRequest, postRequest } from "../../../../utils/axios"
-import { Button, Divider, Grid, Snackbar, TextField } from "@material-ui/core"
-import MuiAlert from '@material-ui/lab/Alert';
+import { Button, Divider, Grid, TextField } from "@material-ui/core"
+import { withSnackbar } from 'notistack';
 
-function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
-export default class newSensorUmbrals extends React.Component {
+class NewSensorUmbrals extends React.Component {
     state = {
         form: {
             sensor_type_id: -1,
@@ -29,8 +25,6 @@ export default class newSensorUmbrals extends React.Component {
         },
         sensor_unit: "",
         sensorTypes: [{ id: -1, type: "Selecciona", unit: "" }],
-        openSnackbar: false,
-        snackMessage: { message: "", success: false },
         submitted: false
     }
 
@@ -104,24 +98,14 @@ export default class newSensorUmbrals extends React.Component {
             try {
                 const response = await postRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals/new`, form);
                 if (response.status === 201) {
-                    this.setState({ snackMessage: { message: "Tipo de sensor creado!", success: true }, submitted: true, })
+                    this.props.enqueueSnackbar('Umbrales de sensor creado correctamente!');
+                    this.setState({ submitted: true, })
                 }
             } catch (e) {
-                this.setState({
-                    snackMessage: { message: e.response.data.message, success: false }, openSnackbar: true
-                })
+                this.props.enqueueSnackbar(e.response.data.message);
             }
-
-
         }
     }
-    handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        this.setState({ openSnackbar: false });
-    };
 
     render() {
         if (this.state.submitted) {
@@ -129,11 +113,6 @@ export default class newSensorUmbrals extends React.Component {
         }
         return (
             <div className="Container">
-                <Snackbar open={this.state.openSnackbar} autoHideDuration={6000} onClose={this.handleClose}>
-                    <Alert onClose={this.handleClose} severity={this.state.snackMessage.success ? "success" : "error"}>
-                        {this.state.snackMessage.message}
-                    </Alert>
-                </Snackbar>
                 <div className="Container__header">
                     <div className="Container__header_row">
                         <h3>Nuevo umbrales de sensor</h3>
@@ -195,3 +174,5 @@ export default class newSensorUmbrals extends React.Component {
         )
     }
 }
+
+export default withSnackbar(NewSensorUmbrals)

@@ -2,14 +2,10 @@ import React from "react"
 import './editSensorUmbrals.css'
 import { Link, Redirect } from "react-router-dom"
 import { getRequest, putRequest } from "../../../../utils/axios"
-import { Button, Divider, Grid, Snackbar, TextField } from "@material-ui/core"
-import MuiAlert from '@material-ui/lab/Alert';
+import { Button, Divider, Grid, TextField } from "@material-ui/core"
+import { withSnackbar } from 'notistack';
 
-function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
-export default class editSensorUmbrals extends React.Component {
+class EditSensorUmbrals extends React.Component {
     state = {
         form: {
             sensor_type_id: -1,
@@ -30,8 +26,6 @@ export default class editSensorUmbrals extends React.Component {
         sensorUmbrals_id: this.props.match.params.id,
         sensor_unit: "",
         sensorTypes: [{ id: -1, type: "Selecciona", unit: "" }],
-        openSnackbar: false,
-        snackMessage: { message: "", success: false },
         submitted: false
     }
 
@@ -121,29 +115,19 @@ export default class editSensorUmbrals extends React.Component {
             try {
                 const response = await putRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals/${this.state.sensorUmbrals_id}`, form);
                 if (response.status === 200) {
-                    this.setState({ snackMessage: { message: "Tipo de sensor creado!", success: true }, submitted: true, })
+                    this.props.enqueueSnackbar('Umbrales de sensor editados correctamente!');
+                    this.setState({ submitted: true, })
                 }
                 else {
-                    this.setState({
-                        snackMessage: { message: "No se pudo modificar los umbrales del sensor", success: false }, openSnackbar: true
-                    })
+                    this.props.enqueueSnackbar('No se pudo editar');
                 }
             } catch (e) {
-                this.setState({
-                    snackMessage: { message: e.response.data.message, success: false }, openSnackbar: true
-                })
+                this.props.enqueueSnackbar(e.response.data.message);
             }
 
 
         }
     }
-    handleClose = (event, reason) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-
-        this.setState({ openSnackbar: false });
-    };
 
     render() {
         if (this.state.submitted) {
@@ -151,11 +135,6 @@ export default class editSensorUmbrals extends React.Component {
         }
         return (
             <div className="Container">
-                <Snackbar open={this.state.openSnackbar} autoHideDuration={6000} onClose={this.handleClose}>
-                    <Alert onClose={this.handleClose} severity={this.state.snackMessage.success ? "success" : "error"}>
-                        {this.state.snackMessage.message}
-                    </Alert>
-                </Snackbar>
                 <div className="Container__header">
                     <div className="Container__header_row">
                         <h3>Editar umbrales de sensor</h3>
@@ -210,10 +189,12 @@ export default class editSensorUmbrals extends React.Component {
                         </Grid>
                     </Grid>
                     <div className="form__row_button">
-                        <Button className="form_button" type="submit" variant="contained" color="primary" onClick={this.handleSubmit} >Agregar</Button>
+                        <Button className="form_button" type="submit" variant="contained" color="primary" onClick={this.handleSubmit} >Guardar</Button>
                     </div>
                 </form>
             </div>
         )
     }
 }
+
+export default withSnackbar(EditSensorUmbrals)

@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { SnackbarProvider } from 'notistack';
 import { Provider } from "react-redux";
 import { makeStyles, ThemeProvider } from "@material-ui/core/styles";
 import store from "./store/store";
@@ -46,20 +47,22 @@ function App() {
   return (
     <Provider store={store}>
       <Router>
-        <ThemeProvider theme={{ ...theme, ...cssVariables }}>
-          <div className={classes.root}>
-            <div className={classes.appFrame}>
-              <NavBarCustumer open={open} setOpen={setOpen} />
-              <DrawnerCustumer open={open} setOpen={setOpen} />
-              <main className={classes.content}>
-                <Switch>
-                  <Route exact path="/" component={Login} />
-                  <Route path="/admin" component={Page} />
-                </Switch>
-              </main>
+        <SnackbarProvider maxSnack={3}>
+          <ThemeProvider theme={{ ...theme, ...cssVariables }}>
+            <div className={classes.root}>
+              <div className={classes.appFrame}>
+                <NavBarCustumer open={open} setOpen={setOpen} />
+                <DrawnerCustumer open={open} setOpen={setOpen} />
+                <main className={classes.content}>
+                  <Switch>
+                    <Route exact path="/" component={Login} />
+                    <Route path="/admin" component={Page} />
+                  </Switch>
+                </main>
+              </div>
             </div>
-          </div>
-        </ThemeProvider>
+          </ThemeProvider>
+        </SnackbarProvider>
       </Router>
     </Provider>
   );
