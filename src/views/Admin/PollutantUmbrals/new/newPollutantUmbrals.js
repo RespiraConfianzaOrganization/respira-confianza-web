@@ -1,14 +1,14 @@
 import React from "react"
-import './newSensorUmbrals.css'
+import './newPollutantUmbrals.css'
 import { Link, Redirect } from "react-router-dom"
 import { getRequest, postRequest } from "../../../../utils/axios"
 import { Button, Divider, Grid, TextField } from "@material-ui/core"
 import { withSnackbar } from 'notistack';
 
-class NewSensorUmbrals extends React.Component {
+class NewPollutantUmbrals extends React.Component {
     state = {
         form: {
-            sensor_type_id: -1,
+            pollutant_id: -1,
             good: "",
             moderate: "",
             unhealthy: "",
@@ -16,24 +16,24 @@ class NewSensorUmbrals extends React.Component {
             dangerous: "",
         },
         errors: {
-            sensor_type_id: "",
+            pollutant_id: "",
             good: "",
             moderate: "",
             unhealthy: "",
             very_unhealthy: "",
             dangerous: "",
         },
-        sensor_unit: "",
-        sensorTypes: [{ id: -1, type: "Selecciona", unit: "" }],
+        pollutant_unit: "",
+        pollutants: [{ id: -1, name: "Selecciona", unit: "" }],
         submitted: false
     }
 
     async componentDidMount() {
-        const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/sensor-types`);
+        const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/pollutants`);
         if (response.status === 200) {
-            let res_sensorTypes = response.data.sensorTypes;
-            res_sensorTypes.unshift({ id: -1, type: "Seleccionar", unit: "" });
-            this.setState({ sensorTypes: res_sensorTypes })
+            let res_pollutants = response.data.pollutants;
+            res_pollutants.unshift({ id: -1, name: "Seleccionar", unit: "" });
+            this.setState({ pollutants: res_pollutants })
         }
     }
 
@@ -47,26 +47,26 @@ class NewSensorUmbrals extends React.Component {
     }
 
 
-    onChangeSensor = (e) => {
+    onChangePollutant = (e) => {
         let id = +e.target.value
-        const sensor = this.state.sensorTypes.filter(sensor => sensor.id === id)
+        const pollutant = this.state.pollutants.filter(pollutant => pollutant.id === id)
         let unit = ""
-        if (sensor.length > 0) {
-            unit = sensor[0].unit
+        if (pollutant.length > 0) {
+            unit = pollutant[0].unit
         }
         this.setState({
             form: {
                 ...this.state.form,
                 [e.target.name]: id
             },
-            sensor_unit: unit
+            pollutant_unit: unit
         })
     }
 
     handleSubmit = async (e) => {
         e.preventDefault()
         let errors = {
-            sensor_type_id: "",
+            pollutant_id: "",
             good: "",
             moderate: "",
             unhealthy: "",
@@ -88,17 +88,17 @@ class NewSensorUmbrals extends React.Component {
                 isValid = false
             }
         })
-        if (form.sensor_type_id === -1) {
-            errors.sensor_type_id = "Debe seleccionar un sensor"
+        if (form.pollutant_id === -1) {
+            errors.pollutant_id = "Debe seleccionar un contaminante"
             isValid = false
         }
         this.setState({ errors })
         if (isValid) {
             //Post
             try {
-                const response = await postRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals/new`, form);
+                const response = await postRequest(`${process.env.REACT_APP_API_URL}/api/pollutant-umbrals/new`, form);
                 if (response.status === 201) {
-                    this.props.enqueueSnackbar('Umbrales de sensor creado correctamente!');
+                    this.props.enqueueSnackbar('Umbrales de contaminante creado correctamente!');
                     this.setState({ submitted: true, })
                 }
             } catch (e) {
@@ -109,37 +109,37 @@ class NewSensorUmbrals extends React.Component {
 
     render() {
         if (this.state.submitted) {
-            return <Redirect to="/admin/umbrales-sensores" />
+            return <Redirect to="/admin/umbrales-contaminantes" />
         }
         return (
             <div className="Container">
                 <div className="Container__header">
                     <div className="Container__header_row">
-                        <h3>Nuevo umbrales de sensor</h3>
+                        <h3>Nuevo umbrales de contaminante</h3>
                         <div className="Container__header_row_button">
-                            <Button color="primary" variant="contained" component={Link} to="/admin/umbrales-sensores/"> Volver</Button>
+                            <Button color="primary" variant="contained" component={Link} to="/admin/umbrales-contaminantes/"> Volver</Button>
                         </div>
                     </div>
                     <Divider />
                 </div>
                 <form className="form">
                     <ul className="text__left">
-                        <li>A partir de un tipo de sensor se definirán las umbrales de salud para mostrarlos en la aplicación</li>
+                        <li>A partir de un tipo de contaminante se definirán las umbrales de salud para mostrarlos en la aplicación</li>
                     </ul>
-                    <h4 className="text__left">Sensor:</h4>
+                    <h4 className="text__left">Contaminante:</h4>
                     <Grid container spacing={4} justify="center">
                         <Grid item xs={12} md={5}>
-                            <TextField name="sensor_type_id" label="Sensor" select type="number"
-                                SelectProps={{ native: true }} value={this.state.form.sensor_type_id} variant="outlined" fullWidth size="small" onChange={this.onChangeSensor} helperText={this.state.errors.sensor_type_id} error={Boolean(this.state.errors.sensor_type_id)} >
-                                {this.state.sensorTypes.map((option) => (
+                            <TextField name="pollutant_id" label="Contaminante" select type="number"
+                                SelectProps={{ native: true }} value={this.state.form.pollutant_id} variant="outlined" fullWidth size="small" onChange={this.onChangePollutant} helperText={this.state.errors.pollutant_id} error={Boolean(this.state.errors.pollutant_id)} >
+                                {this.state.pollutants.map((option) => (
                                     <option key={option.id} value={option.id}>
-                                        {option.type}
+                                        {option.name}
                                     </option>
                                 ))}
                             </TextField>
                         </Grid>
                         <Grid item xs={12} md={5}>
-                            <TextField className="filled" name="sensor_unit" label="Unidad" variant="outlined" fullWidth size="small" value={this.state.sensor_unit} InputProps={{
+                            <TextField className="filled" name="pollutant_unit" label="Unidad" variant="outlined" fullWidth size="small" value={this.state.pollutant_unit} InputProps={{
                                 readOnly: true,
                                 className: "filled"
                             }} />
@@ -175,4 +175,4 @@ class NewSensorUmbrals extends React.Component {
     }
 }
 
-export default withSnackbar(NewSensorUmbrals)
+export default withSnackbar(NewPollutantUmbrals)

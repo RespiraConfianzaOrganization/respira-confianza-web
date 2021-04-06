@@ -1,11 +1,11 @@
 import React from "react"
-import './editSensorUmbrals.css'
+import './editPollutantUmbrals.css'
 import { Link, Redirect } from "react-router-dom"
 import { getRequest, putRequest } from "../../../../utils/axios"
 import { Button, Divider, Grid, TextField } from "@material-ui/core"
 import { withSnackbar } from 'notistack';
 
-class EditSensorUmbrals extends React.Component {
+class EditPollutantUmbrals extends React.Component {
     state = {
         form: {
             good: "",
@@ -21,30 +21,30 @@ class EditSensorUmbrals extends React.Component {
             very_unhealthy: "",
             dangerous: "",
         },
-        sensorType: {
+        pollutant: {
             id: this.props.match.params.id,
-            type: "",
+            name: "",
             unit: ""
         },
         submitted: false
     }
 
     async componentDidMount() {
-        const responseSensorUmbrals = await getRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals/${this.state.sensorType.id}`);
-        if (responseSensorUmbrals.status === 200) {
-            let sensorUmbrals = responseSensorUmbrals.data.sensorUmbrals;
+        const responsePollutantUmbrals = await getRequest(`${process.env.REACT_APP_API_URL}/api/pollutant-umbrals/${this.state.pollutant.id}`);
+        if (responsePollutantUmbrals.status === 200) {
+            let pollutantUmbrals = responsePollutantUmbrals.data.pollutantUmbrals;
             this.setState({
                 form: {
-                    good: sensorUmbrals.good,
-                    moderate: sensorUmbrals.moderate,
-                    unhealthy: sensorUmbrals.unhealthy,
-                    very_unhealthy: sensorUmbrals.very_unhealthy,
-                    dangerous: sensorUmbrals.dangerous,
+                    good: pollutantUmbrals.good,
+                    moderate: pollutantUmbrals.moderate,
+                    unhealthy: pollutantUmbrals.unhealthy,
+                    very_unhealthy: pollutantUmbrals.very_unhealthy,
+                    dangerous: pollutantUmbrals.dangerous,
                 },
-                sensorType: {
-                    ...this.state.sensorType,
-                    type: sensorUmbrals.Sensor_Type.type,
-                    unit: sensorUmbrals.Sensor_Type.unit
+                pollutant: {
+                    ...this.state.pollutant,
+                    name: pollutantUmbrals.Pollutant.name,
+                    unit: pollutantUmbrals.Pollutant.unit
                 }
             })
 
@@ -88,9 +88,9 @@ class EditSensorUmbrals extends React.Component {
         if (isValid) {
             //Post
             try {
-                const response = await putRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals/${this.state.sensorType.id}`, form);
+                const response = await putRequest(`${process.env.REACT_APP_API_URL}/api/pollutant-umbrals/${this.state.pollutant.id}`, form);
                 if (response.status === 200) {
-                    this.props.enqueueSnackbar('Umbrales de sensor editados correctamente!');
+                    this.props.enqueueSnackbar('Umbrales de contaminante editados correctamente!');
                     this.setState({ submitted: true, })
                 }
                 else {
@@ -106,35 +106,35 @@ class EditSensorUmbrals extends React.Component {
 
     render() {
         if (this.state.submitted) {
-            return <Redirect to="/admin/umbrales-sensores" />
+            return <Redirect to="/admin/umbrales-contaminantes" />
         }
         return (
             <div className="Container">
                 <div className="Container__header">
                     <div className="Container__header_row">
-                        <h3>Editar umbrales de sensor</h3>
+                        <h3>Editar umbrales de contaminante</h3>
                         <div className="Container__header_row_button">
-                            <Button color="primary" variant="contained" component={Link} to="/admin/umbrales-sensores/"> Volver</Button>
+                            <Button color="primary" variant="contained" component={Link} to="/admin/umbrales-contaminantes/"> Volver</Button>
                         </div>
                     </div>
                     <Divider />
                 </div>
                 <form className="form">
                     <ul className="text__left">
-                        <li>Sólo se pueden editar los umbrales. Si se desea, puedes eliminar los umbrales para este sensor.</li>
-                        <li>A partir de un tipo de sensor se definirán las umbrales de salud para mostrarlos en la aplicación</li>
+                        <li>Sólo se pueden editar los umbrales. Si se desea, puedes eliminar los umbrales para este contaminante.</li>
+                        <li>A partir de un tipo de contaminante se definirán las umbrales de salud para mostrarlos en la aplicación</li>
                     </ul>
-                    <h4 className="text__left">Sensor:</h4>
+                    <h4 className="text__left">contaminante:</h4>
                     <Grid container spacing={4} justify="center">
                         <Grid item xs={12} md={5}>
-                            <TextField name="sensor_type_id" label="Sensor" value={this.state.sensorType.type} variant="outlined" fullWidth size="small" onChange={this.onChangeSensor} helperText={this.state.errors.sensor_type_id} error={Boolean(this.state.errors.sensor_type_id)}
+                            <TextField name="pollutant_id" label="Contaminante" value={this.state.pollutant.name} variant="outlined" fullWidth size="small" helperText={this.state.errors.pollutant_id} error={Boolean(this.state.errors.pollutant_id)}
                                 InputProps={{
                                     readOnly: true,
                                     className: "filled"
                                 }} />
                         </Grid>
                         <Grid item xs={12} md={5}>
-                            <TextField className="filled" name="sensor_unit" label="Unidad" variant="outlined" fullWidth size="small" value={this.state.sensorType.unit} InputProps={{
+                            <TextField className="filled" name="pollutant_unit" label="Unidad" variant="outlined" fullWidth size="small" value={this.state.pollutant.unit} InputProps={{
                                 readOnly: true,
                                 className: "filled"
                             }} />
@@ -170,4 +170,4 @@ class EditSensorUmbrals extends React.Component {
     }
 }
 
-export default withSnackbar(EditSensorUmbrals)
+export default withSnackbar(EditPollutantUmbrals)

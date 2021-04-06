@@ -7,7 +7,7 @@ import {
     Equalizer as Umbrals,
     Storage as Readings,
     SettingsRemote as Station,
-    NetworkCheck as Sensor
+    Cloud as Pollutant
 } from "@material-ui/icons";
 
 class HomeItem extends React.Component {
@@ -34,8 +34,8 @@ class Home extends React.Component {
         homeItems: [
             { text: "Administradores", Icon: AdminIcon, url: "/admin/administradores" },
             { text: "Estaciones", Icon: Station, url: "/admin/estaciones" },
-            { text: "Sensores", Icon: Sensor, url: "/admin/tipos-de-sensores" },
-            { text: "Umbrales", Icon: Umbrals, url: "/admin/umbrales-sensores" },
+            { text: "Contaminantes", Icon: Pollutant, url: "/admin/contaminantes" },
+            { text: "Umbrales", Icon: Umbrals, url: "/admin/umbrales-contaminantes" },
             { text: "Lecturas", Icon: Readings, url: "/admin/lecturas" },
         ]
     }

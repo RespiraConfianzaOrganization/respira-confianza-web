@@ -9,9 +9,9 @@ import {
 } from "@material-ui/core";
 import { deleteRequest } from "../../../../utils/axios"
 import { withSnackbar } from 'notistack';
-import "./deleteSensorUmbrals.css"
+import "./deletePollutantUmbrals.css"
 
-class DeleteSensorUmbrals extends React.Component {
+class DeletePollutantUmbrals extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,7 +19,7 @@ class DeleteSensorUmbrals extends React.Component {
       handleDeleteClick: this.props.handleDeleteClick,
       getUmbrals: this.props.getUmbrals,
       delete: false,
-      sensorUmbrals: this.props.sensorUmbrals,
+      pollutantUmbrals: this.props.pollutantUmbrals,
     };
   }
 
@@ -29,10 +29,10 @@ class DeleteSensorUmbrals extends React.Component {
   };
 
   handleDelete = async () => {
-    const response = await deleteRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals/${this.state.sensorUmbrals.id}`)
+    const response = await deleteRequest(`${process.env.REACT_APP_API_URL}/api/pollutant-umbrals/${this.state.pollutantUmbrals.id}`)
     if (response.status === 200) {
       await this.state.getUmbrals();
-      this.props.enqueueSnackbar(`Umbrales de sensor ${this.state.sensorUmbrals.Sensor_Type.type} eliminados correctamente!`);
+      this.props.enqueueSnackbar(`Umbrales de contaminante ${this.state.pollutantUmbrals.Pollutant.name} eliminados correctamente!`);
       this.state.handleDeleteClick(false, null);
     }
     else {
@@ -51,14 +51,14 @@ class DeleteSensorUmbrals extends React.Component {
           maxWidth="md"
         >
           <DialogTitle id="responsive-dialog-title">
-            Confirmación de eliminación de umbrales de sensor
+            Confirmación de eliminación de umbrales de contaminante
                     </DialogTitle>
           <DialogContent>
             <DialogContentText>
               <span>{this.state.error}</span>
-              ¿Estas seguro de eliminar los umbrales para el sensor
-              <span className="Text__bolder"> {this.state.sensorUmbrals.Sensor_Type.type} </span>
-              con unidad {this.state.sensorUmbrals.Sensor_Type.unit} ?
+              ¿Estas seguro de eliminar los umbrales para el contaminante
+              <span className="Text__bolder"> {this.state.pollutantUmbrals.Pollutant.name} </span>
+              con unidad {this.state.pollutantUmbrals.Pollutant.unit} ?
                     </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -85,4 +85,4 @@ class DeleteSensorUmbrals extends React.Component {
   }
 }
 
-export default withSnackbar(DeleteSensorUmbrals);
+export default withSnackbar(DeletePollutantUmbrals);

@@ -1,34 +1,26 @@
 import React from "react"
-import { Link } from "react-router-dom"
 import { getRequest } from "../../../utils/axios"
-import { Button, IconButton, SvgIcon, Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
-import {
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-} from "@material-ui/icons";
-import DeleteSensorType from "./deleteSensorType/deleteSensorType"
-import "./SensorTypes.css"
+import { Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
+import "./Pollutants.css"
 
-class SensorTypes extends React.Component {
+class Pollutants extends React.Component {
   state = {
     page: 0,
     rowsPerPage: 10,
-    sensorTypes: [],
-    openModal: false,
-    selectedSensorUmbrals: null,
+    pollutants: [],
     columns: [
-      { id: 'type', label: 'Tipo', minWidth: 170 },
+      { id: 'name', label: 'Nombres', minWidth: 170 },
       { id: 'unit', label: 'Unidad', minWidth: 170 },
     ]
   }
   async componentDidMount() {
-    await this.getSensorTypes();
+    await this.getPollutants();
   }
 
-  getSensorTypes = async () => {
-    const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/sensor-types`);
+  getPollutants = async () => {
+    const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/pollutants`);
     if (response.status === 200) {
-      this.setState({ sensorTypes: response.data.sensorTypes })
+      this.setState({ pollutants: response.data.pollutants })
     }
   }
 
@@ -40,29 +32,16 @@ class SensorTypes extends React.Component {
     this.setState({ page: 0, rowsPerPage: +event.target.value });
   };
 
-  handleDeleteClick = (value, selected) => {
-    this.setState({ openModal: value, selectedSensorType: selected });
-  };
 
   render() {
     return (
       <div className="Container">
         <div className="Container__header">
           <div className="Container__header_row">
-            <h3>Tipos de Sensores</h3>
-            <div className="Container__header_row_button">
-              <Button color="primary" variant="contained" component={Link} to="/admin/tipos-de-sensores/nuevo"> Nuevo</Button>
-            </div>
+            <h3>Contaminantes</h3>
           </div>
           <Divider />
         </div>
-        {this.state.openModal ? (
-          <DeleteSensorType
-            openModal={this.state.openModal}
-            handleDeleteClick={this.handleDeleteClick}
-            sensorType={this.state.selectedSensorType}
-            getSensorTypes={this.getSensorTypes} />
-        ) : null}
         <Paper className="Paper_container">
           <TableContainer className="Table__container">
             <Table stickyHeader aria-label="sticky table">
@@ -86,7 +65,7 @@ class SensorTypes extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {this.state.sensorTypes.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row) => {
+                {this.state.pollutants.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                       {this.state.columns.map((column) => {
@@ -97,20 +76,6 @@ class SensorTypes extends React.Component {
                           </TableCell>
                         );
                       })}
-                      <TableCell key="acciones" className="Action_buttons">
-                        <IconButton className="Edit__button" to={`/admin/tipos-de-sensores/${row.id}/editar/`} component={Link}
-                        >
-                          <SvgIcon fontSize="small">
-                            <EditIcon />
-                          </SvgIcon>
-                        </IconButton>
-                        <IconButton className="Delete__button" onClick={() => this.handleDeleteClick(true, row)}
-                        >
-                          <SvgIcon fontSize="small">
-                            <DeleteIcon />
-                          </SvgIcon>
-                        </IconButton>
-                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -120,7 +85,7 @@ class SensorTypes extends React.Component {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={this.state.sensorTypes.length}
+            count={this.state.pollutants.length}
             rowsPerPage={this.state.rowsPerPage}
             page={this.state.page}
             onChangePage={this.handleChangePage}
@@ -132,4 +97,4 @@ class SensorTypes extends React.Component {
   }
 }
 
-export default SensorTypes
+export default Pollutants

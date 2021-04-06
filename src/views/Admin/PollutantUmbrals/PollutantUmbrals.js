@@ -6,18 +6,18 @@ import {
     Edit as EditIcon,
     Delete as DeleteIcon,
 } from "@material-ui/icons";
-import "./SensorUmbrals.css"
-import DeleteSensorUmbrals from "./deleteSensorUmbrals/deleteSensorUmbrals"
+import "./PollutantUmbrals.css"
+import DeletePollutantUmbrals from "./delete/deletePollutantUmbrals"
 
-class SensorUmbrals extends React.Component {
+class PollutantUmbrals extends React.Component {
     state = {
         page: 0,
         rowsPerPage: 10,
-        sensorUmbrals: [],
+        pollutantUmbrals: [],
         openModal: false,
-        selectedSensorUmbrals: null,
+        selectedPollutantUmbrals: null,
         columns: [
-            { id: 'type', label: 'Sensor', minWidth: 270 },
+            { id: 'name', label: 'Contaminante', minWidth: 270 },
             { id: 'unit', label: 'Unidad', minWidth: 170 },
             { id: 'good', label: 'Bueno', minWidth: 170 },
             { id: 'moderate', label: 'Moderado', minWidth: 170 },
@@ -31,9 +31,9 @@ class SensorUmbrals extends React.Component {
     }
 
     getUmbrals = async () => {
-        const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/sensor-umbrals`);
+        const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/pollutant-umbrals`);
         if (response.status === 200) {
-            this.setState({ sensorUmbrals: response.data.sensorUmbrals })
+            this.setState({ pollutantUmbrals: response.data.pollutantUmbrals })
         }
     }
 
@@ -46,7 +46,7 @@ class SensorUmbrals extends React.Component {
     };
 
     handleDeleteClick = (value, selected) => {
-        this.setState({ openModal: value, selectedSensorUmbrals: selected });
+        this.setState({ openModal: value, selectedPollutantUmbrals: selected });
     };
 
     render() {
@@ -54,18 +54,18 @@ class SensorUmbrals extends React.Component {
             <div className="Container">
                 <div className="Container__header">
                     <div className="Container__header_row">
-                        <h3>Umbrales de Salud de Sensores</h3>
+                        <h3>Umbrales de Salud de los contaminantes</h3>
                         <div className="Container__header_row_button">
-                            <Button color="primary" variant="contained" component={Link} to="/admin/umbrales-sensores/nuevo"> Nuevo</Button>
+                            <Button color="primary" variant="contained" component={Link} to="/admin/umbrales-contaminantes/nuevo"> Nuevo</Button>
                         </div>
                     </div>
                     <Divider />
                 </div>
                 {this.state.openModal ? (
-                    <DeleteSensorUmbrals
+                    <DeletePollutantUmbrals
                         openModal={this.state.openModal}
                         handleDeleteClick={this.handleDeleteClick}
-                        sensorUmbrals={this.state.selectedSensorUmbrals}
+                        pollutantUmbrals={this.state.selectedPollutantUmbrals}
                         getUmbrals={this.getUmbrals} />
                 ) : null}
                 <Paper className="Paper_container">
@@ -91,15 +91,15 @@ class SensorUmbrals extends React.Component {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {this.state.sensorUmbrals.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row) => {
+                                {this.state.pollutantUmbrals.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row) => {
                                     return (
                                         <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                                             {this.state.columns.map((column) => {
 
-                                                if (column.id === 'type' || column.id === 'unit') {
+                                                if (column.id === 'name' || column.id === 'unit') {
                                                     return (
                                                         <TableCell key={column.id} align={column.align}>
-                                                            {row['Sensor_Type'][column.id]}
+                                                            {row['Pollutant'][column.id]}
                                                         </TableCell>
                                                     );
                                                 }
@@ -111,7 +111,7 @@ class SensorUmbrals extends React.Component {
                                                 );
                                             })}
                                             <TableCell key="acciones" className="Action_buttons">
-                                                <IconButton className="Edit__button" to={`/admin/umbrales-sensores/${row.id}/editar/`} component={Link}
+                                                <IconButton className="Edit__button" to={`/admin/umbrales-contaminantes/${row.id}/editar/`} component={Link}
                                                 >
                                                     <SvgIcon fontSize="small">
                                                         <EditIcon />
@@ -133,7 +133,7 @@ class SensorUmbrals extends React.Component {
                     <TablePagination
                         rowsPerPageOptions={[10, 25, 100]}
                         component="div"
-                        count={this.state.sensorUmbrals.length}
+                        count={this.state.pollutantUmbrals.length}
                         rowsPerPage={this.state.rowsPerPage}
                         page={this.state.page}
                         onChangePage={this.handleChangePage}
@@ -145,4 +145,4 @@ class SensorUmbrals extends React.Component {
     }
 }
 
-export default SensorUmbrals
+export default PollutantUmbrals
