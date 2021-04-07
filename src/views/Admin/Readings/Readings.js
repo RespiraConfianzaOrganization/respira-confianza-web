@@ -1,26 +1,35 @@
 import React from "react"
+import moment from "moment"
 import { getRequest } from "../../../utils/axios"
 import { Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
-import "./Pollutants.css"
 
-class Pollutants extends React.Component {
+class Readings extends React.Component {
   state = {
     page: 0,
     rowsPerPage: 10,
-    pollutants: [],
+    readings: [],
     columns: [
-      { id: 'name', label: 'Nombres', minWidth: 170 },
-      { id: 'unit', label: 'Unidad', minWidth: 170 },
+      { id: 'station', label: 'Estación', minWidth: 170 },
+      { id: 'MP25', label: 'MP 2.5', },
+      { id: 'MP1', label: 'MP 1' },
+      { id: 'SO2', label: 'SO2', },
+      { id: 'O3', label: 'O3', },
+      { id: 'NO2', label: 'NO2', },
+      { id: 'NO', label: 'NO', },
+      { id: 'C02', label: 'C02', },
+      { id: 'CO', label: 'CO', },
+      { id: 'COV', label: 'COV', },
+      { id: 'recorded_at', label: 'Fecha', },
     ]
   }
   async componentDidMount() {
-    await this.getPollutants();
+    await this.getReadings();
   }
 
-  getPollutants = async () => {
-    const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/pollutants`);
+  getReadings = async () => {
+    const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/station-readings`);
     if (response.status === 200) {
-      this.setState({ pollutants: response.data.pollutants })
+      this.setState({ readings: response.data.readings })
     }
   }
 
@@ -38,7 +47,7 @@ class Pollutants extends React.Component {
       <div className="Container">
         <div className="Container__header">
           <div className="Container__header_row">
-            <h3>Contaminantes</h3>
+            <h3>Lecturas de las estaciones</h3>
           </div>
           <Divider />
         </div>
@@ -59,14 +68,24 @@ class Pollutants extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {this.state.pollutants.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row) => {
+                {this.state.readings.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                       {this.state.columns.map((column) => {
-                        const value = row[column.id];
+                        let value
+                        if (column.id === 'recorded_at') {
+                          value = moment(row[column.id]).format("DD/MM/YYYY hh:mm:ss");
+                        }
+                        else if (column.id === 'station') {
+                          value = row['Station']['name']
+                        }
+                        else {
+                          value = row[column.id];
+                        }
+
                         return (
                           <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === 'number' ? column.format(value) : value}
+                            {value}
                           </TableCell>
                         );
                       })}
@@ -79,7 +98,7 @@ class Pollutants extends React.Component {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={this.state.pollutants.length}
+            count={this.state.readings.length}
             rowsPerPage={this.state.rowsPerPage}
             page={this.state.page}
             onChangePage={this.handleChangePage}
@@ -91,4 +110,4 @@ class Pollutants extends React.Component {
   }
 }
 
-export default Pollutants
+export default Readings
