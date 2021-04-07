@@ -105,7 +105,7 @@ class Stations extends React.Component {
                                             })}
 
                                             <TableCell key="acciones" className="Action_buttons">
-                                                <IconButton className="Watch__button"
+                                                <IconButton className="Watch__button" to={`/admin/estaciones/${row.id}/`} component={Link}
                                                 >
                                                     <SvgIcon fontSize="small">
                                                         <ArrowIcon />

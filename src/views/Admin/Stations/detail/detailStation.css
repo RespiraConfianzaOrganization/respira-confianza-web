@@ -1,0 +1,16 @@
+.header_detail_station{
+  font-size: 18px;
+  font-weight: bolder;
+}
+
+.add_pollutant_station{
+  display: flex;
+  padding:30px;
+  justify-content: space-between;
+}
+
+@media (max-width:400px) {
+  .add_pollutant_station{
+    flex-direction: column;
+  }
+}
