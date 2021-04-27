@@ -9,39 +9,73 @@ class EditStation extends React.Component {
   state = {
     form: {
       name: "",
-      country: "",
-      city: "",
+      country_id: -1,
+      city_id: "",
       latitude: "",
       longitude: "",
       status: "",
     },
     errors: {
       name: "",
-      country: "",
-      city: "",
+      country_id: "",
+      city_id: "",
       latitude: "",
       longitude: "",
       status: "",
     },
+    stationExist: true,
     station_id: this.props.match.params.id,
+    countries: [],
+    cities: [{ id: -1, name: "Seleccionar" }],
     statusOptions: [{ type: "Seleccionar" }, { type: "Habilitada" }, { type: "Deshabilitada" }, { type: "En construcción" }],
     submitted: false
   }
 
   async componentDidMount() {
-    const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/stations/${this.state.station_id}`);
+    await this.getCountries();
+    try {
+      const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/stations/${this.state.station_id}`);
+      if (response.status === 200) {
+        const station = response.data.station
+        this.setState({
+          form: {
+            name: station.name,
+            country_id: station.City.Country.id,
+            city_id: station.city_id,
+            latitude: station.latitude,
+            longitude: station.longitude,
+            status: station.status,
+          }
+        })
+        await this.getCities(station.City.Country.id);
+      }
+    } catch (e) {
+      this.setState({ stationExist: false })
+      return
+    }
+  }
+
+  async getCountries() {
+    const response = await getRequest(
+      `${process.env.REACT_APP_API_URL}/api/countries`
+    );
     if (response.status === 200) {
-      const station = response.data.station
-      this.setState({
-        form: {
-          name: station.name,
-          country: station.country,
-          city: station.city,
-          latitude: station.latitude,
-          longitude: station.longitude,
-          status: station.status,
-        }
-      })
+      let res_countries = response.data.countries;
+      let countries = res_countries
+      countries.unshift({ id: -1, name: "Seleccionar" });
+      this.setState({ countries });
+    }
+  }
+
+  async getCities(country_id) {
+    const response = await getRequest(
+      `${process.env.REACT_APP_API_URL}/api/cities/country/${country_id}`
+    );
+    if (response.status === 200) {
+      let res_cities = response.data.cities;
+      let cities = res_cities
+      cities.unshift({ id: -1, name: "Seleccionar" });
+      this.setState({ cities });
     }
   }
 
@@ -54,12 +88,24 @@ class EditStation extends React.Component {
     })
   }
 
+  onChangeCountry = async (e) => {
+    const country_id = +e.target.value
+    this.setState({
+      form: {
+        ...this.state.form,
+        country_id: country_id,
+        city_id: null
+      }
+    })
+    await this.getCities(country_id)
+  }
+
   handleSubmit = async (e) => {
     e.preventDefault()
     let errors = {
       name: "",
-      country: "",
-      city: "",
+      country_id: "",
+      city_id: "",
       latitude: "",
       longitude: "",
       status: "",
@@ -85,6 +131,14 @@ class EditStation extends React.Component {
       errors.longitude = "Debe ingresar una longitud correcta. Ej: -71.67 "
       isValid = false
     }
+    if (!form.country_id || form.country_id === -1) {
+      errors.country_id = "Debe seleccionar una país"
+      isValid = false
+    }
+    if (!form.city_id || form.city_id === -1) {
+      errors.city_id = "Debe seleccionar una ciudad"
+      isValid = false
+    }
     if (!form.status || form.status === "Seleccionar") {
       errors.status = "Debe ingresar un estado"
       isValid = false
@@ -105,6 +159,11 @@ class EditStation extends React.Component {
   }
 
   render() {
+    if (!this.state.stationExist) {
+      return <div>
+        <h2>Estación no existe</h2>
+      </div>
+    }
     if (this.state.submitted) {
       return <Redirect to="/admin/estaciones" />
     }
@@ -141,10 +200,40 @@ class EditStation extends React.Component {
           <h4 className="text__left">Ubicación:</h4>
           <Grid container spacing={4} justify="center">
             <Grid item xs={12} md={5}>
-              <TextField name="country" label="País" value={this.state.form.country} variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.country} error={Boolean(this.state.errors.country)} />
+              <TextField
+                name="country_id"
+                select
+                InputLabelProps={{ shrink: true }}
+                SelectProps={{ native: true }}
+                label="País" variant="outlined"
+                fullWidth size="small"
+                onChange={this.onChangeCountry}
+                value={this.state.form.country_id}
+                helperText={this.state.errors.country_id}
+                error={Boolean(this.state.errors.country_id)} >
+                {this.state.countries.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.name}
+                  </option>
+                ))}</TextField>
             </Grid>
             <Grid item xs={12} md={5}>
-              <TextField name="city" label="Ciudad" value={this.state.form.city} variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.city} error={Boolean(this.state.errors.city)} />
+              <TextField
+                name="city_id"
+                label="Ciudad" variant="outlined"
+                select
+                InputLabelProps={{ shrink: true }}
+                SelectProps={{ native: true }}
+                fullWidth size="small"
+                value={this.state.form.city_id}
+                onChange={this.onChange}
+                helperText={this.state.errors.city_id}
+                error={Boolean(this.state.errors.city_id)} >
+                {this.state.cities.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.name}
+                  </option>))}
+              </TextField>
             </Grid>
             <Grid item xs={12} md={5}>
               <TextField name="latitude" label="Latitud" value={this.state.form.latitude} variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.latitude} error={Boolean(this.state.errors.latitude)} />

@@ -57,7 +57,7 @@ class DeleteStation extends React.Component {
               <span>{this.state.error}</span>
               ¿Estás seguro de eliminar la estación
               <span className="Text__bolder"> {this.state.station.name} </span>
-              ubicada en {this.state.station.country}, {this.state.station.city} con Latitud:{this.state.station.latitude}, Longitud: {this.state.station.longitude}?
+              ubicada en {this.state.station.City.Country.name}, {this.state.station.City.name} con Latitud:{this.state.station.latitude}, Longitud: {this.state.station.longitude}?
               </DialogContentText>
           </DialogContent>
           <DialogActions>

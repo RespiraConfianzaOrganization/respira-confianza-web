@@ -116,7 +116,7 @@ class Stations extends React.Component {
                   .slice(
                     this.state.page * this.state.rowsPerPage,
                     this.state.page * this.state.rowsPerPage +
-                      this.state.rowsPerPage
+                    this.state.rowsPerPage
                   )
                   .map((row) => {
                     return (
@@ -127,12 +127,16 @@ class Stations extends React.Component {
                         key={row.id}
                       >
                         {this.state.columns.map((column) => {
-                          const value = row[column.id];
+                          let value = row[column.id];
+                          if (column.id === "country") {
+                            value = row['City']['Country']['name'];
+                          }
+                          if (column.id === "city") {
+                            value = row['City']['name'];
+                          }
                           return (
                             <TableCell key={column.id} align={column.align}>
-                              {column.format && typeof value === "number"
-                                ? column.format(value)
-                                : value}
+                              {value}
                             </TableCell>
                           );
                         })}

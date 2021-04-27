@@ -27,6 +27,7 @@ class DetailStation extends React.Component {
       station_id: this.props.match.params.id,
       station: null,
       addPollutants: [{ id: -1, name: "Seleccionar" }],
+      stationExist: true,
     };
   }
 
@@ -41,14 +42,18 @@ class DetailStation extends React.Component {
   }
 
   getStation = async () => {
-    const response = await getRequest(
-      `${process.env.REACT_APP_API_URL}/api/stations/${this.state.station_id}`
-    );
-    if (response.status === 200) {
-      return response.data.station;
+    try {
+      const response = await getRequest(
+        `${process.env.REACT_APP_API_URL}/api/stations/${this.state.station_id}`
+      );
+      if (response.status === 200) {
+        return response.data.station;
+      }
+      return null;
+    } catch (e) {
+      return null;
     }
-    return null;
-  };
+  }
 
   getPollutants = async (pollutants) => {
     const response = await getRequest(
@@ -100,7 +105,9 @@ class DetailStation extends React.Component {
 
   render() {
     if (!this.state.station) {
-      return null;
+      return <div>
+        <h2>Estación no existe</h2>
+      </div>
     }
     return (
       <div className="Container">
@@ -139,11 +146,11 @@ class DetailStation extends React.Component {
                   </TableRow>
                   <TableRow>
                     <TableCell>País</TableCell>
-                    <TableCell>{this.state.station.country}</TableCell>
+                    <TableCell>{this.state.station.City.Country.name}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Ciudad</TableCell>
-                    <TableCell>{this.state.station.city}</TableCell>
+                    <TableCell>{this.state.station.City.name}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Latitud</TableCell>

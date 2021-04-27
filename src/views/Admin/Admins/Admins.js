@@ -76,7 +76,17 @@ class Admins extends React.Component {
                                     return (
                                         <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                                             {this.state.columns.map((column) => {
-                                                const value = row[column.id];
+                                                let value = row[column.id];
+                                                if (column.id === "country") {
+                                                    if (row['City'] && row['City']['Country']['name']) {
+                                                        value = row['City']['Country']['name'];
+                                                    }
+                                                }
+                                                if (column.id === "city") {
+                                                    if (row['City']) {
+                                                        value = row['City']['name'];
+                                                    }
+                                                }
                                                 return (
                                                     <TableCell key={column.id} align={column.align}>
                                                         {column.format && typeof value === 'number' ? column.format(value) : value}

@@ -1,6 +1,6 @@
 import React from "react"
 import { Link, Redirect } from "react-router-dom"
-import { postRequest } from "../../../../utils/axios"
+import { postRequest, getRequest } from "../../../../utils/axios"
 import { Button, Divider, Grid, TextField } from "@material-ui/core"
 import "./newStation.css"
 import { withSnackbar } from "notistack"
@@ -9,22 +9,36 @@ class NewStation extends React.Component {
   state = {
     form: {
       name: "",
-      country: "",
-      city: "",
+      country_id: "",
+      city_id: "",
       latitude: "",
       longitude: "",
       status: "",
     },
     errors: {
       name: "",
-      country: "",
+      country_id: "",
       city: "",
       latitude: "",
       longitude: "",
       status: "",
     },
+    countries: [],
+    cities: [{ id: -1, name: "Seleccionar" }],
     statusOptions: [{ type: "Seleccionar" }, { type: "Habilitada" }, { type: "Deshabilitada" }, { type: "En construcción" }],
     submitted: false
+  }
+
+  async componentDidMount() {
+    const response = await getRequest(
+      `${process.env.REACT_APP_API_URL}/api/countries`
+    );
+    if (response.status === 200) {
+      let res_countries = response.data.countries;
+      let countries = res_countries
+      countries.unshift({ id: -1, name: "Seleccionar" });
+      this.setState({ countries });
+    }
   }
 
   onChange = (e) => {
@@ -36,12 +50,37 @@ class NewStation extends React.Component {
     })
   }
 
+
+  onChangeCountry = async (e) => {
+    const country_id = +e.target.value
+    this.setState({
+      form: {
+        ...this.state.form,
+        country_id: country_id,
+        city_id: null
+      }
+    })
+    await this.getCities(country_id)
+  }
+
+  async getCities(country_id) {
+    const response = await getRequest(
+      `${process.env.REACT_APP_API_URL}/api/cities/country/${country_id}`
+    );
+    if (response.status === 200) {
+      let res_cities = response.data.cities;
+      let cities = res_cities
+      cities.unshift({ id: -1, name: "Seleccionar" });
+      this.setState({ cities });
+    }
+  }
+
   handleSubmit = async (e) => {
     e.preventDefault()
     let errors = {
       name: "",
-      country: "",
-      city: "",
+      country_id: "",
+      city_id: "",
       latitude: "",
       longitude: "",
       status: "",
@@ -65,6 +104,14 @@ class NewStation extends React.Component {
     }
     if (!Number(form.longitude)) {
       errors.longitude = "Debe ingresar una longitud correcta. Ej: -71.67 "
+      isValid = false
+    }
+    if (!form.country_id || form.country_id === -1) {
+      errors.country_id = "Debe seleccionar una país"
+      isValid = false
+    }
+    if (!form.city_id || form.city_id === -1) {
+      errors.city_id = "Debe seleccionar una ciudad"
       isValid = false
     }
     if (!form.status || form.status === "Seleccionar") {
@@ -109,7 +156,14 @@ class NewStation extends React.Component {
             </Grid>
             <Grid item xs={12} md={5}>
               <TextField name="status" label="Estado" select
-                SelectProps={{ native: true }} value={this.state.form.status} variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.status} error={Boolean(this.state.errors.status)} >
+                InputLabelProps={{ shrink: true }}
+                SelectProps={{ native: true }}
+                value={this.state.form.status}
+                variant="outlined"
+                fullWidth size="small"
+                onChange={this.onChange}
+                helperText={this.state.errors.status}
+                error={Boolean(this.state.errors.status)} >
                 {this.state.statusOptions.map((option) => (
                   <option key={option.type} value={option.type}>
                     {option.type}
@@ -123,10 +177,38 @@ class NewStation extends React.Component {
           <h4 className="text__left">Ubicación:</h4>
           <Grid container spacing={4} justify="center">
             <Grid item xs={12} md={5}>
-              <TextField name="country" label="País" variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.country} error={Boolean(this.state.errors.country)} />
+              <TextField
+                name="country_id"
+                select
+                InputLabelProps={{ shrink: true }}
+                SelectProps={{ native: true }}
+                label="País" variant="outlined"
+                fullWidth size="small"
+                onChange={this.onChangeCountry}
+                helperText={this.state.errors.country_id}
+                error={Boolean(this.state.errors.country_id)} >
+                {this.state.countries.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.name}
+                  </option>
+                ))}</TextField>
             </Grid>
             <Grid item xs={12} md={5}>
-              <TextField name="city" label="Ciudad" variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.city} error={Boolean(this.state.errors.city)} />
+              <TextField
+                name="city_id"
+                label="Ciudad" variant="outlined"
+                select
+                InputLabelProps={{ shrink: true }}
+                SelectProps={{ native: true }}
+                fullWidth size="small"
+                onChange={this.onChange}
+                helperText={this.state.errors.city_id}
+                error={Boolean(this.state.errors.city_id)} >
+                {this.state.cities.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.name}
+                  </option>))}
+              </TextField>
             </Grid>
             <Grid item xs={12} md={5}>
               <TextField name="latitude" label="Latitud" variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.latitude} error={Boolean(this.state.errors.latitude)} />
