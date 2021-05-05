@@ -23,5 +23,12 @@ theme.overrides = {
             textTransform: "none",
             margin: "0 10px",
         }
+    },
+    MuiTooltip: {
+        tooltip: {
+            fontSize: "12px",
+            color: "white",
+            backgroundColor: "black"
+        }
     }
 };

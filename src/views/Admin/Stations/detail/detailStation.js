@@ -14,6 +14,7 @@ import {
   TableCell,
   TableRow,
   TableBody,
+  Tooltip
 } from "@material-ui/core";
 import { Delete as DeleteIcon } from "@material-ui/icons";
 import { withSnackbar } from "notistack";
@@ -28,6 +29,7 @@ class DetailStation extends React.Component {
       station: null,
       addPollutants: [{ id: -1, name: "Seleccionar" }],
       stationExist: true,
+      copySuccess: 'Copiar llave'
     };
   }
 
@@ -102,6 +104,16 @@ class DetailStation extends React.Component {
   setPollutantAndStation = async (newPollutants, station) => {
     this.setState({ addPollutants: newPollutants, station });
   };
+
+  handleCopyText = () => {
+    var textField = document.createElement('textarea')
+    textField.innerText = this.state.station.private_key
+    document.body.appendChild(textField)
+    textField.select()
+    document.execCommand('copy')
+    textField.remove()
+    this.setState({ copySuccess: 'Llave copiada exitosamente' });
+  }
 
   render() {
     if (!this.state.station) {
@@ -188,6 +200,16 @@ class DetailStation extends React.Component {
                   <TableBody>
                     <TableRow>
                       <TableCell>{this.state.station.private_key}</TableCell>
+                      <TableCell>
+                        <Tooltip disableFocusListener title={this.state.copySuccess}>
+                          <IconButton
+                            className="Copy__button"
+                            onClick={this.handleCopyText}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="feather feather-copy"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>

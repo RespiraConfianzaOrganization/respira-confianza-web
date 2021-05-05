@@ -9,6 +9,15 @@
   justify-content: space-between;
 }
 
+.Copy__button{
+  background-color: #F4F0F0 !important;
+  border-radius: 8% !important;
+}
+
+.Copy__button:hover{
+  background-color: #DEDEDE !important;
+}
+
 @media (max-width:400px) {
   .add_pollutant_station{
     flex-direction: column;
