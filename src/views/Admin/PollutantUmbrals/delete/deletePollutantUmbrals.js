@@ -32,7 +32,7 @@ class DeletePollutantUmbrals extends React.Component {
     const response = await deleteRequest(`${process.env.REACT_APP_API_URL}/api/pollutant-umbrals/${this.state.pollutantUmbrals.id}`)
     if (response.status === 200) {
       await this.state.getUmbrals();
-      this.props.enqueueSnackbar(`Umbrales de contaminante ${this.state.pollutantUmbrals.Pollutant.name} eliminados correctamente!`);
+      this.props.enqueueSnackbar(`Umbrales de contaminante ${this.state.pollutantUmbrals.pollutant} eliminados correctamente!`);
       this.state.handleDeleteClick(false, null);
     }
     else {
@@ -57,7 +57,7 @@ class DeletePollutantUmbrals extends React.Component {
             <DialogContentText>
               <span>{this.state.error}</span>
               ¿Estas seguro de eliminar los umbrales para el contaminante
-              <span className="Text__bolder"> {this.state.pollutantUmbrals.Pollutant.name} </span>
+              <span className="Text__bolder"> {this.state.pollutantUmbrals.pollutant} </span>
               con unidad {this.state.pollutantUmbrals.Pollutant.unit} ?
                     </DialogContentText>
           </DialogContent>

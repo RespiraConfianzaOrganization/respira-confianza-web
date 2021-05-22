@@ -63,9 +63,9 @@ class DetailStation extends React.Component {
     );
     if (response.status === 200) {
       let res_pollutants = response.data.pollutants;
-      const existing_pollutants = pollutants.map((pollutant) => pollutant.id);
+      const existing_pollutants = pollutants.map((pollutant) => pollutant.name);
       res_pollutants = res_pollutants.filter((pollutant) => {
-        return !existing_pollutants.includes(pollutant.id);
+        return !existing_pollutants.includes(pollutant.name);
       });
       res_pollutants.unshift({ id: -1, name: "Seleccionar" });
       return res_pollutants;
@@ -73,16 +73,16 @@ class DetailStation extends React.Component {
     return [{ id: -1, name: "Seleccionar" }];
   };
 
-  handleDeletePollutant = async (pollutant_id) => {
+  handleDeletePollutant = async (pollutant) => {
     const station_id = this.state.station_id;
     try {
       const response = await deleteRequest(
-        `${process.env.REACT_APP_API_URL}/api/pollutant-station/${station_id}&${pollutant_id}`
+        `${process.env.REACT_APP_API_URL}/api/pollutant-station/${station_id}&${pollutant}`
       );
       if (response.status === 200) {
         //Sacar contaminante de la estación
-        const pollutants = this.state.station.Pollutants.filter((pollutant) => {
-          return pollutant.id !== pollutant_id;
+        const pollutants = this.state.station.Pollutants.filter((pollutantInstance) => {
+          return pollutantInstance.name !== pollutant;
         });
         const station = this.state.station;
         station.Pollutants = pollutants;
@@ -241,14 +241,14 @@ class DetailStation extends React.Component {
                     <TableCell>Acciones</TableCell>
                   </TableRow>
                   {this.state.station.Pollutants.map((pollutant) => (
-                    <TableRow key={pollutant.id}>
+                    <TableRow key={pollutant.name}>
                       <TableCell>{pollutant.name}</TableCell>
                       <TableCell>{pollutant.unit} </TableCell>
                       <TableCell>
                         <IconButton
                           className="Delete__button"
                           onClick={() =>
-                            this.handleDeletePollutant(pollutant.id)
+                            this.handleDeletePollutant(pollutant.name)
                           }
                         >
                           <SvgIcon fontSize="small">

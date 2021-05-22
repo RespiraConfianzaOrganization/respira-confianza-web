@@ -8,9 +8,9 @@ class AddPollutant extends React.Component {
     super(props);
     this.state = {
       form: {
-        values: { pollutant_id: -1, station_id: this.props.station.id },
+        values: { pollutant: "", station_id: this.props.station.id, useAuxiliar: false },
         errors: {
-          pollutant_id: "",
+          pollutant: "",
         },
       },
       station: this.props.station,
@@ -26,7 +26,7 @@ class AddPollutant extends React.Component {
         ...this.state.form,
         values: {
           ...this.state.form.values,
-          pollutant_id: +e.target.value,
+          pollutant: e.target.value,
         },
       },
     });
@@ -34,20 +34,22 @@ class AddPollutant extends React.Component {
 
   handleAddPollutant = async () => {
     let errors = {
-      pollutant_id: "",
+      pollutant: "",
     };
     let isValid = true;
     const form = this.state.form.values;
-    if (!form.pollutant_id || form.pollutant_id === -1) {
-      errors.pollutant_id = "Debe seleccionar un contaminante";
+    if (!form.pollutant || form.pollutant === "") {
+      errors.pollutant = "Debe seleccionar un contaminante";
       isValid = false;
     }
+
     this.setState({
       form: {
         ...this.state.form,
         errors,
       },
     });
+
     if (isValid) {
       try {
         const response = await postRequest(
@@ -63,7 +65,7 @@ class AddPollutant extends React.Component {
           station.Pollutants = pollutants;
           //Actualizar listado de contaminantes para agregar
           const addPollutants = this.state.addPollutants.filter(
-            (pollutant) => pollutant.id !== newPollutant.id
+            (pollutant) => pollutant.name !== newPollutant.name
           );
           this.state.setPollutantAndStation(addPollutants, station);
           this.setState({ addPollutants: addPollutants });
@@ -80,21 +82,21 @@ class AddPollutant extends React.Component {
       <div className="add_pollutant_station">
         Agregar nuevo
         <TextField
-          name="pollutant_id"
+          name="pollutant"
           label="Contaminante"
           select
           type="number"
           SelectProps={{ native: true }}
-          value={this.state.form.pollutant_id}
+          value={this.state.form.pollutant}
           variant="outlined"
           fullWidth
           size="small"
           onChange={this.onChangePollutant}
-          helperText={this.state.form.errors.pollutant_id}
-          error={Boolean(this.state.form.errors.pollutant_id)}
+          helperText={this.state.form.errors.pollutant}
+          error={Boolean(this.state.form.errors.pollutant)}
         >
           {this.state.addPollutants.map((option) => (
-            <option key={option.id} value={option.id}>
+            <option key={option.name} value={option.name}>
               {option.name}
             </option>
           ))}

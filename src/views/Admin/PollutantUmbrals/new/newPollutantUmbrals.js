@@ -8,7 +8,7 @@ import { withSnackbar } from "notistack";
 class NewPollutantUmbrals extends React.Component {
   state = {
     form: {
-      pollutant_id: -1,
+      pollutant: "Seleccionar",
       good: "",
       moderate: "",
       unhealthy: "",
@@ -16,7 +16,7 @@ class NewPollutantUmbrals extends React.Component {
       dangerous: "",
     },
     errors: {
-      pollutant_id: "",
+      pollutant: "",
       good: "",
       moderate: "",
       unhealthy: "",
@@ -24,7 +24,7 @@ class NewPollutantUmbrals extends React.Component {
       dangerous: "",
     },
     pollutant_unit: "",
-    pollutants: [{ id: -1, name: "Selecciona", unit: "" }],
+    pollutants: [{ name: "Seleccionar", unit: "" }],
     submitted: false,
   };
 
@@ -35,9 +35,9 @@ class NewPollutantUmbrals extends React.Component {
     );
     if (response.status === 200) {
       let res_pollutants = response.data.pollutants;
-      const existing_pollutants = umbrals.map((umbral) => umbral.pollutant_id);
+      const existing_pollutants = umbrals.map((umbral) => umbral.pollutant);
       res_pollutants = res_pollutants.filter((pollutant) => {
-        return !existing_pollutants.includes(pollutant.id);
+        return !existing_pollutants.includes(pollutant.name);
       });
       res_pollutants.unshift({ id: -1, name: "Seleccionar", unit: "" });
       this.setState({ pollutants: res_pollutants });
@@ -64,9 +64,9 @@ class NewPollutantUmbrals extends React.Component {
   };
 
   onChangePollutant = (e) => {
-    let id = +e.target.value;
+    let name = e.target.value;
     const pollutant = this.state.pollutants.filter(
-      (pollutant) => pollutant.id === id
+      (pollutant) => pollutant.name === name
     );
     let unit = "";
     if (pollutant.length > 0) {
@@ -75,7 +75,7 @@ class NewPollutantUmbrals extends React.Component {
     this.setState({
       form: {
         ...this.state.form,
-        [e.target.name]: id,
+        [e.target.name]: name,
       },
       pollutant_unit: unit,
     });
@@ -84,7 +84,7 @@ class NewPollutantUmbrals extends React.Component {
   handleSubmit = async (e) => {
     e.preventDefault();
     let errors = {
-      pollutant_id: "",
+      pollutant: "",
       good: "",
       moderate: "",
       unhealthy: "",
@@ -112,8 +112,9 @@ class NewPollutantUmbrals extends React.Component {
         isValid = false;
       }
     });
-    if (form.pollutant_id === -1) {
-      errors.pollutant_id = "Debe seleccionar un contaminante";
+
+    if (!form.pollutant || form.pollutant === "Seleccionar") {
+      errors.pollutant = "Debe seleccionar un contaminante";
       isValid = false;
     }
     this.setState({ errors });
@@ -170,21 +171,21 @@ class NewPollutantUmbrals extends React.Component {
           <Grid container spacing={4} justify="center">
             <Grid item xs={12} md={5}>
               <TextField
-                name="pollutant_id"
+                name="pollutant"
                 label="Contaminante"
                 select
                 type="number"
                 SelectProps={{ native: true }}
-                value={this.state.form.pollutant_id}
+                value={this.state.form.pollutant}
                 variant="outlined"
                 fullWidth
                 size="small"
                 onChange={this.onChangePollutant}
-                helperText={this.state.errors.pollutant_id}
-                error={Boolean(this.state.errors.pollutant_id)}
+                helperText={this.state.errors.pollutant}
+                error={Boolean(this.state.errors.pollutant)}
               >
                 {this.state.pollutants.map((option) => (
-                  <option key={option.id} value={option.id}>
+                  <option key={option.name} value={option.name}>
                     {option.name}
                   </option>
                 ))}

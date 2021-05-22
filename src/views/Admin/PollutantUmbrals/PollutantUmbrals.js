@@ -27,7 +27,7 @@ class PollutantUmbrals extends React.Component {
     openModal: false,
     selectedPollutantUmbrals: null,
     columns: [
-      { id: "name", label: "Contaminante", minWidth: 270 },
+      { id: "pollutant", label: "Contaminante", minWidth: 270 },
       { id: "unit", label: "Unidad" },
       { id: "good", label: "Bueno" },
       { id: "moderate", label: "Moderado" },
@@ -113,7 +113,7 @@ class PollutantUmbrals extends React.Component {
                   .slice(
                     this.state.page * this.state.rowsPerPage,
                     this.state.page * this.state.rowsPerPage +
-                      this.state.rowsPerPage
+                    this.state.rowsPerPage
                   )
                   .map((row) => {
                     return (
@@ -124,7 +124,7 @@ class PollutantUmbrals extends React.Component {
                         key={row.id}
                       >
                         {this.state.columns.map((column) => {
-                          if (column.id === "name" || column.id === "unit") {
+                          if (column.id === "unit") {
                             return (
                               <TableCell key={column.id} align={column.align}>
                                 {row["Pollutant"][column.id]}

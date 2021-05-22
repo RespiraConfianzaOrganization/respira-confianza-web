@@ -14,7 +14,7 @@ class NewAdmin extends React.Component {
             email: "",
             password: "",
             passwordConfirmation: "",
-            country_id: "",
+            country: "",
             city_id: ""
         },
         errors: {
@@ -23,7 +23,7 @@ class NewAdmin extends React.Component {
             email: "",
             password: "",
             passwordConfirmation: "",
-            country_id: "",
+            country: "",
             city_id: ""
         },
         countries: [],
@@ -38,7 +38,7 @@ class NewAdmin extends React.Component {
         if (response.status === 200) {
             let res_countries = response.data.countries;
             let countries = res_countries
-            countries.unshift({ id: -1, name: "Seleccionar" });
+            countries.unshift({ name: "Seleccionar" });
             this.setState({ countries });
         }
     }
@@ -53,15 +53,15 @@ class NewAdmin extends React.Component {
     }
 
     onChangeCountry = async (e) => {
-        const country_id = +e.target.value
+        const country = e.target.value
         this.setState({
             form: {
                 ...this.state.form,
-                [e.target.name]: country_id
+                [e.target.name]: country
             }
         })
         const response = await getRequest(
-            `${process.env.REACT_APP_API_URL}/api/cities/country/${country_id}`
+            `${process.env.REACT_APP_API_URL}/api/cities/country/${country}`
         );
         if (response.status === 200) {
             let res_cities = response.data.cities;
@@ -79,7 +79,7 @@ class NewAdmin extends React.Component {
             email: "",
             password: "",
             passwordConfirmation: "",
-            country_id: "",
+            country: "",
             city_id: ""
         }
         let isValid = true
@@ -151,7 +151,7 @@ class NewAdmin extends React.Component {
                     <Grid container spacing={4} justify="center">
                         <Grid item xs={12} md={5}>
                             <TextField
-                                name="country_id"
+                                name="country"
                                 label="País"
                                 variant="outlined"
                                 select
@@ -162,7 +162,7 @@ class NewAdmin extends React.Component {
                                 helperText={this.state.errors.country}
                                 error={Boolean(this.state.errors.country)} >
                                 {this.state.countries.map((option) => (
-                                    <option key={option.id} value={option.id}>
+                                    <option key={option.name} value={option.name}>
                                         {option.name}
                                     </option>
                                 ))}</TextField>

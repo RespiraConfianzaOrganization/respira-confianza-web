@@ -9,7 +9,7 @@ class NewStation extends React.Component {
   state = {
     form: {
       name: "",
-      country_id: "",
+      country: "",
       city_id: "",
       latitude: "",
       longitude: "",
@@ -17,7 +17,7 @@ class NewStation extends React.Component {
     },
     errors: {
       name: "",
-      country_id: "",
+      country: "",
       city: "",
       latitude: "",
       longitude: "",
@@ -36,7 +36,7 @@ class NewStation extends React.Component {
     if (response.status === 200) {
       let res_countries = response.data.countries;
       let countries = res_countries
-      countries.unshift({ id: -1, name: "Seleccionar" });
+      countries.unshift({ name: "Seleccionar" });
       this.setState({ countries });
     }
   }
@@ -52,20 +52,20 @@ class NewStation extends React.Component {
 
 
   onChangeCountry = async (e) => {
-    const country_id = +e.target.value
+    const country = e.target.value
     this.setState({
       form: {
         ...this.state.form,
-        country_id: country_id,
+        country,
         city_id: null
       }
     })
-    await this.getCities(country_id)
+    await this.getCities(country)
   }
 
-  async getCities(country_id) {
+  async getCities(country) {
     const response = await getRequest(
-      `${process.env.REACT_APP_API_URL}/api/cities/country/${country_id}`
+      `${process.env.REACT_APP_API_URL}/api/cities/country/${country}`
     );
     if (response.status === 200) {
       let res_cities = response.data.cities;
@@ -79,7 +79,7 @@ class NewStation extends React.Component {
     e.preventDefault()
     let errors = {
       name: "",
-      country_id: "",
+      country: "",
       city_id: "",
       latitude: "",
       longitude: "",
@@ -106,8 +106,8 @@ class NewStation extends React.Component {
       errors.longitude = "Debe ingresar una longitud correcta. Ej: -71.67 "
       isValid = false
     }
-    if (!form.country_id || form.country_id === -1) {
-      errors.country_id = "Debe seleccionar una país"
+    if (!form.country || form.country === "Seleccionar") {
+      errors.country = "Debe seleccionar una país"
       isValid = false
     }
     if (!form.city_id || form.city_id === -1) {
@@ -178,17 +178,17 @@ class NewStation extends React.Component {
           <Grid container spacing={4} justify="center">
             <Grid item xs={12} md={5}>
               <TextField
-                name="country_id"
+                name="country"
                 select
                 InputLabelProps={{ shrink: true }}
                 SelectProps={{ native: true }}
                 label="País" variant="outlined"
                 fullWidth size="small"
                 onChange={this.onChangeCountry}
-                helperText={this.state.errors.country_id}
-                error={Boolean(this.state.errors.country_id)} >
+                helperText={this.state.errors.country}
+                error={Boolean(this.state.errors.country)} >
                 {this.state.countries.map((option) => (
-                  <option key={option.id} value={option.id}>
+                  <option key={option.name} value={option.name}>
                     {option.name}
                   </option>
                 ))}</TextField>

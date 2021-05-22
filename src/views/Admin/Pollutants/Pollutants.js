@@ -61,7 +61,7 @@ class Pollutants extends React.Component {
               <TableBody>
                 {this.state.pollutants.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row) => {
                   return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.name}>
                       {this.state.columns.map((column) => {
                         const value = row[column.id];
                         return (

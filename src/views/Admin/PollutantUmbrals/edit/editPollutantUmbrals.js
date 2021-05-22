@@ -22,15 +22,15 @@ class EditPollutantUmbrals extends React.Component {
             dangerous: "",
         },
         pollutant: {
-            id: this.props.match.params.id,
             name: "",
             unit: ""
         },
+        id: this.props.match.params.id,
         submitted: false
     }
 
     async componentDidMount() {
-        const responsePollutantUmbrals = await getRequest(`${process.env.REACT_APP_API_URL}/api/pollutant-umbrals/${this.state.pollutant.id}`);
+        const responsePollutantUmbrals = await getRequest(`${process.env.REACT_APP_API_URL}/api/pollutant-umbrals/${this.state.id}`);
         if (responsePollutantUmbrals.status === 200) {
             let pollutantUmbrals = responsePollutantUmbrals.data.pollutantUmbrals;
             this.setState({
@@ -88,7 +88,7 @@ class EditPollutantUmbrals extends React.Component {
         if (isValid) {
             //Post
             try {
-                const response = await putRequest(`${process.env.REACT_APP_API_URL}/api/pollutant-umbrals/${this.state.pollutant.id}`, form);
+                const response = await putRequest(`${process.env.REACT_APP_API_URL}/api/pollutant-umbrals/${this.state.id}`, form);
                 if (response.status === 200) {
                     this.props.enqueueSnackbar('Umbrales de contaminante editados correctamente!');
                     this.setState({ submitted: true, })
@@ -127,7 +127,7 @@ class EditPollutantUmbrals extends React.Component {
                     <h4 className="text__left">contaminante:</h4>
                     <Grid container spacing={4} justify="center">
                         <Grid item xs={12} md={5}>
-                            <TextField name="pollutant_id" label="Contaminante" value={this.state.pollutant.name} variant="outlined" fullWidth size="small" helperText={this.state.errors.pollutant_id} error={Boolean(this.state.errors.pollutant_id)}
+                            <TextField name="pollutant" label="Contaminante" value={this.state.pollutant.name} variant="outlined" fullWidth size="small" helperText={this.state.errors.pollutant} error={Boolean(this.state.errors.pollutant)}
                                 InputProps={{
                                     readOnly: true,
                                     className: "filled"
