@@ -27,6 +27,7 @@ import {
 } from "@material-ui/icons";
 
 import { connect } from "react-redux";
+import './Layout.css'
 
 const drawerWidth = 270;
 const useStyles = makeStyles((theme) => ({
@@ -92,21 +93,21 @@ const useStyles = makeStyles((theme) => ({
         paddingLeft: 12,
     },
     link: {
-        color: "white",
+        color: theme.secondaryTheme,
         textDecoration: "none",
         margin: 10,
         "&:hover": {
-            color: "#EEEEEE",
+            color: theme.secondaryTheme,
             cursor: "pointer",
         },
     },
     itemDrawner: {
-        color: "#ffff",
+        color: theme.secondaryTheme,
         textDecoration: "none",
         marginBottom: "10px",
     },
     iconDrawner: {
-        color: "#ffff",
+        color: theme.secondaryTheme,
         fontSize: "25px",
     },
     linksContainer: {
@@ -140,9 +141,13 @@ function LogedInView(props) {
         setAnchorEl(null);
     };
 
-
     const handleClick = () => {
         history.push("/admin/perfil/");
+    }
+
+    const handleLogout = () => {
+        logout()
+        history.push("/ingresar");
     }
 
     return (
@@ -153,7 +158,7 @@ function LogedInView(props) {
                     aria-controls="menu-appbar"
                     aria-haspopup="true"
                     onClick={handleMenu}
-                    color="inherit"
+                    color="black"
                 >
                     <AccountCircle />
                 </IconButton>
@@ -173,7 +178,7 @@ function LogedInView(props) {
                     onClose={handleClose}
                 >
                     <MenuItem onClick={handleClick}>Mi cuenta</MenuItem>
-                    <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
+                    <MenuItem onClick={() => handleLogout()}>Cerrar Sesión</MenuItem>
                 </Menu>
             </div>
         </div>
@@ -182,12 +187,14 @@ function LogedInView(props) {
 
 function LogedOutView(props) {
     const history = useHistory();
-    const { classLinksContainer } = props;
+    const { classLinksContainer, link } = props;
 
     const handleClick = () => {
         history.push("/ingresar");
     }
-    return <div className={classLinksContainer} onClick={handleClick}>Ingresar</div>;
+    return <div className={classLinksContainer} onClick={handleClick}>
+        <p className={link}>Ingresar</p>
+    </div>;
 }
 
 function Drawner(props) {
@@ -263,7 +270,7 @@ function NavBar(props) {
             classLinksContainer={classes.linksContainer}
         />
     );
-    const guestLinks = <LogedOutView classLinksContainer={classes.linksContainer} />;
+    const guestLinks = <LogedOutView classLinksContainer={classes.linksContainer} link={classes.link} />;
 
     const handleDrawerChange = () => {
         setOpen(!open);
@@ -283,8 +290,7 @@ function NavBar(props) {
                         <MenuIcon />
                     </IconButton>
                 ) : (
-                    // Este Botón es un botón invisible que sólo se ve en la vista de login, para que no se mueva el logo de FIC en la Navbar
-                    <IconButton
+                    < IconButton
                         color="inherit"
                         aria-label="empty button"
                         edge="start"
@@ -295,12 +301,12 @@ function NavBar(props) {
                 )}
 
                 <Link to="/" className={classes.link}>
-                    Respira Confianza
+                    <img className="navbar-logo" src="logo.svg" alt="logo" />
                 </Link>
 
                 {isAuthenticated ? authLinks : guestLinks}
             </Toolbar>
-        </AppBar>
+        </AppBar >
     );
 }
 

@@ -53,11 +53,18 @@ export const login = (username, password) => async (dispatch) => {
             }
         })
         .catch((err) => {
-            dispatch({
-                type: LOGIN_FAIL,
-                payload: err.response.data.message,
-            });
-
+            if (err.response) {
+                dispatch({
+                    type: LOGIN_FAIL,
+                    payload: err.response.data.message,
+                });
+            }
+            else {
+                dispatch({
+                    type: LOGIN_FAIL,
+                    payload: 'Hubo un error con la conexión',
+                });
+            }
         });
 };
 

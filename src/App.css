@@ -1,5 +1,6 @@
 :root{
-  --colorTheme: #2b3e4d
+  --colorTheme: white;
+  --secondaryTheme:#123f95;
 }
 
 .App {
@@ -17,9 +18,8 @@
   background-color: white;
 }
 
-
 .Watch__button{
-  background:var(--colorTheme) !important;
+  background:var(--secondaryTheme) !important;
   color:white !important;
   border-radius: 8% !important;
 }
