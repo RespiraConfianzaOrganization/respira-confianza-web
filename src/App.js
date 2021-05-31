@@ -8,6 +8,7 @@ import store from "./store/store";
 import { loadUser } from "./actions/auth";
 import Page from "./components/Layout/Page";
 import Login from "./views/Login";
+import Map from "./views/Map";
 import { NavBarCustumer, DrawnerCustumer } from "./components/Layout/Layout";
 import "./App.css";
 import { cssVariables, theme } from "./theme";
@@ -55,7 +56,8 @@ function App() {
                 <DrawnerCustumer open={open} setOpen={setOpen} />
                 <main className={classes.content}>
                   <Switch>
-                    <Route exact path="/" component={Login} />
+                    <Route exact path="/" component={Map} />
+                    <Route exact path="/ingresar" component={Login} />
                     <Route path="/admin" component={Page} />
                   </Switch>
                 </main>

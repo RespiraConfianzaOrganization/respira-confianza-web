@@ -129,6 +129,8 @@ const useStyles = makeStyles((theme) => ({
 function LogedInView(props) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const { logout, classLinksContainer } = props;
+    const history = useHistory();
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
@@ -137,10 +139,9 @@ function LogedInView(props) {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const { logout, classLinksContainer } = props;
-    const history = useHistory();
 
-    function handleClick() {
+
+    const handleClick = () => {
         history.push("/admin/perfil/");
     }
 
@@ -180,7 +181,13 @@ function LogedInView(props) {
 }
 
 function LogedOutView(props) {
-    return null;
+    const history = useHistory();
+    const { classLinksContainer } = props;
+
+    const handleClick = () => {
+        history.push("/ingresar");
+    }
+    return <div className={classLinksContainer} onClick={handleClick}>Ingresar</div>;
 }
 
 function Drawner(props) {
@@ -256,7 +263,7 @@ function NavBar(props) {
             classLinksContainer={classes.linksContainer}
         />
     );
-    const guestLinks = <LogedOutView />;
+    const guestLinks = <LogedOutView classLinksContainer={classes.linksContainer} />;
 
     const handleDrawerChange = () => {
         setOpen(!open);

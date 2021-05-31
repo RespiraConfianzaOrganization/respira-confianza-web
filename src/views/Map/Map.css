@@ -1,0 +1,62 @@
+.Map_Container{
+  width: 100vw;
+  height:94vh;
+}
+
+.Map_pin{
+  height: 30px;
+}
+
+.Map_pin:hover{
+  cursor: pointer;
+}
+
+.Map__CityInfo{
+  width: 100%;
+  min-height: 100px;
+  max-height: 140px;
+  background-color:rgba(0, 0, 0, 0.5);
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  z-index: 1;
+  color:white; 
+  padding:10px;
+}
+
+.Map__ReadingsInfo{
+  display: flex;
+  flex-direction: row;
+}
+
+.Map__ReadingsInfoItem{
+  display: flex;
+  justify-content:space-around;
+  align-items: center;
+  padding: 3px;
+  text-align: center;
+  background-color:rgba(0, 0, 0, 0.5);
+  height: 50px;
+  width: 140px;
+  margin: 10px;
+  border-radius: 8px;
+}
+
+.Map__Infotext{
+  margin: 0;
+}
+
+.Map__Infotext.data{
+  font-size:38px;
+  font-weight: bolder;
+}
+
+.Map__Infotext.name{
+  font-size:18px;
+  font-weight: bolder;
+}
+
+.Map__Infotext.unit{
+  font-size:12px;
+}
+
