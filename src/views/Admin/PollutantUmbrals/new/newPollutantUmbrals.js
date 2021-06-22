@@ -4,6 +4,7 @@ import { Link, Redirect } from "react-router-dom";
 import { getRequest, postRequest } from "../../../../utils/axios";
 import { Button, Divider, Grid, TextField } from "@material-ui/core";
 import { withSnackbar } from "notistack";
+import { validateNumber, validateUmbrals } from "../../../../utils/validator";
 
 class NewPollutantUmbrals extends React.Component {
   state = {
@@ -13,7 +14,7 @@ class NewPollutantUmbrals extends React.Component {
       moderate: "",
       unhealthy: "",
       very_unhealthy: "",
-      dangerous: "",
+      dangerous: ""
     },
     errors: {
       pollutant: "",
@@ -22,6 +23,7 @@ class NewPollutantUmbrals extends React.Component {
       unhealthy: "",
       very_unhealthy: "",
       dangerous: "",
+      form: "",
     },
     pollutant_unit: "",
     pollutants: [{ name: "Seleccionar", unit: "" }],
@@ -90,6 +92,7 @@ class NewPollutantUmbrals extends React.Component {
       unhealthy: "",
       very_unhealthy: "",
       dangerous: "",
+      form: "",
     };
     let isValid = true;
     let form = this.state.form;
@@ -100,21 +103,23 @@ class NewPollutantUmbrals extends React.Component {
       "very_unhealthy",
       "dangerous",
     ];
-    Object.keys(form).forEach((field) => {
-      if (!form[field]) {
-        errors[field] = "Este campo es obligatorio";
-        isValid = false;
-      }
-    });
+
     umbrals.forEach((umbral) => {
-      if (!Number(form[umbral])) {
-        errors[umbral] = "Este campo debe ser un número";
-        isValid = false;
+      if (form[umbral]) {
+        if (!validateNumber(form[umbral])) {
+          errors[umbral] = "Este campo debe ser un número";
+          isValid = false;
+        }
       }
     });
 
     if (!form.pollutant || form.pollutant === "Seleccionar") {
       errors.pollutant = "Debe seleccionar un contaminante";
+      isValid = false;
+    }
+
+    if (!validateUmbrals(form, umbrals)) {
+      errors.form = "Los umbrales ingresados son inválidos"
       isValid = false;
     }
     this.setState({ errors });
@@ -166,7 +171,13 @@ class NewPollutantUmbrals extends React.Component {
               A partir de un tipo de contaminante se definirán las umbrales de
               salud para mostrarlos en la aplicación
             </li>
+            <li>
+              Los umbrales son rangos de salud. Estos empiezan desde el 0. Por ejemplo si bueno=60, quiere decir que desde el 0 a 60 es considerado un rango bueno.
+            </li>
+            <li>Se debe cumplir que bueno&lt;moderado&lt;no saludable&lt;Muy insalubre&lt;Peligroso</li>
+            <li>No es necesario que se ingresen todos los umbrales, puede que solo se necesiten tres: bueno, moderado y no saludable.</li>
           </ul>
+          <h4 className="text__red"> {this.state.errors.form}</h4>
           <h4 className="text__left">Contaminante:</h4>
           <Grid container spacing={4} justify="center">
             <Grid item xs={12} md={5}>
