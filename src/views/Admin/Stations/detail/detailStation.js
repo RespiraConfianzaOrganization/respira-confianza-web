@@ -14,10 +14,11 @@ import {
   TableCell,
   TableRow,
   TableBody,
-  Tooltip
+  Tooltip,
 } from "@material-ui/core";
 import { Delete as DeleteIcon } from "@material-ui/icons";
 import { withSnackbar } from "notistack";
+import Loading from "../../../../common/Loading";
 import AddPollutant from "./addPollutant";
 import "./detailStation.css";
 
@@ -29,7 +30,8 @@ class DetailStation extends React.Component {
       station: null,
       addPollutants: [{ id: -1, name: "Seleccionar" }],
       stationExist: true,
-      copySuccess: 'Copiar llave'
+      copySuccess: 'Copiar llave',
+      loading: true,
     };
   }
 
@@ -40,7 +42,7 @@ class DetailStation extends React.Component {
       existing_pollutants = station.Pollutants;
     }
     const addPollutants = await this.getPollutants(existing_pollutants);
-    this.setState({ station: station, addPollutants });
+    this.setState({ station: station, addPollutants, loading: false });
   }
 
   getStation = async () => {
@@ -116,6 +118,9 @@ class DetailStation extends React.Component {
   }
 
   render() {
+    if (this.state.loading) {
+      return <Loading />
+    }
     if (!this.state.station) {
       return <div>
         <h2>Estación no existe</h2>

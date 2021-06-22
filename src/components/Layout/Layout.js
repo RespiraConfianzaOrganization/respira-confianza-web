@@ -158,7 +158,6 @@ function LogedInView(props) {
                     aria-controls="menu-appbar"
                     aria-haspopup="true"
                     onClick={handleMenu}
-                    color="black"
                 >
                     <AccountCircle />
                 </IconButton>

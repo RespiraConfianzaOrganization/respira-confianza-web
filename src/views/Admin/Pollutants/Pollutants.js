@@ -9,7 +9,8 @@ class Pollutants extends React.Component {
     rowsPerPage: 10,
     pollutants: [],
     columns: [
-      { id: 'name', label: 'Nombres', minWidth: 170 },
+      { id: 'name', label: 'Nombre', minWidth: 170 },
+      { id: 'extendedName', label: 'Nombre extendido', minWidth: 170 },
       { id: 'unit', label: 'Unidad', minWidth: 170 },
     ]
   }

@@ -1,11 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { getRequest } from "../../../utils/axios"
-import { Button, IconButton, SvgIcon, Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
-import {
-    Edit as EditIcon,
-    Delete as DeleteIcon,
-} from "@material-ui/icons";
+import { Button, Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
 import "./Admins.css"
 
 class Admins extends React.Component {
@@ -63,12 +59,12 @@ class Admins extends React.Component {
                                             {column.label}
                                         </TableCell>
                                     ))}
-                                    <TableCell
+                                    {/*<TableCell
                                         key={"admin"}
                                         style={{ width: '170px' }}
                                     >
                                         Acciones
-                                    </TableCell>
+                                    </TableCell>*/}
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -93,6 +89,7 @@ class Admins extends React.Component {
                                                     </TableCell>
                                                 );
                                             })}
+                                            {/*
                                             <TableCell key="acciones" className="Action_buttons">
                                                 <IconButton className="Edit__button"
                                                 >
@@ -107,6 +104,7 @@ class Admins extends React.Component {
                                                     </SvgIcon>
                                                 </IconButton>
                                             </TableCell>
+                                            */}
                                         </TableRow>
                                     );
                                 })}

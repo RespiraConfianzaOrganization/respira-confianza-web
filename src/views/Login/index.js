@@ -1,10 +1,10 @@
 import React from "react";
-import './Login.css';
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Link, Redirect } from "react-router-dom"
 import { login } from "../../actions/auth";
 import { Button, Grid, TextField } from "@material-ui/core"
+import './Login.css';
 
 export class Login extends React.Component {
     constructor(props) {
@@ -104,7 +104,7 @@ export class Login extends React.Component {
                                     variant="outlined"
                                     onClick={this.onSubmit}>
                                     Ingresar
-                            </Button>
+                                </Button>
                             </Grid>
 
                             <Grid item xs={12} >

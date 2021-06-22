@@ -77,7 +77,7 @@ class Readings extends React.Component {
                       {this.state.columns.map((column) => {
                         let value
                         if (column.id === 'recorded_at') {
-                          value = moment(row[column.id]).format("DD/MM/YYYY hh:mm:ss");
+                          value = moment(row[column.id]).format("DD/MM/YYYY hh:mm:ss a");
                         }
                         else if (column.id === 'station') {
                           value = row['Station']['name']
