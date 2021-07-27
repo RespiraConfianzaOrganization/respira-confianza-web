@@ -20,6 +20,7 @@ import { Delete as DeleteIcon } from "@material-ui/icons";
 import { withSnackbar } from "notistack";
 import Loading from "../../../../common/Loading";
 import AddPollutant from "./addPollutant";
+import DeleteStation from "../deleteStation/deleteStation";
 import "./detailStation.css";
 
 class DetailStation extends React.Component {
@@ -32,6 +33,7 @@ class DetailStation extends React.Component {
       stationExist: true,
       copySuccess: 'Copiar llave',
       loading: true,
+      openModal: false,
     };
   }
 
@@ -117,6 +119,10 @@ class DetailStation extends React.Component {
     this.setState({ copySuccess: 'Llave copiada exitosamente' });
   }
 
+  handleDeleteClick = (value) => {
+    this.setState({ openModal: value });
+  };
+
   render() {
     if (this.state.loading) {
       return <Loading />
@@ -145,6 +151,13 @@ class DetailStation extends React.Component {
           </div>
           <Divider />
         </div>
+        {this.state.openModal ? (
+          <DeleteStation
+            openModal={this.state.openModal}
+            handleDeleteClick={this.handleDeleteClick}
+            station={this.state.station}
+          />
+        ) : null}
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <Card>
@@ -263,6 +276,34 @@ class DetailStation extends React.Component {
                       </TableCell>
                     </TableRow>
                   ))}
+                </TableBody>
+              </Table>
+            </Card>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardHeader
+                title="Acción peligrosa"
+                classes={{
+                  title: "header_detail_station",
+                }}
+              />
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Eliminar estación</TableCell>
+                    <TableCell>
+                      <IconButton
+                        className="Delete__button"
+                        onClick={() => this.handleDeleteClick(true)}
+                      >
+                        <SvgIcon fontSize="small">
+                          <DeleteIcon />
+                        </SvgIcon>
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </Card>

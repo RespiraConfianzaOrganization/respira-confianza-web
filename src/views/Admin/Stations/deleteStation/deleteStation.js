@@ -1,4 +1,5 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -16,7 +17,6 @@ class DeleteStation extends React.Component {
     this.state = {
       openModal: this.props.openModal,
       handleDeleteClick: this.props.handleDeleteClick,
-      getStations: this.props.getStations,
       delete: false,
       station: this.props.station,
     };
@@ -24,18 +24,19 @@ class DeleteStation extends React.Component {
 
   handleClose = () => {
     this.setState({ error: '' })
-    this.state.handleDeleteClick(false, null);
+    this.state.handleDeleteClick(false);
   };
 
   handleDelete = async () => {
     const response = await deleteRequest(`${process.env.REACT_APP_API_URL}/api/stations/${this.state.station.id}`)
     if (response.status === 200) {
-      await this.state.getStations();
       this.props.enqueueSnackbar(`Estación ${this.state.station.name} eliminada correctamente!`);
-      this.state.handleDeleteClick(false, null);
+      this.state.handleDeleteClick(false);
+      this.props.history.push("/admin/estaciones");
     }
     else {
       this.props.enqueueSnackbar('No se pudo eliminar');
+      this.state.handleDeleteClick(false);
     }
   }
 
@@ -51,14 +52,15 @@ class DeleteStation extends React.Component {
         >
           <DialogTitle id="responsive-dialog-title">
             Confirmación de eliminación de estación
-                    </DialogTitle>
+          </DialogTitle>
           <DialogContent>
             <DialogContentText>
               <span>{this.state.error}</span>
               ¿Estás seguro de eliminar la estación
               <span className="Text__bolder"> {this.state.station.name} </span>
               ubicada en {this.state.station.City.Country.name}, {this.state.station.City.name} con Latitud:{this.state.station.latitude}, Longitud: {this.state.station.longitude}?
-              </DialogContentText>
+              Esta estación se eliminará solo si no tiene lecturas asociadas
+            </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button
@@ -84,4 +86,4 @@ class DeleteStation extends React.Component {
   }
 }
 
-export default withSnackbar(DeleteStation);
+export default withSnackbar(withRouter(DeleteStation));

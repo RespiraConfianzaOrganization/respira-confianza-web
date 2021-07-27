@@ -17,18 +17,14 @@ import {
 import {
   ArrowForward as ArrowIcon,
   Edit as EditIcon,
-  Delete as DeleteIcon,
 } from "@material-ui/icons";
 import "./Stations.css";
-import DeleteStation from "./deleteStation/deleteStation";
 
 class Stations extends React.Component {
   state = {
     page: 0,
     rowsPerPage: 10,
     stations: [],
-    openModal: false,
-    selectedStation: null,
     columns: [
       { id: "name", label: "Nombre", minWidth: 270 },
       { id: "country", label: "País" },
@@ -59,10 +55,6 @@ class Stations extends React.Component {
     this.setState({ page: 0, rowsPerPage: +event.target.value });
   };
 
-  handleDeleteClick = (value, selected) => {
-    this.setState({ openModal: value, selectedStation: selected });
-  };
-
   render() {
     return (
       <div className="Container">
@@ -81,14 +73,6 @@ class Stations extends React.Component {
             </div>
           </div>
         </div>
-        {this.state.openModal ? (
-          <DeleteStation
-            openModal={this.state.openModal}
-            handleDeleteClick={this.handleDeleteClick}
-            station={this.state.selectedStation}
-            getStations={this.getStations}
-          />
-        ) : null}
         <Paper className="Paper_container">
           <TableContainer className="Table__container">
             <Table stickyHeader aria-label="sticky table">
@@ -156,14 +140,6 @@ class Stations extends React.Component {
                           >
                             <SvgIcon fontSize="small">
                               <EditIcon />
-                            </SvgIcon>
-                          </IconButton>
-                          <IconButton
-                            className="Delete__button"
-                            onClick={() => this.handleDeleteClick(true, row)}
-                          >
-                            <SvgIcon fontSize="small">
-                              <DeleteIcon />
                             </SvgIcon>
                           </IconButton>
                         </TableCell>

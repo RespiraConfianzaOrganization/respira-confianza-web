@@ -1,7 +1,7 @@
 import React from "react"
 import moment from "moment"
 import { getRequest } from "../../../utils/axios"
-import { TextField, MenuItem, Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
+import { TextField, MenuItem, Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper } from "@material-ui/core"
 import './Readings.css'
 
 class Readings extends React.Component {
