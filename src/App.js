@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1251,
     overflow: "hidden",
     fontFamily: theme.fontFamily,
-    backgroundColor: "#f5f8fb"
+    backgroundColor: "#edf1f4"
   },
   appFrame: {
     display: "flex",

@@ -71,26 +71,27 @@ class Readings extends React.Component {
       <div className="Container">
         <div className="Container__header">
           <div className="Container__header_row">
-            <h3>Lecturas de las estaciones</h3>
+            <h2>Lecturas de las estaciones</h2>
+            <div className="search__byStationContainer">
+              <TextField
+                className="search__byStation"
+                select
+                variant="outlined"
+                size="small"
+                label="Estación"
+                value={this.state.search.station}
+                onChange={this.handleChangeStation}
+              >
+                {this.state.stations.map((station) => (
+                  <MenuItem key={station.id} value={station.id}>
+                    {station.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </div>
           </div>
-          <Divider />
         </div>
-        <div className="search__container">
-          <TextField
-            className="search__byStation"
-            select
-            variant="outlined"
-            label="Estación"
-            value={this.state.search.station}
-            onChange={this.handleChangeStation}
-          >
-            {this.state.stations.map((station) => (
-              <MenuItem key={station.id} value={station.id}>
-                {station.name}
-              </MenuItem>
-            ))}
-          </TextField>
-        </div>
+
         <Paper className="Paper_container">
           <TableContainer className="Table__container">
             <Table stickyHeader aria-label="sticky table">

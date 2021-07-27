@@ -2,7 +2,7 @@ import React from "react"
 import './editPollutantUmbrals.css'
 import { Link, Redirect } from "react-router-dom"
 import { getRequest, putRequest } from "../../../../utils/axios"
-import { Button, Divider, Grid, TextField } from "@material-ui/core"
+import { Button, Grid, TextField } from "@material-ui/core"
 import { withSnackbar } from 'notistack';
 import { validateNumber, validateUmbrals } from "../../../../utils/validator";
 
@@ -118,12 +118,11 @@ class EditPollutantUmbrals extends React.Component {
             <div className="Container">
                 <div className="Container__header">
                     <div className="Container__header_row">
-                        <h3>Editar umbrales de contaminante</h3>
+                        <h2>Editar umbrales de contaminante</h2>
                         <div className="Container__header_row_button">
                             <Button color="primary" variant="contained" component={Link} to="/admin/umbrales-contaminantes/"> Volver</Button>
                         </div>
                     </div>
-                    <Divider />
                 </div>
                 <form className="form">
                     <ul className="text__left">

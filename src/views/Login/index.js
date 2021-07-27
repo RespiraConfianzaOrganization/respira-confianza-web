@@ -68,7 +68,7 @@ export class Login extends React.Component {
         return (
             <div className="root">
                 <div className="login-container">
-                    <img className="login-logo" src="logo.svg" alt="logo" />
+                    <img className="login-logo" src="/logo.svg" alt="logo" />
                     <form className="login-form" onSubmit={this.onSubmit}>
                         <div className="login-errors">
                             <span>{this.state.errorLogin}</span>

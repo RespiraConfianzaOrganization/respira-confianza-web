@@ -13,7 +13,6 @@ import {
   TableRow,
   TablePagination,
   Paper,
-  Divider,
 } from "@material-ui/core";
 import {
   ArrowForward as ArrowIcon,
@@ -69,20 +68,18 @@ class Stations extends React.Component {
       <div className="Container">
         <div className="Container__header">
           <div className="Container__header_row">
-            <h3>Estaciones</h3>
+            <h2>Estaciones</h2>
             <div className="Container__header_row_button">
               <Button
-                color="primary"
+                color="secondary"
                 variant="contained"
                 component={Link}
                 to="/admin/estaciones/nueva"
               >
-                {" "}
-                Nueva
+                + Nueva estación
               </Button>
             </div>
           </div>
-          <Divider />
         </div>
         {this.state.openModal ? (
           <DeleteStation

@@ -31,5 +31,20 @@ theme.overrides = {
             color: "white",
             backgroundColor: "black"
         }
+    },
+    MuiTableCell: {
+        head: {
+            cursor: 'default',
+            fontWeight: 'bolder !important',
+            color: 'gray !important',
+        },
+        body: {
+            fontWeight: 500,
+        }
+    },
+    MuiInputBase: {
+        root: {
+            backgroundColor: 'white'
+        }
     }
-};
+}

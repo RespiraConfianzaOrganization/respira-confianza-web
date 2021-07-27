@@ -2,7 +2,7 @@ import React from "react";
 import "./newPollutantUmbrals.css";
 import { Link, Redirect } from "react-router-dom";
 import { getRequest, postRequest } from "../../../../utils/axios";
-import { Button, Divider, Grid, TextField } from "@material-ui/core";
+import { Button, Grid, TextField } from "@material-ui/core";
 import { withSnackbar } from "notistack";
 import { validateNumber, validateUmbrals } from "../../../../utils/validator";
 
@@ -150,7 +150,7 @@ class NewPollutantUmbrals extends React.Component {
       <div className="Container">
         <div className="Container__header">
           <div className="Container__header_row">
-            <h3>Nuevo umbrales de contaminante</h3>
+            <h2>Nuevo umbrales de contaminante</h2>
             <div className="Container__header_row_button">
               <Button
                 color="primary"
@@ -163,7 +163,6 @@ class NewPollutantUmbrals extends React.Component {
               </Button>
             </div>
           </div>
-          <Divider />
         </div>
         <form className="form">
           <ul className="text__left">
@@ -287,7 +286,7 @@ class NewPollutantUmbrals extends React.Component {
               className="form_button"
               type="submit"
               variant="contained"
-              color="primary"
+              color="secondary"
               onClick={this.handleSubmit}
             >
               Agregar

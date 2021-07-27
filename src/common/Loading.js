@@ -72,7 +72,7 @@ export default function Loading() {
   return (
     <div className={classes.root}>
       <div className={classes.logoContainer}>
-        <img className={classes.logo} src="logo.svg" alt="logo" />
+        <img className={classes.logo} src="/logo.svg" alt="logo" />
       </div>
       <FacebookCircularProgress />
     </div>

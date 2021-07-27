@@ -7,20 +7,6 @@
   text-align: center;
 }
 /*   CSS GLOBAL */
-.MuiTableCell-head {
-  cursor:default;
-  font-weight: bolder !important;
-  text-transform: uppercase;
-  color: #AFAFAF !important;
-}
-
-.MuiTableCell-body {
-  font-weight: 600px;
-}
-
-.MuiInputBase-root{
-  background-color: white;
-}
 
 .Watch__button{
   background:var(--secondaryTheme) !important;

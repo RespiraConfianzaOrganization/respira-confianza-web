@@ -130,7 +130,7 @@ class DetailStation extends React.Component {
       <div className="Container">
         <div className="Container__header">
           <div className="Container__header_row">
-            <h3>Detalle estación</h3>
+            <h2>Detalle estación</h2>
             <div className="Container__header_row_button">
               <Button
                 color="primary"

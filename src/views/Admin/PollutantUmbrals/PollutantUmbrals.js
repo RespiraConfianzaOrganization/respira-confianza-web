@@ -13,7 +13,6 @@ import {
   TableRow,
   TablePagination,
   Paper,
-  Divider,
 } from "@material-ui/core";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@material-ui/icons";
 import "./PollutantUmbrals.css";
@@ -66,20 +65,18 @@ class PollutantUmbrals extends React.Component {
       <div className="Container">
         <div className="Container__header">
           <div className="Container__header_row">
-            <h3>Umbrales de Salud de los contaminantes</h3>
+            <h2>Umbrales de Salud de los contaminantes</h2>
             <div className="Container__header_row_button">
               <Button
-                color="primary"
+                color="secondary"
                 variant="contained"
                 component={Link}
                 to="/admin/umbrales-contaminantes/nuevo"
               >
-                {" "}
-                Nuevo
+                + Nuevo umbral
               </Button>
             </div>
           </div>
-          <Divider />
         </div>
         {this.state.openModal ? (
           <DeletePollutantUmbrals

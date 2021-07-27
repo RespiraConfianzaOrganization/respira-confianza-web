@@ -102,7 +102,7 @@ class AddPollutant extends React.Component {
           ))}
         </TextField>
         <Button
-          color="primary"
+          color="secondary"
           variant="contained"
           onClick={this.handleAddPollutant}
         >

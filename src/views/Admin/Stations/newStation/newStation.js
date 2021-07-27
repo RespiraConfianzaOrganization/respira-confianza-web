@@ -1,7 +1,7 @@
 import React from "react"
 import { Link, Redirect } from "react-router-dom"
 import { postRequest, getRequest } from "../../../../utils/axios"
-import { Button, Divider, Grid, TextField } from "@material-ui/core"
+import { Button, Grid, TextField } from "@material-ui/core"
 import "./newStation.css"
 import { withSnackbar } from "notistack"
 
@@ -141,12 +141,11 @@ class NewStation extends React.Component {
       <div className="Container">
         <div className="Container__header">
           <div className="Container__header_row">
-            <h3>Nueva estación</h3>
+            <h2>Nueva estación</h2>
             <div className="Container__header_row_button">
               <Button color="primary" variant="contained" component={Link} to="/admin/estaciones/"> Volver</Button>
             </div>
           </div>
-          <Divider />
         </div>
         <form className="form">
           <h4 className="text__left">Información:</h4>
@@ -218,7 +217,7 @@ class NewStation extends React.Component {
             </Grid>
           </Grid>
           <div className="form__row_button">
-            <Button className="form_button" type="submit" variant="contained" color="primary" onClick={this.handleSubmit} >Agregar</Button>
+            <Button className="form_button" type="submit" variant="contained" color="secondary" onClick={this.handleSubmit} >Agregar</Button>
           </div>
         </form>
       </div>

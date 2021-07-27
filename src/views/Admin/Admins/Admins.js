@@ -1,7 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { getRequest } from "../../../utils/axios"
-import { Button, Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
+import { Button, Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper } from "@material-ui/core"
 import "./Admins.css"
 
 class Admins extends React.Component {
@@ -37,12 +37,11 @@ class Admins extends React.Component {
             <div className="Container">
                 <div className="Container__header">
                     <div className="Container__header_row">
-                        <h3>Administradores</h3>
+                        <h2>Administradores</h2>
                         <div className="Container__header_row_button">
-                            <Button color="primary" variant="contained" component={Link} to="/admin/administradores/nuevo"> Nuevo</Button>
+                            <Button color="secondary" variant="contained" component={Link} to="/admin/administradores/nuevo"> + Nuevo administrador</Button>
                         </div>
                     </div>
-                    <Divider />
                 </div>
 
                 <Paper className="Paper_container">

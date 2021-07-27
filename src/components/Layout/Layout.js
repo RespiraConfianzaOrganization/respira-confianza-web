@@ -300,7 +300,7 @@ function NavBar(props) {
                 )}
 
                 <Link to="/" className={classes.link}>
-                    <img className="navbar-logo" src="logo.svg" alt="logo" />
+                    <img className="navbar-logo" src="/logo.svg" alt="logo" />
                 </Link>
 
                 {isAuthenticated ? authLinks : guestLinks}

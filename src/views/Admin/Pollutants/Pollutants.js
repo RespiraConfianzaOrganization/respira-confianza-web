@@ -1,6 +1,6 @@
 import React from "react"
 import { getRequest } from "../../../utils/axios"
-import { Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
+import { Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper } from "@material-ui/core"
 import "./Pollutants.css"
 
 class Pollutants extends React.Component {
@@ -39,9 +39,8 @@ class Pollutants extends React.Component {
       <div className="Container">
         <div className="Container__header">
           <div className="Container__header_row">
-            <h3>Contaminantes</h3>
+            <h2>Contaminantes</h2>
           </div>
-          <Divider />
         </div>
         <Paper className="Paper_container">
           <TableContainer className="Table__container">

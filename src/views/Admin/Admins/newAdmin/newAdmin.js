@@ -1,7 +1,7 @@
 import React from "react"
 import { Link, Redirect } from "react-router-dom"
 import { postRequest, getRequest } from "../../../../utils/axios"
-import { Button, Divider, Grid, TextField } from "@material-ui/core"
+import { Button, Grid, TextField } from "@material-ui/core"
 import { validateEmail } from "../../../../utils/validator"
 import { withSnackbar } from 'notistack';
 import "./newAdmin.css"
@@ -127,12 +127,11 @@ class NewAdmin extends React.Component {
             <div className="Container">
                 <div className="Container__header">
                     <div className="Container__header_row">
-                        <h3>Nuevo administrador</h3>
+                        <h2>Nuevo administrador</h2>
                         <div className="Container__header_row_button">
                             <Button color="primary" variant="contained" component={Link} to="/admin/administradores/"> Volver</Button>
                         </div>
                     </div>
-                    <Divider />
                 </div>
                 <form className="form">
                     <Grid container spacing={4} justify="center">
@@ -195,7 +194,7 @@ class NewAdmin extends React.Component {
                         </Grid>
                     </Grid>
                     <div className="form__row_button">
-                        <Button className="form_button" type="submit" variant="contained" color="primary" onClick={this.handleSubmit} >Agregar</Button>
+                        <Button className="form_button" type="submit" variant="contained" color="secondary" onClick={this.handleSubmit} >Agregar</Button>
                     </div>
                 </form>
             </div >

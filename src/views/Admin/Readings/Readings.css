@@ -5,8 +5,12 @@
   width: 100%;
 }
 
+.search__byStationContainer{
+  width: 100%;
+}
+
 @media (min-width:700px) {
-  .search__byStation{
-    width: 30%;
+  .search__byStationContainer{
+    width: 300px;
   }
 }
