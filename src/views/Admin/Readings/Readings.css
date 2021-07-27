@@ -1,0 +1,12 @@
+.search__container{
+  margin: 10px 0;
+}
+.search__byStation{
+  width: 100%;
+}
+
+@media (min-width:700px) {
+  .search__byStation{
+    width: 30%;
+  }
+}

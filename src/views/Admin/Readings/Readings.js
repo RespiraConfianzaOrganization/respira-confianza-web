@@ -1,13 +1,19 @@
 import React from "react"
 import moment from "moment"
 import { getRequest } from "../../../utils/axios"
-import { Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
+import { TextField, MenuItem, Table, TableBody, TableHead, TableCell, TableContainer, TableRow, TablePagination, Paper, Divider } from "@material-ui/core"
+import './Readings.css'
 
 class Readings extends React.Component {
   state = {
-    page: 0,
-    rowsPerPage: 10,
+    search: {
+      page: 0,
+      limit: 10,
+      station: -1
+    },
+    countAllReadings: 0,
     readings: [],
+    stations: [{ id: -1, name: 'Todas' }],
     columns: [
       { id: 'station', label: 'Estación', minWidth: 170 },
       { id: 'TEMP', label: 'Temperatura', },
@@ -27,23 +33,38 @@ class Readings extends React.Component {
   }
   async componentDidMount() {
     await this.getReadings();
+    await this.getStations();
   }
 
   getReadings = async () => {
-    const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/station-readings`);
+    const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/station-readings`, {
+      limit: this.state.search.limit, page: this.state.search.page, station: this.state.search.station
+    });
     if (response.status === 200) {
-      this.setState({ readings: response.data.readings })
+      this.setState({ readings: response.data.readings, countAllReadings: response.data.countAllReadings })
     }
   }
 
-  handleChangePage = (event, newPage) => {
-    this.setState({ page: newPage });
+  getStations = async () => {
+    const response = await getRequest(`${process.env.REACT_APP_API_URL}/api/stations`);
+    if (response.status === 200) {
+      const stations = response.data.stations
+      stations.unshift({ id: -1, name: 'Todas' });
+      this.setState({ stations });
+    }
+  };
+
+  handleChangePage = (_, newPage) => {
+    this.setState({ search: { ...this.state.search, page: newPage } }, () => this.getReadings());
   };
 
   handleChangeRowsPerPage = (event) => {
-    this.setState({ page: 0, rowsPerPage: +event.target.value });
+    this.setState({ search: { ...this.state.search, limit: +event.target.value } }, () => this.getReadings());
   };
 
+  handleChangeStation = (event) => {
+    this.setState({ search: { ...this.state.search, station: event.target.value } }, () => this.getReadings());
+  };
 
   render() {
     return (
@@ -53,6 +74,22 @@ class Readings extends React.Component {
             <h3>Lecturas de las estaciones</h3>
           </div>
           <Divider />
+        </div>
+        <div className="search__container">
+          <TextField
+            className="search__byStation"
+            select
+            variant="outlined"
+            label="Estación"
+            value={this.state.search.station}
+            onChange={this.handleChangeStation}
+          >
+            {this.state.stations.map((station) => (
+              <MenuItem key={station.id} value={station.id}>
+                {station.name}
+              </MenuItem>
+            ))}
+          </TextField>
         </div>
         <Paper className="Paper_container">
           <TableContainer className="Table__container">
@@ -71,7 +108,7 @@ class Readings extends React.Component {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {this.state.readings.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((row) => {
+                {this.state.readings.map((row) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                       {this.state.columns.map((column) => {
@@ -101,9 +138,9 @@ class Readings extends React.Component {
           <TablePagination
             rowsPerPageOptions={[10, 25, 100]}
             component="div"
-            count={this.state.readings.length}
-            rowsPerPage={this.state.rowsPerPage}
-            page={this.state.page}
+            count={this.state.countAllReadings}
+            rowsPerPage={this.state.search.limit}
+            page={this.state.search.page}
             onChangePage={this.handleChangePage}
             onChangeRowsPerPage={this.handleChangeRowsPerPage}
           />

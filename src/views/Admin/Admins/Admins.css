@@ -1,9 +1,11 @@
 .Table__container{
     min-height: 600px;
+    border-radius: 8px;
 }
 
 .Paper_container{
     width: 100%;
+    border-radius: 8px !important;
 }
 
 .Container__header{

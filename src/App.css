@@ -8,10 +8,14 @@
 }
 /*   CSS GLOBAL */
 .MuiTableCell-head {
-  background-color: #DEDEDE !important;
   cursor:default;
   font-weight: bolder !important;
   text-transform: uppercase;
+  color: #AFAFAF !important;
+}
+
+.MuiTableCell-body {
+  font-weight: 600px;
 }
 
 .MuiInputBase-root{
