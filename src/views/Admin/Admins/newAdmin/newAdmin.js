@@ -114,7 +114,7 @@ class NewAdmin extends React.Component {
                     this.setState({ submitted: true, })
                 }
             } catch (e) {
-                this.props.enqueueSnackbar(e.response.data.message,);
+                this.props.enqueueSnackbar(e.response.data.message);
             }
         }
     }

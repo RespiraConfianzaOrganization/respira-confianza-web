@@ -198,7 +198,7 @@ class DetailStation extends React.Component {
                     <TableCell>Agregada</TableCell>
                     <TableCell>
                       {moment(this.state.station.created_at).format(
-                        "DD/MM/YYYY hh:mm:ss"
+                        "DD/MM/YYYY hh:mm:ss a"
                       )}
                     </TableCell>
                   </TableRow>

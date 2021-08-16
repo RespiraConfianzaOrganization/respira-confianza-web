@@ -7,6 +7,7 @@ import { Stations, newStation, editStation, DetailStation } from "../../views/Ad
 import { Pollutants } from "../../views/Admin/Pollutants"
 import { PollutantUmbrals, newPollutantsUmbrals, editPollutantsUmbrals } from "../../views/Admin/PollutantUmbrals"
 import { Readings } from "../../views/Admin/Readings"
+import Profile from "../../views/Admin/Profile/Profile";
 
 export default class Page extends React.Component {
     render() {
@@ -14,7 +15,7 @@ export default class Page extends React.Component {
             <div style={{ width: 'calc(100% - 58px)', paddingLeft: "58px" }}>
                 <Switch>
                     <PrivateRoute exact path="/admin/" component={Home} />
-
+                    <PrivateRoute exact path="/admin/perfil" component={Profile} />
                     {/*  Admins   */}
                     <PrivateRoute exact path="/admin/administradores" component={Admins} />
                     <PrivateRoute exact path="/admin/administradores/nuevo" component={newAdmin} />
