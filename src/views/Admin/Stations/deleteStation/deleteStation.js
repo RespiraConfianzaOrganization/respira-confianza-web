@@ -28,14 +28,19 @@ class DeleteStation extends React.Component {
   };
 
   handleDelete = async () => {
-    const response = await deleteRequest(`${process.env.REACT_APP_API_URL}/api/stations/${this.state.station.id}`)
-    if (response.status === 200) {
-      this.props.enqueueSnackbar(`Estación ${this.state.station.name} eliminada correctamente!`);
-      this.state.handleDeleteClick(false);
-      this.props.history.push("/admin/estaciones");
-    }
-    else {
-      this.props.enqueueSnackbar('No se pudo eliminar');
+    try {
+      const response = await deleteRequest(`${process.env.REACT_APP_API_URL}/api/stations/${this.state.station.id}`)
+      if (response.status === 200) {
+        this.props.enqueueSnackbar(`Estación ${this.state.station.name} eliminada correctamente!`);
+        this.state.handleDeleteClick(false);
+        this.props.history.push("/admin/estaciones");
+      }
+      else {
+        this.props.enqueueSnackbar('No se pudo eliminar');
+        this.state.handleDeleteClick(false);
+      }
+    } catch (err) {
+      this.props.enqueueSnackbar(err.response.data.message);
       this.state.handleDeleteClick(false);
     }
   }
