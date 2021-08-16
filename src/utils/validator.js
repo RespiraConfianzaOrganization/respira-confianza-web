@@ -15,9 +15,8 @@ const validateNumber = (number) => {
 
 const validateUmbrals = (form, umbrals) => {
     let isValid = true;
-    let umbralValue = 0
-    umbrals.forEach(umbral => {
-        console.log(umbral)
+    let umbralValue = -1
+    for (const umbral of umbrals) {
         if (form[umbral]) {
             if (umbralValue < form[umbral]) {
                 umbralValue = form[umbral]
@@ -26,7 +25,7 @@ const validateUmbrals = (form, umbrals) => {
                 isValid = false;
             }
         }
-    })
+    }
     return isValid
 }
 
