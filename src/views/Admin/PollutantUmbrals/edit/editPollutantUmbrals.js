@@ -76,15 +76,19 @@ class EditPollutantUmbrals extends React.Component {
         let form = this.state.form
         let umbrals = ['good', 'moderate', 'unhealthy', 'very_unhealthy', 'dangerous']
 
-        umbrals.forEach((umbral) => {
+        for (const umbral of umbrals) {
             if (form[umbral]) {
                 if (!validateNumber(form[umbral])) {
                     errors[umbral] = "Este campo debe ser un número";
                     isValid = false;
                 }
+                else {
+                    form[umbral] = parseInt(form[umbral])
+                }
             }
-        });
 
+        }
+        console.log(form)
         if (!validateUmbrals(form, umbrals)) {
             errors.form = "Los umbrales ingresados son inválidos"
             isValid = false;
@@ -105,8 +109,6 @@ class EditPollutantUmbrals extends React.Component {
             } catch (e) {
                 this.props.enqueueSnackbar(e.response.data.message);
             }
-
-
         }
     }
 
@@ -174,7 +176,7 @@ class EditPollutantUmbrals extends React.Component {
                         </Grid>
                     </Grid>
                     <div className="form__row_button">
-                        <Button className="form_button" type="submit" variant="contained" color="primary" onClick={this.handleSubmit} >Guardar</Button>
+                        <Button className="form_button" type="submit" variant="contained" color="secondary" onClick={this.handleSubmit} >Guardar</Button>
                     </div>
                 </form>
             </div>

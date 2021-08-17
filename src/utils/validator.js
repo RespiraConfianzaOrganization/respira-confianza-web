@@ -14,7 +14,6 @@ const validateNumber = (number) => {
 }
 
 const validateUmbrals = (form, umbrals) => {
-    let isValid = true;
     let umbralValue = -1
     for (const umbral of umbrals) {
         if (form[umbral]) {
@@ -22,11 +21,11 @@ const validateUmbrals = (form, umbrals) => {
                 umbralValue = form[umbral]
             }
             else {
-                isValid = false;
+                return false;
             }
         }
     }
-    return isValid
+    return true;
 }
 
 module.exports = {

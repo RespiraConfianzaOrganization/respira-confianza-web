@@ -104,14 +104,17 @@ class NewPollutantUmbrals extends React.Component {
       "dangerous",
     ];
 
-    umbrals.forEach((umbral) => {
+    for (const umbral of umbrals) {
       if (form[umbral]) {
         if (!validateNumber(form[umbral])) {
           errors[umbral] = "Este campo debe ser un número";
           isValid = false;
         }
+        else {
+          form[umbral] = parseInt(form[umbral])
+        }
       }
-    });
+    }
 
     if (!form.pollutant || form.pollutant === "Seleccionar") {
       errors.pollutant = "Debe seleccionar un contaminante";
@@ -184,7 +187,6 @@ class NewPollutantUmbrals extends React.Component {
                 name="pollutant"
                 label="Contaminante"
                 select
-                type="number"
                 SelectProps={{ native: true }}
                 value={this.state.form.pollutant}
                 variant="outlined"

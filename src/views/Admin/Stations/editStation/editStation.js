@@ -242,7 +242,7 @@ class EditStation extends React.Component {
             </Grid>
           </Grid>
           <div className="form__row_button">
-            <Button className="form_button" type="submit" variant="contained" color="primary" onClick={this.handleSubmit} >Guardar</Button>
+            <Button className="form_button" type="submit" variant="contained" color="secondary" onClick={this.handleSubmit} >Guardar</Button>
           </div>
         </form>
       </div>
