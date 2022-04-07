@@ -1,68 +1,17 @@
 import 'chart.js/auto';
-import {Chart} from 'react-chartjs-2';
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import styled from 'styled-components';
 import {Collapse, Layout, Select, Tabs} from 'antd';
 import axios from "axios";
 import {getToken} from "../../utils/axios";
+import {ChartByTime} from "./chartByTime";
 
 const { Panel } = Collapse;
-const { Sider, Content } = Layout;
+const { Sider } = Layout;
 const { Option } = Select;
 const { TabPane } = Tabs;
 
-const options = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: 'bottom',
-        },
-    },
-    scales: {
-        x: {
-            title: {
-                display: true,
-                text: 'Fecha'
-            }
-        },
-        y: {
-            title: {
-                display: true,
-                text: 'Concentración [µg/mˆ3]'
-            }
-        }
-    }
-};
 
-const data = {
-    labels: ['2022-03-24', '2022-03-25', '2022-03-26', '2022-03-27', '2022-03-28', '2022-03-29', '2022-03-30'],
-    datasets: [
-        {
-            label: 'Quintero - MP10',
-            data: [1.1, 11.5, 3.1, 4.1, 5.1, 6.1, 7.1],
-            borderColor: "#3F7CAC"
-        },
-        {
-            label: 'Quintero - MP25',
-            data: [7, 6, 5, 4, 3, 2, 1],
-            borderColor: "#95AFBA"
-        },
-        {
-            label: 'Puchuncaví - MP10',
-            data: [1, 3, 5, 7, 9, 11, 13],
-            borderColor: "#BDC4A7"
-        },
-        {
-            label: 'Puchuncaví - MP25',
-            data: [13, 11, 9, 7, 5, 3, 1],
-            borderColor: "#D5E1A3"
-        },
-    ],
-}
-
-const filterDataGivenLabels = (datasets, labels) => {
-    return datasets.filter(dataset => labels.includes(dataset.label));
-}
 
 const STATIONS_URL = `${process.env.REACT_APP_API_URL}/api/public/stations`
 const POLLUTANTS_URL = `${process.env.REACT_APP_API_URL}/api/pollutants`
@@ -74,9 +23,7 @@ const PollutionChart = () => {
     const [basePollutants, setBasePollutants] = useState([])
     const [stations, setStations] = useState([])
     const [pollutants, setPollutants] = useState([])
-    const [chartData, setChartData] = useState(data)
     const token = getToken();
-    const chartRef = useRef(null);
 
     useEffect(() => {
         axios.get(STATIONS_URL, {
@@ -114,23 +61,6 @@ const PollutionChart = () => {
         })
 
     }, [token])
-
-    useEffect(() => {
-
-        const currentLabels = []
-        stations.forEach(stationName =>
-            pollutants.forEach(pollutantName => {
-            const label = `${stationName.label} - ${pollutantName.label}`;
-            currentLabels.push(label);
-        }));
-
-        const datasets = filterDataGivenLabels(data.datasets, currentLabels)
-        const currentData = {
-            labels: data.labels,
-            datasets: datasets
-        }
-        setChartData(currentData)
-    }, [pollutants, stations])
 
     const SelectIterable = [
         {
@@ -177,31 +107,51 @@ const PollutionChart = () => {
             <div/>
         </StyledSider>
         <Layout>
-            <StyledContent>
-                <h1>{"Visualización de contaminantes para los últimos 7 días"}</h1>
-                <h2>{"Datos entre 24 de Marzo, 2022 y 30 de Marzo, 2022"}</h2>
-                <StyledChart ref={chartRef} type='line' data={chartData} options={options}/>
-            </StyledContent>
+            <Tabs defaultActiveKey={"1"} type={"card"}>
+                <TabPane tab={"Ultimo día"} key={"1"}>
+                    <ChartByTime
+                        stations={stations}
+                        pollutants={pollutants}
+                        principalTitle={"Visualización de contaminantes para el último día"}
+                        secondaryTitle={"Datos entre 7 de Abril, 2022 y 8 de Abril, 2022"}
+                        daysQueryBy={1}
+                    />
+                </TabPane>
+                <TabPane tab={"Ultima semana"} key={"2"}>
+                    <ChartByTime
+                        stations={stations}
+                        pollutants={pollutants}
+                        principalTitle={"Visualización de contaminantes para los últimos 7 días"}
+                        secondaryTitle={"Datos entre 31 de Marzo, 2022 y 7 de Abril, 2022"}
+                        daysQueryBy={7}
+                    />
+                </TabPane>
+                <TabPane tab={"Ultimos 30 días"} key={"3"}>
+                    <ChartByTime
+                        stations={stations}
+                        pollutants={pollutants}
+                        principalTitle={"Visualización de contaminantes para los últimos 30 días"}
+                        secondaryTitle={"Datos entre 7 de Marzo, 2022 y 7 de Abril, 2022"}
+                        daysQueryBy={30}
+                    />
+                </TabPane>
+                <TabPane tab={"Ultimos 365 días"} key={"4"}>
+                    <ChartByTime
+                        stations={stations}
+                        pollutants={pollutants}
+                        principalTitle={"Visualización de contaminantes para los últimos 365 días"}
+                        secondaryTitle={"Datos entre 7 de Abril, 2021 y 7 de Abril, 2022"}
+                        daysQueryBy={365}
+                    />
+                </TabPane>
+
+            </Tabs>
+
         </Layout>
     </StyledLayout>
 }
 
 export default PollutionChart;
-
-const StyledContent = styled(Content)`
-  padding-top: 3vh;
-  text-align: center;
-
-  h1 {
-    font-size: 36px;
-  }
-`
-
-const StyledChart = styled(Chart)`
-  align-self: center;
-  max-width: 90%;
-  padding-left: 5%;
-`
 
 const StyledSelect = styled(Select)`
   min-width: 100%;
