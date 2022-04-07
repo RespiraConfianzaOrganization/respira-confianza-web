@@ -1,15 +1,15 @@
 import 'chart.js/auto';
 import {Chart} from 'react-chartjs-2';
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import styled from 'styled-components';
-import {Collapse, Layout, Select} from 'antd';
+import {Collapse, Layout, Select, Tabs} from 'antd';
+import axios from "axios";
+import {getToken} from "../../utils/axios";
 
 const { Panel } = Collapse;
 const { Sider, Content } = Layout;
 const { Option } = Select;
-
-const baseStations = ['Quintero', 'Puchuncaví']
-const basePollutants = ['MP10', 'MP25']
+const { TabPane } = Tabs;
 
 const options = {
     responsive: true,
@@ -20,8 +20,16 @@ const options = {
     },
     scales: {
         x: {
-            display: true,
-            text: 'Eje X'
+            title: {
+                display: true,
+                text: 'Fecha'
+            }
+        },
+        y: {
+            title: {
+                display: true,
+                text: 'Concentración [µg/mˆ3]'
+            }
         }
     }
 };
@@ -31,7 +39,7 @@ const data = {
     datasets: [
         {
             label: 'Quintero - MP10',
-            data: [1, 2, 3, 4, 5, 6, 7],
+            data: [1.1, 11.5, 3.1, 4.1, 5.1, 6.1, 7.1],
             borderColor: "#3F7CAC"
         },
         {
@@ -56,25 +64,73 @@ const filterDataGivenLabels = (datasets, labels) => {
     return datasets.filter(dataset => labels.includes(dataset.label));
 }
 
+const STATIONS_URL = `${process.env.REACT_APP_API_URL}/api/public/stations`
+const POLLUTANTS_URL = `${process.env.REACT_APP_API_URL}/api/pollutants`
+
+
 const PollutionChart = () => {
-    const [stations, setStations] = useState(baseStations)
-    const [pollutants, setPollutants] = useState(basePollutants)
+
+    const [baseStations, setBaseStations] = useState([])
+    const [basePollutants, setBasePollutants] = useState([])
+    const [stations, setStations] = useState([])
+    const [pollutants, setPollutants] = useState([])
     const [chartData, setChartData] = useState(data)
+    const token = getToken();
+    const chartRef = useRef(null);
 
     useEffect(() => {
+        axios.get(STATIONS_URL, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }).then((r) => {
+            const stations = r.data.stations
+            const currentBaseStations = stations.map( (station) => {
+                return {
+                    'value': station.id,
+                    'label': station.name
+                }
+            })
+            setBaseStations(currentBaseStations)
+        })
+
+    }, [token])
+
+    useEffect(() => {
+        axios.get(POLLUTANTS_URL, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }).then((r) => {
+            const pollutants = r.data.pollutants
+            console.log(pollutants)
+            const currentBasePollutants = pollutants.map( (station) => {
+                return {
+                    'value': station.name,
+                    'label': station.extendedName
+                }
+            })
+            setBasePollutants(currentBasePollutants)
+        })
+
+    }, [token])
+
+    useEffect(() => {
+
         const currentLabels = []
         stations.forEach(stationName =>
             pollutants.forEach(pollutantName => {
-            const label = `${stationName} - ${pollutantName}`;
+            const label = `${stationName.label} - ${pollutantName.label}`;
             currentLabels.push(label);
         }));
+
         const datasets = filterDataGivenLabels(data.datasets, currentLabels)
         const currentData = {
             labels: data.labels,
             datasets: datasets
         }
         setChartData(currentData)
-    }, [stations, pollutants])
+    }, [pollutants, stations])
 
     const SelectIterable = [
         {
@@ -108,9 +164,9 @@ const PollutionChart = () => {
                             defaultValue={s.defaultValue}
                         >
                             {s.options.map(option =>
-                                <Option value={option} label={option}>
+                                <Option value={option.value} label={option.label}>
                                     <div>
-                                        {option}
+                                        {option.label}
                                     </div>
                                 </Option>
                             )}
@@ -124,7 +180,7 @@ const PollutionChart = () => {
             <StyledContent>
                 <h1>{"Visualización de contaminantes para los últimos 7 días"}</h1>
                 <h2>{"Datos entre 24 de Marzo, 2022 y 30 de Marzo, 2022"}</h2>
-                <StyledChart type='line' data={chartData} options={options}/>
+                <StyledChart ref={chartRef} type='line' data={chartData} options={options}/>
             </StyledContent>
         </Layout>
     </StyledLayout>
