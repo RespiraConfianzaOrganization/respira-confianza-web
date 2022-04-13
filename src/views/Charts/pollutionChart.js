@@ -11,7 +11,14 @@ const { Sider } = Layout;
 const { Option } = Select;
 const { TabPane } = Tabs;
 
-
+const sizes = {
+    sideBar: {
+        width: '21vw'
+    },
+    sideBarItem: {
+        width: '20vw'
+    }
+}
 
 const STATIONS_URL = `${process.env.REACT_APP_API_URL}/api/public/stations`
 const POLLUTANTS_URL = `${process.env.REACT_APP_API_URL}/api/pollutants`
@@ -93,8 +100,8 @@ const PollutionChart = () => {
                             optionLabelProp="label"
                             defaultValue={s.defaultValue}
                         >
-                            {s.options.map(option =>
-                                <Option value={option.value} label={option.label}>
+                            {s.options.map((option, idx) =>
+                                <Option value={option.value} label={option.label} key={idx}>
                                     <div>
                                         {option.label}
                                     </div>
@@ -135,7 +142,7 @@ const PollutionChart = () => {
                         daysQueryBy={30}
                     />
                 </TabPane>
-                <TabPane tab={"Ultimos 365 días"} key={"4"}>
+                <TabPane tab={"Ultimo 365 días"} key={"4"}>
                     <ChartByTime
                         stations={stations}
                         pollutants={pollutants}
@@ -162,7 +169,7 @@ const StyledLayout = styled(Layout)`
 `
 
 const StyledPanel = styled(Panel)`
-  width: 15vw;
+  width: ${sizes.sideBarItem.width};
 `
 
 const StyledSider = styled(Sider)`
@@ -171,7 +178,8 @@ const StyledSider = styled(Sider)`
   flex-direction: column;
   align-content: center;
   background-color: white;
-  min-width: 18vw !important;
+  max-width: ${sizes.sideBar.width} !important;
+  min-width: ${sizes.sideBar.width} !important;
   padding-top: 5vh;
   
   p, h1 {
