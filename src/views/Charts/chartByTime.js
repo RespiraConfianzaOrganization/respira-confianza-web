@@ -1,17 +1,19 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState, useCallback} from "react";
 import styled from "styled-components";
-import {Chart} from "react-chartjs-2";
 import {Layout} from "antd";
 import {getToken} from "../../utils/axios";
 import axios from "axios";
 import moment from "moment";
-import 'chartjs-adapter-moment'
+import {Skeleton} from "antd";
+import "chartjs-adapter-moment";
+import { Line } from 'react-chartjs-2';
+import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, TimeScale } from 'chart.js';
+
+ChartJS.register(LineElement, PointElement, LinearScale, Title, TimeScale);
 
 const { Content } = Layout;
 
 const options = {
-    responsive: true,
-    spanGaps: true,
     plugins: {
         legend: {
             position: 'bottom',
@@ -43,30 +45,35 @@ const range = n => [...Array(n).keys()]
 
 export const ChartByTime = ({stations, pollutants, principalTitle, secondaryTitle, daysQueryBy}) => {
 
+    const days = daysQueryBy
     const [ datasets, setDatasets ] = useState([]);
     const [ labels, setLabels ] = useState([])
-    const chartRef = useRef(null);
+    const [ dataIsReady, setDataIsReady ] = useState(false)
+    // const chartRef = useRef(null);
 
     const token = getToken();
 
-    const getStationName = (id) => {
+    const getStationName = useCallback((id) => {
         const [station] = stations.filter(s => s.id === id)
         return station.name
-    }
+    }, [stations])
 
     useEffect(() => {
         const baseDate = new Date(moment().toISOString())
-        setLabels(range(daysQueryBy).map(offset => {
+        setLabels(range(days).map(offset => {
             const mutableDate = new Date()
             mutableDate.setDate(baseDate.getDate() + offset)
             return mutableDate
         }))
 
-    }, [daysQueryBy])
+    }, [days])
 
     useEffect(() => {
+
+        setDataIsReady(false)
+
         axios.post(POLLUTANTS_BY_STATIONS, {
-            days: daysQueryBy,
+            days: days,
             pollutants: pollutants.map(({name}) => name),
             stations: stations.map(({id}) => id)
         }, {
@@ -78,11 +85,10 @@ export const ChartByTime = ({stations, pollutants, principalTitle, secondaryTitl
             const currentDatasets = []
             stations.forEach(({id}) => {
                 const stationName = getStationName(id)
+                const stationReadings = readings[id]
                 pollutants.forEach(({name}) => {
                     const currentValues = []
-                    const filteredReadings = readings
-                        .filter(({station_id}) => station_id === id)
-                    filteredReadings.forEach(o => {
+                    stationReadings.forEach(o => {
                         const date = new Date(o.recorded_at)
                         const value = {
                             x: date,
@@ -97,31 +103,30 @@ export const ChartByTime = ({stations, pollutants, principalTitle, secondaryTitl
                 })
             })
             setDatasets(currentDatasets)
+            setDataIsReady(true)
         })
         return function cleanup() {
             setDatasets([])
         }
 
-    }, [token, pollutants, stations, daysQueryBy])
+    }, [token, pollutants, stations, days, getStationName])
 
     return <>
         <StyledContent>
             <h1>{principalTitle}</h1>
             <h2>{secondaryTitle}</h2>
             <StyledChart
-                ref={chartRef}
-                type='line'
-                data={{
-                    labels: labels,
-                    datasets: datasets
-                }}
-                options={options}
+              data={{
+                labels: labels,
+                datasets: datasets
+              }}
+              options={options}
             />
         </StyledContent>
     </>
 }
 
-const StyledChart = styled(Chart)`
+const StyledChart = styled(Line)`
   align-self: center;
   max-width: 90%;
   padding-left: 5%;

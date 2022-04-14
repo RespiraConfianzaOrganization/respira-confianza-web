@@ -71,6 +71,7 @@ const PollutionChart = () => {
 
     }, [token])
 
+
     const SelectIterable = [
         {
             "placeholder": "Selecciona algunas estaciones",
@@ -116,13 +117,13 @@ const PollutionChart = () => {
             <div/>
         </StyledSider>
         <Layout>
-            <Tabs defaultActiveKey={"1"} type={"card"}>
+            <Tabs defaultActiveKey={"1"} type={"card"} centered={true}>
                 <TabPane tab={"Ultimo día"} key={"1"}>
                     <ChartByTime
                         stations={stations}
                         pollutants={pollutants}
                         principalTitle={"Visualización de contaminantes para el último día"}
-                        secondaryTitle={"Datos entre 7 de Abril, 2022 y 8 de Abril, 2022"}
+                        secondaryTitle={"Datos entre 13 de Abril, 2022 y 14 de Abril, 2022"}
                         daysQueryBy={1}
                     />
                 </TabPane>
@@ -131,7 +132,7 @@ const PollutionChart = () => {
                         stations={stations}
                         pollutants={pollutants}
                         principalTitle={"Visualización de contaminantes para los últimos 7 días"}
-                        secondaryTitle={"Datos entre 31 de Marzo, 2022 y 7 de Abril, 2022"}
+                        secondaryTitle={"Datos entre 7 de Marzo, 2022 y 14 de Abril, 2022"}
                         daysQueryBy={7}
                     />
                 </TabPane>
@@ -140,7 +141,7 @@ const PollutionChart = () => {
                         stations={stations}
                         pollutants={pollutants}
                         principalTitle={"Visualización de contaminantes para los últimos 30 días"}
-                        secondaryTitle={"Datos entre 7 de Marzo, 2022 y 7 de Abril, 2022"}
+                        secondaryTitle={"Datos entre 14 de Marzo, 2022 y 14 de Abril, 2022"}
                         daysQueryBy={30}
                     />
                 </TabPane>
@@ -149,7 +150,7 @@ const PollutionChart = () => {
                         stations={stations}
                         pollutants={pollutants}
                         principalTitle={"Visualización de contaminantes para los últimos 365 días"}
-                        secondaryTitle={"Datos entre 7 de Abril, 2021 y 7 de Abril, 2022"}
+                        secondaryTitle={"Datos entre 14 de Abril, 2021 y 14 de Abril, 2022"}
                         daysQueryBy={365}
                     />
                 </TabPane>

@@ -185,14 +185,16 @@ function LogedInView(props) {
 }
 
 function LogedOutView(props) {
-    const history = useHistory();
-    const { classLinksContainer, link } = props;
+    const { classLinksContainer, } = props;
 
-    const handleClick = () => {
-        history.push("/ingresar");
-    }
-    return <div className={classLinksContainer} onClick={handleClick}>
-        <p className={link}>Ingresar</p>
+    return <div className={classLinksContainer}>
+        <Link to={'/ingresar'}>
+            Ingresar
+        </Link>
+        {'\u00A0'}
+        <Link to={'/charts'}>
+            Charts
+        </Link>
     </div>;
 }
 

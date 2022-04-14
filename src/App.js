@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from "react";
+import "antd/dist/antd.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { SnackbarProvider } from 'notistack';
 import { Provider } from "react-redux";
@@ -12,6 +13,7 @@ import Map from "./views/Map";
 import { NavBarCustumer, DrawnerCustumer } from "./components/Layout/Layout";
 import "./App.css";
 import { cssVariables, theme } from "./theme";
+import PollutionChart from "./views/Charts/pollutionChart";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,6 +61,7 @@ function App() {
                     <Route exact path="/" component={Map} />
                     <Route exact path="/ingresar" component={Login} />
                     <Route path="/admin" component={Page} />
+                    <Route path="/charts" component={PollutionChart} />
                   </Switch>
                 </main>
               </div>
