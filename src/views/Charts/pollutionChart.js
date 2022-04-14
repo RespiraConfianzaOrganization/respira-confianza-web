@@ -41,11 +41,12 @@ const PollutionChart = () => {
             const stations = r.data.stations
             const currentBaseStations = stations.map( (station) => {
                 return {
-                    'value': station.id,
-                    'label': station.name
+                    'value': station,
+                    'label': station.name,
                 }
             })
             setBaseStations(currentBaseStations)
+            setStations(currentBaseStations.map(s => s.value))
         })
 
     }, [token])
@@ -58,13 +59,14 @@ const PollutionChart = () => {
         }).then((r) => {
             const pollutants = r.data.pollutants
             console.log(pollutants)
-            const currentBasePollutants = pollutants.map( (station) => {
+            const currentBasePollutants = pollutants.map( (pollutant) => {
                 return {
-                    'value': station.name,
-                    'label': station.extendedName
+                    'value': pollutant,
+                    'label': pollutant.extendedName,
                 }
             })
             setBasePollutants(currentBasePollutants)
+            setPollutants(currentBasePollutants.map(p => p.value))
         })
 
     }, [token])
