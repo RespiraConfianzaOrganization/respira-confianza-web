@@ -30,6 +30,7 @@ const PollutionChart = () => {
     const [basePollutants, setBasePollutants] = useState([])
     const [stations, setStations] = useState([])
     const [pollutants, setPollutants] = useState([])
+    const [dataIsReady, setDataIsReady] = useState(false)
     const token = getToken();
 
     useEffect(() => {
@@ -62,7 +63,7 @@ const PollutionChart = () => {
             const currentBasePollutants = pollutants.map( (pollutant) => {
                 return {
                     'value': pollutant,
-                    'label': pollutant.extendedName,
+                    'label': pollutant.name,
                 }
             })
             setBasePollutants(currentBasePollutants)
@@ -71,6 +72,10 @@ const PollutionChart = () => {
 
     }, [token])
 
+    useEffect(() => {
+        const isReady = pollutants.length > 0 && stations.length > 0 && true
+        setDataIsReady(isReady)
+    }, [pollutants, stations])
 
     const SelectIterable = [
         {
@@ -87,6 +92,14 @@ const PollutionChart = () => {
             "cardName": "Contaminantes",
             "onChange": setPollutants
         }
+    ]
+
+
+    const tabs = [
+        {daysQueryBy: 1, title: "Ultimo día"},
+        {daysQueryBy: 7, title: "Ultimo semana"},
+        {daysQueryBy: 30, title: "Ultimo mes"},
+        {daysQueryBy: 365, title: "Ultimo año"},
     ]
 
     return <StyledLayout>
@@ -117,44 +130,15 @@ const PollutionChart = () => {
             <div/>
         </StyledSider>
         <Layout>
-            <Tabs defaultActiveKey={"1"} type={"card"} centered={true}>
-                <TabPane tab={"Ultimo día"} key={"1"}>
-                    <ChartByTime
+            <Tabs type={"card"} centered={true}>
+                {tabs.map(({daysQueryBy, title}, idx) =>
+                    <TabPane tab={title} key={idx}>
+                        {dataIsReady && <ChartByTime
                         stations={stations}
                         pollutants={pollutants}
-                        principalTitle={"Visualización de contaminantes para el último día"}
-                        secondaryTitle={"Datos entre 13 de Abril, 2022 y 14 de Abril, 2022"}
-                        daysQueryBy={1}
-                    />
-                </TabPane>
-                <TabPane tab={"Ultima semana"} key={"2"}>
-                    <ChartByTime
-                        stations={stations}
-                        pollutants={pollutants}
-                        principalTitle={"Visualización de contaminantes para los últimos 7 días"}
-                        secondaryTitle={"Datos entre 7 de Marzo, 2022 y 14 de Abril, 2022"}
-                        daysQueryBy={7}
-                    />
-                </TabPane>
-                <TabPane tab={"Ultimos 30 días"} key={"3"}>
-                    <ChartByTime
-                        stations={stations}
-                        pollutants={pollutants}
-                        principalTitle={"Visualización de contaminantes para los últimos 30 días"}
-                        secondaryTitle={"Datos entre 14 de Marzo, 2022 y 14 de Abril, 2022"}
-                        daysQueryBy={30}
-                    />
-                </TabPane>
-                <TabPane tab={"Ultimo 365 días"} key={"4"}>
-                    <ChartByTime
-                        stations={stations}
-                        pollutants={pollutants}
-                        principalTitle={"Visualización de contaminantes para los últimos 365 días"}
-                        secondaryTitle={"Datos entre 14 de Abril, 2021 y 14 de Abril, 2022"}
-                        daysQueryBy={365}
-                    />
-                </TabPane>
-
+                        daysQueryBy={daysQueryBy}
+                    />}
+                </TabPane>)}
             </Tabs>
 
         </Layout>

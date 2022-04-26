@@ -1,10 +1,9 @@
-import {useEffect, useRef, useState, useCallback} from "react";
+import {useEffect, useState, useCallback, useRef} from "react";
 import styled from "styled-components";
-import {Layout} from "antd";
+import {Layout, Spin} from "antd";
 import {getToken} from "../../utils/axios";
 import axios from "axios";
 import moment from "moment";
-import {Skeleton} from "antd";
 import "chartjs-adapter-moment";
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, TimeScale } from 'chart.js';
@@ -14,6 +13,7 @@ ChartJS.register(LineElement, PointElement, LinearScale, Title, TimeScale);
 const { Content } = Layout;
 
 const options = {
+    animations: false,
     plugins: {
         legend: {
             position: 'bottom',
@@ -43,15 +43,20 @@ const POLLUTANTS_BY_STATIONS = "http://localhost:8080/api/pollutants-by-stations
 
 const range = n => [...Array(n).keys()]
 
-export const ChartByTime = ({stations, pollutants, principalTitle, secondaryTitle, daysQueryBy}) => {
+export const ChartByTime = ({stations, pollutants, daysQueryBy}) => {
 
     const days = daysQueryBy
     const [ datasets, setDatasets ] = useState([]);
     const [ labels, setLabels ] = useState([])
     const [ dataIsReady, setDataIsReady ] = useState(false)
-    // const chartRef = useRef(null);
-
+    const chartRef = useRef(null);
     const token = getToken();
+
+    const endDate = moment()
+    const startDate = moment().subtract(days, 'days')
+
+    const endDateISO = endDate.toISOString()
+    const startDateISO = startDate.toISOString()
 
     const getStationName = useCallback((id) => {
         const [station] = stations.filter(s => s.id === id)
@@ -69,19 +74,18 @@ export const ChartByTime = ({stations, pollutants, principalTitle, secondaryTitl
     }, [days])
 
     useEffect(() => {
-
         setDataIsReady(false)
-
         axios.post(POLLUTANTS_BY_STATIONS, {
-            days: days,
             pollutants: pollutants.map(({name}) => name),
-            stations: stations.map(({id}) => id)
+            stations: stations.map(({id}) => id),
+            startDate: startDateISO,
+            endDate: endDateISO
         }, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
-        }).then((r) => {
-            const readings = r.data.readings
+        }).then(({data}) => {
+            const readings = data.readings
             const currentDatasets = []
             stations.forEach(({id}) => {
                 const stationName = getStationName(id)
@@ -89,10 +93,9 @@ export const ChartByTime = ({stations, pollutants, principalTitle, secondaryTitl
                 pollutants.forEach(({name}) => {
                     const currentValues = []
                     stationReadings.forEach(o => {
-                        const date = new Date(o.recorded_at)
                         const value = {
-                            x: date,
-                            y: o[name]
+                            x: o.timestamp,
+                            y: o[name.toLowerCase()]
                         }
                         currentValues.push(value)
                     })
@@ -105,23 +108,39 @@ export const ChartByTime = ({stations, pollutants, principalTitle, secondaryTitl
             setDatasets(currentDatasets)
             setDataIsReady(true)
         })
-        return function cleanup() {
-            setDatasets([])
-        }
 
-    }, [token, pollutants, stations, days, getStationName])
+    }, [
+        token,
+        pollutants,
+        stations,
+        days,
+        getStationName,
+        startDateISO,
+        endDateISO
+    ])
+
+    const ChartPollutants = useCallback(() => <StyledChart
+        data={{
+            labels: labels,
+            datasets: datasets
+        }}
+        options={options}
+        ref={chartRef}
+    />, [labels, datasets])
+
+    const primaryTitle = days === 1 ?
+        `Visualización de contaminantes para el último día` :
+        `Visualización de contaminantes para los últimos ${days} días`
+
+    const secondaryTitle = `Datos entre ${startDate.format('yyyy-mm-DD')} y ${endDate.format('yyyy-mm-DD')}`
 
     return <>
         <StyledContent>
-            <h1>{principalTitle}</h1>
+            <h1>{primaryTitle}</h1>
             <h2>{secondaryTitle}</h2>
-            <StyledChart
-              data={{
-                labels: labels,
-                datasets: datasets
-              }}
-              options={options}
-            />
+            <>
+                {dataIsReady ? <Spin /> : <ChartPollutants />}
+            </>
         </StyledContent>
     </>
 }
