@@ -1,7 +1,7 @@
 import 'chart.js/auto';
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import styled from 'styled-components';
-import {Collapse, Layout, Select, Tabs} from 'antd';
+import {Collapse, Layout, Select} from 'antd';
 import axios from "axios";
 import {getToken} from "../../utils/axios";
 import {ChartByTime} from "./chartByTime";
@@ -9,7 +9,6 @@ import {ChartByTime} from "./chartByTime";
 const { Panel } = Collapse;
 const { Sider } = Layout;
 const { Option } = Select;
-const { TabPane } = Tabs;
 
 const sizes = {
     sideBar: {
@@ -26,14 +25,24 @@ const POLLUTANTS_URL = `${process.env.REACT_APP_API_URL}/api/pollutants`
 
 const PollutionChart = () => {
 
-    const [baseStations, setBaseStations] = useState([])
-    const [basePollutants, setBasePollutants] = useState([])
-    const [stations, setStations] = useState([])
-    const [pollutants, setPollutants] = useState([])
+    const [stationsChoices, setStationsChoices] = useState([])
+    const [pollutantChoices, setPollutantChoices] = useState([])
+
+    const [stationsReady, setStationsReady] = useState(false)
+    const [pollutantsReady, setPollutantsReady] = useState(false)
     const [dataIsReady, setDataIsReady] = useState(false)
+
+    const [stations, setStations] = useState([])
+    const [polluntantIndex, setPolluntantIndex] = useState(null)
+    const [daysQueryBy, setDaysQueryBy] = useState(365)
+
+
     const token = getToken();
 
     useEffect(() => {
+
+        setStationsReady(false)
+
         axios.get(STATIONS_URL, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -46,103 +55,92 @@ const PollutionChart = () => {
                     'label': station.name,
                 }
             })
-            setBaseStations(currentBaseStations)
+            setStationsChoices(currentBaseStations)
             setStations(currentBaseStations.map(s => s.value))
         })
+
+        setStationsReady(true)
 
     }, [token])
 
     useEffect(() => {
+        setPollutantsReady(false)
+
         axios.get(POLLUTANTS_URL, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         }).then((r) => {
-            const pollutants = r.data.pollutants
-            console.log(pollutants)
+            const pollutants = r?.data?.pollutants ?? []
+            pollutants.sort()
             const currentBasePollutants = pollutants.map( (pollutant) => {
                 return {
                     'value': pollutant,
                     'label': pollutant.name,
                 }
             })
-            setBasePollutants(currentBasePollutants)
-            setPollutants(currentBasePollutants.map(p => p.value))
+            setPollutantChoices(currentBasePollutants)
         })
+
+        setPollutantsReady(true)
 
     }, [token])
 
     useEffect(() => {
-        const isReady = pollutants.length > 0 && stations.length > 0 && true
+        const isReady = pollutantsReady && stationsReady
         setDataIsReady(isReady)
-    }, [pollutants, stations])
+    }, [pollutantsReady, stationsReady])
 
-    const SelectIterable = [
-        {
-            "placeholder": "Selecciona algunas estaciones",
-            "defaultValue": baseStations,
-            "options": baseStations,
-            "cardName": "Estaciones",
-            "onChange": setStations
-        },
-        {
-            "placeholder": "Selecciona algunos contaminantes",
-            "defaultValue": basePollutants,
-            "options": basePollutants,
-            "cardName": "Contaminantes",
-            "onChange": setPollutants
-        }
-    ]
+    const ChartByTimeCallback = useCallback(() => {
+        const pollutant = pollutantChoices[polluntantIndex]?.value
+        return !dataIsReady ? null : <ChartByTime
+            stations={stations}
+            pollutant={pollutant}
+            daysQueryBy={daysQueryBy}
+        />
+    }, [stations, polluntantIndex, daysQueryBy, dataIsReady, pollutantChoices])
 
-
-    const tabs = [
-        {daysQueryBy: 1, title: "Ultimo día"},
-        {daysQueryBy: 7, title: "Ultimo semana"},
-        {daysQueryBy: 30, title: "Ultimo mes"},
-        {daysQueryBy: 365, title: "Ultimo año"},
-    ]
-
-    return <StyledLayout>
+    return <>
+    <StyledLayout>
         <StyledSider>
             <div/>
             <h1>Filtros</h1>
             <Collapse>
-                {SelectIterable.map((s, idx) =>
-                    <StyledPanel header={s.cardName} key={idx}>
-                        <StyledSelect
-                            mode="multiple"
-                            placeholder={s.placeholder}
-                            onChange={s.onChange}
-                            optionLabelProp="label"
-                            defaultValue={s.defaultValue}
-                        >
-                            {s.options.map((option, idx) =>
-                                <Option value={option.value} label={option.label} key={idx}>
-                                    <div>
-                                        {option.label}
-                                    </div>
-                                </Option>
-                            )}
+                <StyledPanel header={"Selecciona algunas estaciones"}>
+                    <StyledSelect
+                        mode="multiple"
+                        placeholder={"Selecciona algunas estaciones"}
+                        onChange={setStations}
+                        optionLabelProp="label"
+                        defaultValue={stationsChoices}
+                    >
+                        {stationsReady && stationsChoices.map((option, idx) =>
+                            <Option value={option.value} label={option.label} key={idx}>
+                                <div>
+                                    {option.label}
+                                </div>
+                            </Option>
+                        )}
+                    </StyledSelect>
+                </StyledPanel>
+                {pollutantsReady && <StyledPanel header={"Selecciona un contaminante"}>
+                        <StyledSelect onChange={setPolluntantIndex}>
+                            {
+                                pollutantChoices.map((p, idx) => {
+                                    return <Option key={idx} value={idx}>
+                                        {p.label}
+                                    </Option>}
+                                )}
                         </StyledSelect>
-                    </StyledPanel>
-                )}
+                </StyledPanel>}
             </Collapse>
             <div/>
         </StyledSider>
         <Layout>
-            <Tabs type={"card"} centered={true}>
-                {tabs.map(({daysQueryBy, title}, idx) =>
-                    <TabPane tab={title} key={idx}>
-                        {dataIsReady && <ChartByTime
-                        stations={stations}
-                        pollutants={pollutants}
-                        daysQueryBy={daysQueryBy}
-                    />}
-                </TabPane>)}
-            </Tabs>
-
+            {!polluntantIndex ? null : <ChartByTimeCallback />}
         </Layout>
     </StyledLayout>
+    </>
 }
 
 export default PollutionChart;

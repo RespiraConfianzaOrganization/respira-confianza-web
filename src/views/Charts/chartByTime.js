@@ -112,7 +112,7 @@ export const ChartByTime = ({stations, pollutant, daysQueryBy}) => {
             <h1>{primaryTitle}</h1>
             <h2>{secondaryTitle}</h2>
             <>
-                {dataIsReady ? <Spin /> : <ChartPollutants />}
+                {!dataIsReady ? <Spin /> : <ChartPollutants />}
             </>
         </StyledContent>
     </>
