@@ -90,8 +90,6 @@ export const ChartByTime = ({stations, pollutant, daysQueryBy}) => {
         stations,
         days,
         getStationName,
-        startDateISO,
-        endDateISO
     ])
 
     const ChartPollutants = useCallback(() => <StyledChart
