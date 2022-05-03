@@ -7,43 +7,18 @@ import moment from "moment";
 import "chartjs-adapter-moment";
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, TimeScale } from 'chart.js';
+import {getOptions, getRandomColor} from "./utils";
+import {usePost} from "./hooks";
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, TimeScale);
 
 const { Content } = Layout;
 
-const options = {
-    animations: false,
-    plugins: {
-        legend: {
-            position: 'bottom',
-        },
-    },
-    scales: {
-        x: {
-            title: {
-                display: true,
-                text: 'Fecha'
-            },
-            type: 'timeseries',
-            time: {
-                'unit': 'month'
-            }
-        },
-        y: {
-            title: {
-                display: true,
-                text: 'Concentración [µg/mˆ3]'
-            }
-        }
-    }
-};
-
 const POLLUTANTS_BY_STATIONS = "http://localhost:8080/api/pollutants-by-stations/"
 
 const range = n => [...Array(n).keys()]
 
-export const ChartByTime = ({stations, pollutants, daysQueryBy}) => {
+export const ChartByTime = ({stations, pollutant, daysQueryBy}) => {
 
     const days = daysQueryBy
     const [ datasets, setDatasets ] = useState([]);
@@ -76,7 +51,7 @@ export const ChartByTime = ({stations, pollutants, daysQueryBy}) => {
     useEffect(() => {
         setDataIsReady(false)
         axios.post(POLLUTANTS_BY_STATIONS, {
-            pollutants: pollutants.map(({name}) => name),
+            pollutants: [pollutant.name],
             stations: stations.map(({id}) => id),
             startDate: startDateISO,
             endDate: endDateISO
@@ -90,19 +65,19 @@ export const ChartByTime = ({stations, pollutants, daysQueryBy}) => {
             stations.forEach(({id}) => {
                 const stationName = getStationName(id)
                 const stationReadings = readings[id]
-                pollutants.forEach(({name}) => {
-                    const currentValues = []
-                    stationReadings.forEach(o => {
-                        const value = {
-                            x: o.timestamp,
-                            y: o[name.toLowerCase()]
-                        }
-                        currentValues.push(value)
-                    })
-                    currentDatasets.push({
-                        label: `${stationName} - ${name}`,
-                        data: currentValues
-                    })
+                const currentValues = []
+                const pollutantName = pollutant.name
+                stationReadings.forEach(o => {
+                    const value = {
+                        x: o.timestamp,
+                        y: o[pollutantName.toLowerCase()]
+                    }
+                    currentValues.push(value)
+                })
+                currentDatasets.push({
+                    label: stationName,
+                    data: currentValues,
+                    backgroundColor: getRandomColor()
                 })
             })
             setDatasets(currentDatasets)
@@ -111,7 +86,7 @@ export const ChartByTime = ({stations, pollutants, daysQueryBy}) => {
 
     }, [
         token,
-        pollutants,
+        pollutant,
         stations,
         days,
         getStationName,
@@ -124,7 +99,7 @@ export const ChartByTime = ({stations, pollutants, daysQueryBy}) => {
             labels: labels,
             datasets: datasets
         }}
-        options={options}
+        options={getOptions({pollutantUnit: pollutant.name})}
         ref={chartRef}
     />, [labels, datasets])
 
