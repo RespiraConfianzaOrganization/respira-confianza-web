@@ -3,11 +3,11 @@ export const getRandomColor = () => {
     const amplifiedNumber = randomNumber * 16777215
     const colorNumber = Math.floor(amplifiedNumber)
     const colorString = colorNumber.toString(16)
-    const currentColor =  '#' + colorString
-    return currentColor
+    return  `#${colorString}`
+
 }
 
-export const getOptions = ({pollutantUnit}) => {
+export const getOptions = ({pollutantUnit, xScales, yScales}) => {
 
     return {
         animations: false,
@@ -25,13 +25,15 @@ export const getOptions = ({pollutantUnit}) => {
                 type: 'timeseries',
                 time: {
                     'unit': 'month'
-                }
+                },
+                ...xScales
             },
             y: {
                 title: {
                     display: true,
                     text: `Concentración ${pollutantUnit}`
-                }
+                },
+                ...yScales
             }
         }
     }

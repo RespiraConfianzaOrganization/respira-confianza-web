@@ -8,7 +8,6 @@ import "chartjs-adapter-moment";
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, TimeScale } from 'chart.js';
 import {getOptions, getRandomColor} from "./utils";
-import {usePost} from "./hooks";
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, TimeScale);
 
@@ -17,6 +16,11 @@ const { Content } = Layout;
 const POLLUTANTS_BY_STATIONS = "http://localhost:8080/api/pollutants-by-stations/"
 
 const range = n => [...Array(n).keys()]
+
+const getStationName = ({stations, stationId}) => {
+    const [station] = stations.filter(s => s.id === stationId)
+    return station.name
+}
 
 export const ChartByTime = ({stations, pollutant, daysQueryBy}) => {
 
@@ -33,19 +37,18 @@ export const ChartByTime = ({stations, pollutant, daysQueryBy}) => {
     const endDateISO = endDate.toISOString()
     const startDateISO = startDate.toISOString()
 
-    const getStationName = useCallback((id) => {
-        const [station] = stations.filter(s => s.id === id)
-        return station.name
-    }, [stations])
+
 
     useEffect(() => {
-        const baseDate = new Date(moment().toISOString())
-        setLabels(range(days).map(offset => {
+        const currentDatetime = moment().toISOString()
+        const inmutableDate = new Date(currentDatetime)
+        const currentLabels = range(days).map(offset => {
+            const newDate = inmutableDate.getDate() + offset
             const mutableDate = new Date()
-            mutableDate.setDate(baseDate.getDate() + offset)
+            mutableDate.setDate(newDate)
             return mutableDate
-        }))
-
+        })
+        setLabels(currentLabels)
     }, [days])
 
     useEffect(() => {
@@ -63,7 +66,8 @@ export const ChartByTime = ({stations, pollutant, daysQueryBy}) => {
             const readings = data.readings
             const currentDatasets = []
             stations.forEach(({id}) => {
-                const stationName = getStationName(id)
+                const stationName = getStationName({stationId: id,
+                    stations: stations})
                 const stationReadings = readings[id]
                 const currentValues = []
                 const pollutantName = pollutant.name
@@ -77,7 +81,8 @@ export const ChartByTime = ({stations, pollutant, daysQueryBy}) => {
                 currentDatasets.push({
                     label: stationName,
                     data: currentValues,
-                    backgroundColor: getRandomColor()
+                    backgroundColor: getRandomColor(),
+                    showLine: false
                 })
             })
             setDatasets(currentDatasets)
@@ -92,12 +97,20 @@ export const ChartByTime = ({stations, pollutant, daysQueryBy}) => {
         getStationName,
     ])
 
+    const chartOptions = getOptions({
+        pollutantUnit: pollutant.unit,
+        xScales: {
+            min: startDate.valueOf(),
+            max: endDate.valueOf()
+        },
+    })
+
     const ChartPollutants = useCallback(() => <StyledChart
         data={{
             labels: labels,
             datasets: datasets
         }}
-        options={getOptions({pollutantUnit: pollutant.name})}
+        options={chartOptions}
         ref={chartRef}
     />, [labels, datasets])
 

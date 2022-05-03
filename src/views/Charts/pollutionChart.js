@@ -1,7 +1,7 @@
 import 'chart.js/auto';
 import {useCallback, useEffect, useState} from "react";
 import styled from 'styled-components';
-import {Collapse, Layout, Select} from 'antd';
+import {Button, Collapse, Layout, Select} from 'antd';
 import axios from "axios";
 import {getToken} from "../../utils/axios";
 import {ChartByTime} from "./chartByTime";
@@ -33,9 +33,12 @@ const PollutionChart = () => {
     const [dataIsReady, setDataIsReady] = useState(false)
 
     const [stations, setStations] = useState([])
-    const [polluntantIndex, setPolluntantIndex] = useState(null)
-    const [daysQueryBy, setDaysQueryBy] = useState(365)
+    const [polluntantIndex, setPolluntantIndex] = useState(0)
+    const [daysQueryBy, setDaysQueryBy] = useState(1)
 
+    const [formPollutantIndex, setFormPollutantIndex] = useState(0)
+    const [formStations, setFormStations] = useState([])
+    const [formDaysQueryBy, setFormDaysQueryBy] = useState(1)
 
     const token = getToken();
 
@@ -92,13 +95,20 @@ const PollutionChart = () => {
     }, [pollutantsReady, stationsReady])
 
     const ChartByTimeCallback = useCallback(() => {
-        const pollutant = pollutantChoices[polluntantIndex]?.value
+        const pollutant = pollutantChoices[formPollutantIndex]?.value
         return !dataIsReady ? null : <ChartByTime
-            stations={stations}
+            stations={formStations}
             pollutant={pollutant}
-            daysQueryBy={daysQueryBy}
+            daysQueryBy={formDaysQueryBy}
         />
-    }, [stations, polluntantIndex, daysQueryBy, dataIsReady, pollutantChoices])
+    }, [formStations, formPollutantIndex, formDaysQueryBy])
+
+
+    const handleOnClick = () => {
+        setFormPollutantIndex(polluntantIndex)
+        setFormDaysQueryBy(daysQueryBy)
+        setFormStations(stations)
+    }
 
     return <>
     <StyledLayout>
@@ -124,7 +134,9 @@ const PollutionChart = () => {
                     </StyledSelect>
                 </StyledPanel>
                 {pollutantsReady && <StyledPanel header={"Selecciona un contaminante"}>
-                        <StyledSelect onChange={setPolluntantIndex}>
+                        <StyledSelect
+                            defaultValue={0}
+                            onChange={setPolluntantIndex}>
                             {
                                 pollutantChoices.map((p, idx) => {
                                     return <Option key={idx} value={idx}>
@@ -133,7 +145,32 @@ const PollutionChart = () => {
                                 )}
                         </StyledSelect>
                 </StyledPanel>}
-            </Collapse>
+                <StyledPanel header={"Selecciona una cantidad de días"}>
+                    <StyledSelect
+                        defaultValue={1}
+                        onChange={setDaysQueryBy}>
+                        {
+                            [1, 7, 30, 365].map((d, idx) => {
+                                return <Option key={idx} value={d}>
+                                    {d}
+                                </Option>}
+                            )}
+                    </StyledSelect>
+                </StyledPanel>
+            </Collapse><br/>
+            <Container>
+                <Item/>
+                <Item>
+                    <Button
+                        onClick={handleOnClick}
+                        type="primary"
+                    >
+                        Filtrar
+                    </Button>
+                </Item>
+                <Item/>
+            </Container>
+
             <div/>
         </StyledSider>
         <Layout>
@@ -170,4 +207,13 @@ const StyledSider = styled(Sider)`
   p, h1 {
     text-align: center;
   }
+`
+
+const Container = styled.div`
+  display: flex;
+`
+
+const Item = styled.div`
+  display: flex;
+  margin: auto;
 `
