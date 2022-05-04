@@ -1,10 +1,9 @@
 import 'chart.js/auto';
-import {useCallback, useEffect, useState} from "react";
+import { useEffect, useState} from "react";
 import styled from 'styled-components';
-import {Button, Collapse, Layout, Select} from 'antd';
-import axios from "axios";
-import {getToken} from "../../utils/axios";
+import {Collapse, Layout, Select, Spin} from 'antd';
 import {ChartByTime} from "./chartByTime";
+import {getPollutantsChoices, getStationsChoices} from "./queries";
 
 const { Panel } = Collapse;
 const { Sider } = Layout;
@@ -19,10 +18,6 @@ const sizes = {
     }
 }
 
-const STATIONS_URL = `${process.env.REACT_APP_API_URL}/api/public/stations`
-const POLLUTANTS_URL = `${process.env.REACT_APP_API_URL}/api/pollutants`
-
-
 const PollutionChart = () => {
 
     const [stationsChoices, setStationsChoices] = useState([])
@@ -30,89 +25,28 @@ const PollutionChart = () => {
 
     const [stationsReady, setStationsReady] = useState(false)
     const [pollutantsReady, setPollutantsReady] = useState(false)
-    const [dataIsReady, setDataIsReady] = useState(false)
 
-    const [stations, setStations] = useState([])
-    const [polluntantIndex, setPolluntantIndex] = useState(0)
+    const [stationIndex, setStationIndex] = useState(0)
+    const [pollutantIndex, setPollutantIndex] = useState(0)
     const [daysQueryBy, setDaysQueryBy] = useState(1)
 
-    const [formPollutantIndex, setFormPollutantIndex] = useState(0)
-    const [formStations, setFormStations] = useState([])
-    const [formDaysQueryBy, setFormDaysQueryBy] = useState(1)
-
-    const token = getToken();
-
-    useEffect(() => {
-
-        setStationsReady(false)
-
-        axios.get(STATIONS_URL, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }).then((r) => {
-            const stations = r.data.stations
-            const currentBaseStations = stations.map( (station) => {
-                return {
-                    'value': station,
-                    'label': station.name,
-                }
-            })
-            setStationsChoices(currentBaseStations)
-            setStations(currentBaseStations.map(s => s.value))
-        })
-
+    const handleLoadStations = (s) => {
+        setStationsChoices(s)
         setStationsReady(true)
-
-    }, [token])
-
-    useEffect(() => {
-        setPollutantsReady(false)
-
-        const configQuery = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        }
-
-        axios.get(POLLUTANTS_URL, configQuery)
-            .then((r) => {
-                const pollutants = r?.data?.pollutants ?? []
-                pollutants.sort()
-                const currentBasePollutants = pollutants.map((pollutant) => {
-                    return {
-                        'value': pollutant,
-                        'label': pollutant.name,
-                    }
-                })
-                setPollutantChoices(currentBasePollutants)
-            })
-
-        setPollutantsReady(true)
-
-    }, [token])
-
-    useEffect(() => {
-        const isReady = pollutantsReady && stationsReady
-        setDataIsReady(isReady)
-    }, [pollutantsReady, stationsReady])
-
-    const ChartByTimeCallback = useCallback(() => {
-        const pollutant = pollutantChoices[formPollutantIndex]?.value
-        return !dataIsReady ? null : <ChartByTime
-            stations={formStations}
-            pollutant={pollutant}
-            daysQueryBy={formDaysQueryBy}
-        />
-        // eslint-disable-next-line
-    }, [formStations, formPollutantIndex, formDaysQueryBy])
-
-
-    const handleOnClick = () => {
-        setFormPollutantIndex(polluntantIndex)
-        setFormDaysQueryBy(daysQueryBy)
-        setFormStations(stations)
     }
+
+    const handleLoadPollutants = (p) => {
+        setPollutantChoices(p)
+        setPollutantsReady(true)
+    }
+
+    useEffect(() => {
+        // Stations
+        getStationsChoices().then(handleLoadStations)
+        // Pollutants
+        getPollutantsChoices().then(handleLoadPollutants)
+    }, [])
+
 
     return <>
     <StyledLayout>
@@ -120,27 +54,22 @@ const PollutionChart = () => {
             <div/>
             <h1>Filtros</h1>
             <Collapse>
-                <StyledPanel header={"Selecciona algunas estaciones"}>
+                {stationsReady && <StyledPanel header={"Selecciona una estación"}>
                     <StyledSelect
-                        mode="multiple"
-                        placeholder={"Selecciona algunas estaciones"}
-                        onChange={setStations}
-                        optionLabelProp="label"
-                        defaultValue={stationsChoices}
-                    >
-                        {stationsReady && stationsChoices.map((option, idx) =>
-                            <Option value={option.value} label={option.label} key={idx}>
-                                <div>
-                                    {option.label}
-                                </div>
-                            </Option>
-                        )}
+                        defaultValue={0}
+                        onChange={setStationIndex}>
+                        {
+                            stationsChoices.map((s, idx) => {
+                                return <Option key={idx} value={idx}>
+                                    {s.label}
+                                </Option>}
+                            )}
                     </StyledSelect>
-                </StyledPanel>
+                </StyledPanel>}
                 {pollutantsReady && <StyledPanel header={"Selecciona un contaminante"}>
                         <StyledSelect
                             defaultValue={0}
-                            onChange={setPolluntantIndex}>
+                            onChange={setPollutantIndex}>
                             {
                                 pollutantChoices.map((p, idx) => {
                                     return <Option key={idx} value={idx}>
@@ -162,24 +91,15 @@ const PollutionChart = () => {
                     </StyledSelect>
                 </StyledPanel>
             </Collapse><br/>
-            <Container>
-                <Item/>
-                <Item>
-                    <Button
-                        onClick={handleOnClick}
-                        type="primary"
-                    >
-                        Filtrar
-                    </Button>
-                </Item>
-                <Item/>
-            </Container>
-
             <div/>
         </StyledSider>
-        <Layout>
-            {!polluntantIndex ? null : <ChartByTimeCallback />}
-        </Layout>
+        {!(pollutantsReady && stationsReady) ? <Spin /> : <Layout>
+            <ChartByTime
+                stations={[stationsChoices[stationIndex]?.value]}
+                pollutant={pollutantChoices[pollutantIndex]?.value}
+                daysQueryBy={daysQueryBy}
+            />
+        </Layout>}
     </StyledLayout>
     </>
 }
@@ -213,11 +133,3 @@ const StyledSider = styled(Sider)`
   }
 `
 
-const Container = styled.div`
-  display: flex;
-`
-
-const Item = styled.div`
-  display: flex;
-  margin: auto;
-`

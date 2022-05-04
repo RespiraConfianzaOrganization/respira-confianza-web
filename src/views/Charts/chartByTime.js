@@ -18,6 +18,8 @@ const POLLUTANTS_BY_STATIONS = "http://localhost:8080/api/pollutants-by-stations
 
 export const ChartByTime = ({stations, pollutant, daysQueryBy}) => {
 
+    console.log({stations, pollutant, daysQueryBy})
+
     const days = daysQueryBy
     const [datasets, setDatasets] = useState([]);
     const [labels, setLabels] = useState([])
