@@ -69,21 +69,24 @@ const PollutionChart = () => {
     useEffect(() => {
         setPollutantsReady(false)
 
-        axios.get(POLLUTANTS_URL, {
+        const configQuery = {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
-        }).then((r) => {
-            const pollutants = r?.data?.pollutants ?? []
-            pollutants.sort()
-            const currentBasePollutants = pollutants.map( (pollutant) => {
-                return {
-                    'value': pollutant,
-                    'label': pollutant.name,
-                }
+        }
+
+        axios.get(POLLUTANTS_URL, configQuery)
+            .then((r) => {
+                const pollutants = r?.data?.pollutants ?? []
+                pollutants.sort()
+                const currentBasePollutants = pollutants.map((pollutant) => {
+                    return {
+                        'value': pollutant,
+                        'label': pollutant.name,
+                    }
+                })
+                setPollutantChoices(currentBasePollutants)
             })
-            setPollutantChoices(currentBasePollutants)
-        })
 
         setPollutantsReady(true)
 
@@ -101,6 +104,7 @@ const PollutionChart = () => {
             pollutant={pollutant}
             daysQueryBy={formDaysQueryBy}
         />
+        // eslint-disable-next-line
     }, [formStations, formPollutantIndex, formDaysQueryBy])
 
 
