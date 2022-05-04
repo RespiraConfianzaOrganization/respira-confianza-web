@@ -15,8 +15,6 @@ export async function getDatasets({pollutant, station, startDate, endDate}) {
         },
     }
 
-    console.log({pollutant, station, startDate, endDate})
-
     const queryData = {
         pollutants: [pollutant.name],
         stations: [station.id],

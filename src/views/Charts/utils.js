@@ -1,4 +1,5 @@
 import {getColorPalette} from "../../utils/colors";
+import moment from "moment";
 
 export const getOptions = ({pollutantUnit, xScales, yScales}) => {
 
@@ -66,4 +67,17 @@ export const getCurrentDatasets = ({readings, stations, pollutantName}) => {
     })
 
     return currentDatasets
+}
+
+export const getChartPrimaryTitle = ({days}) => {
+    const alternativeA = `Visualización de contaminantes para el último día`
+    const alternativeB = `Visualización de contaminantes para los últimos ${days} días`
+    const shouldUseAlternativeA = days === 1
+    return shouldUseAlternativeA ? alternativeA : alternativeB
+}
+
+export const getChartSecondaryTitle = ({startDate, endDate}) => {
+    const startDateString = moment(startDate).format('DD/MM/YYYY')
+    const endDateString = moment(endDate).format('DD/MM/YYYY')
+    return `Mediciones obtenidas entre ${startDateString} y ${endDateString}`
 }
