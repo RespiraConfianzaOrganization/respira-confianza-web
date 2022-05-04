@@ -3,7 +3,8 @@ import { useEffect, useState} from "react";
 import styled from 'styled-components';
 import {Collapse, Layout, Select, Spin} from 'antd';
 import {ChartByTime} from "./chartByTime";
-import {getPollutantsChoices, getStationsChoices} from "./queries";
+import {getPollutantsChoices} from "./queries/pollutants";
+import {getStationsChoices} from "./queries/stations";
 
 const { Panel } = Collapse;
 const { Sider } = Layout;
@@ -30,21 +31,21 @@ const PollutionChart = () => {
     const [pollutantIndex, setPollutantIndex] = useState(0)
     const [daysQueryBy, setDaysQueryBy] = useState(1)
 
-    const handleLoadStations = (s) => {
+    const loadStations = (s) => {
         setStationsChoices(s)
         setStationsReady(true)
     }
 
-    const handleLoadPollutants = (p) => {
+    const loadPollutants = (p) => {
         setPollutantChoices(p)
         setPollutantsReady(true)
     }
 
     useEffect(() => {
         // Stations
-        getStationsChoices().then(handleLoadStations)
+        getStationsChoices().then(loadStations)
         // Pollutants
-        getPollutantsChoices().then(handleLoadPollutants)
+        getPollutantsChoices().then(loadPollutants)
     }, [])
 
 
@@ -95,7 +96,7 @@ const PollutionChart = () => {
         </StyledSider>
         {!(pollutantsReady && stationsReady) ? <Spin /> : <Layout>
             <ChartByTime
-                stations={[stationsChoices[stationIndex]?.value]}
+                station={stationsChoices[stationIndex]?.value}
                 pollutant={pollutantChoices[pollutantIndex]?.value}
                 daysQueryBy={daysQueryBy}
             />
