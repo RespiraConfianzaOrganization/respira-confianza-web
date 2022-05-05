@@ -28,8 +28,8 @@ const PollutionChart = () => {
     const [pollutantsReady, setPollutantsReady] = useState(false)
 
     const [stationIndex, setStationIndex] = useState(0)
-    const [pollutantIndex, setPollutantIndex] = useState(0)
-    const [daysQueryBy, setDaysQueryBy] = useState(1)
+    const [pollutantIndex, setPollutantIndex] = useState(3)
+    const [daysQueryBy, setDaysQueryBy] = useState(365)
 
     const loadStations = (s) => {
         setStationsChoices(s)

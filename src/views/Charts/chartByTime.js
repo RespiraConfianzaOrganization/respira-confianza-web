@@ -73,9 +73,7 @@ export const ChartByTime = ({station, pollutant, daysQueryBy}) => {
         <StyledContent>
             <h1>{primaryTitle}</h1>
             <h2>{secondaryTitle}</h2>
-            <>
-                <ChartPollutants />
-            </>
+            <ChartPollutants />
         </StyledContent>
     </>
 }
