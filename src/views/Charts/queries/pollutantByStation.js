@@ -5,7 +5,7 @@ import {getCurrentDatasets} from "../utils";
 const POLLUTANTS_BY_STATIONS = `${process.env.REACT_APP_API_URL}/api/pollutants-by-stations`
 
 
-export async function getDatasets({pollutant, station, startDate, endDate}) {
+export async function getDatasets({pollutant, station, startDate, endDate, groupByTime}) {
 
     const token = getToken();
 
@@ -19,7 +19,8 @@ export async function getDatasets({pollutant, station, startDate, endDate}) {
         pollutants: [pollutant.name],
         stations: [station.id],
         startDate: startDate,
-        endDate: endDate
+        endDate: endDate,
+        groupByTime: groupByTime
     }
 
     const r = await axios.post(POLLUTANTS_BY_STATIONS, queryData, queryConfig)

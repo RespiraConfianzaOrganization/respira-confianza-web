@@ -53,9 +53,13 @@ export const getCurrentDatasets = ({readings, stations, pollutantName}) => {
         const stationReadings = readings[id]
         const currentValues = []
         stationReadings.forEach(o => {
+            const xValueA = o.timestamp
+            const xValueB = o.recorded_at
+            const yValueA = o[pollutantName.toLowerCase()]
+            const yValueB = o[pollutantName.toUpperCase()]
             const value = {
-                x: o.timestamp,
-                y: o[pollutantName.toLowerCase()]
+                x: xValueA || xValueB,
+                y: yValueA || yValueB
             }
             currentValues.push(value)
         })

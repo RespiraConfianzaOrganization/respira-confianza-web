@@ -41,11 +41,12 @@ export const ChartByTime = ({station, pollutant, daysQueryBy}) => {
             pollutant: pollutant,
             station: station,
             startDate: startDateISO,
-            endDate: endDateISO
+            endDate: endDateISO,
+            groupByTime: daysQueryBy !== 1
         }
         getDatasets(datasetsConfig).then(loadDatasets)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pollutant, station])
+    }, [pollutant, station, daysQueryBy])
 
     const chartOptions = getOptions({
         pollutantUnit: pollutant.unit,
