@@ -19,6 +19,10 @@ const sizes = {
     }
 }
 
+const DEFAULT_STATION_INDEX = 0
+const DEFAULT_POLLUTANT_INDEX = 3
+const DEFAULT_DAYS_QUERY_BY = 365
+
 const PollutionChart = () => {
 
     const [stationsChoices, setStationsChoices] = useState([])
@@ -27,9 +31,9 @@ const PollutionChart = () => {
     const [stationsReady, setStationsReady] = useState(false)
     const [pollutantsReady, setPollutantsReady] = useState(false)
 
-    const [stationIndex, setStationIndex] = useState(0)
-    const [pollutantIndex, setPollutantIndex] = useState(3)
-    const [daysQueryBy, setDaysQueryBy] = useState(365)
+    const [stationIndex, setStationIndex] = useState(DEFAULT_STATION_INDEX)
+    const [pollutantIndex, setPollutantIndex] = useState(DEFAULT_POLLUTANT_INDEX)
+    const [daysQueryBy, setDaysQueryBy] = useState(DEFAULT_DAYS_QUERY_BY)
 
     const loadStations = (s) => {
         setStationsChoices(s)
@@ -57,7 +61,7 @@ const PollutionChart = () => {
             <Collapse>
                 {stationsReady && <StyledPanel header={"Selecciona una estación"}>
                     <StyledSelect
-                        defaultValue={0}
+                        defaultValue={DEFAULT_STATION_INDEX}
                         onChange={setStationIndex}>
                         {
                             stationsChoices.map((s, idx) => {
@@ -69,7 +73,7 @@ const PollutionChart = () => {
                 </StyledPanel>}
                 {pollutantsReady && <StyledPanel header={"Selecciona un contaminante"}>
                         <StyledSelect
-                            defaultValue={0}
+                            defaultValue={DEFAULT_POLLUTANT_INDEX}
                             onChange={setPollutantIndex}>
                             {
                                 pollutantChoices.map((p, idx) => {
@@ -81,7 +85,7 @@ const PollutionChart = () => {
                 </StyledPanel>}
                 <StyledPanel header={"Selecciona una cantidad de días"}>
                     <StyledSelect
-                        defaultValue={1}
+                        defaultValue={DEFAULT_DAYS_QUERY_BY}
                         onChange={setDaysQueryBy}>
                         {
                             [1, 7, 30, 365].map((d, idx) => {
