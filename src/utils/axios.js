@@ -1,7 +1,7 @@
 import axios from "axios";
 import store from "../store/store";
 
-const getToken = () => {
+export const getToken = () => {
     return store.getState().auth.access_token;
 };
 
