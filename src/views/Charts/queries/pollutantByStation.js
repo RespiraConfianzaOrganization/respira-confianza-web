@@ -1,19 +1,10 @@
-import {getToken} from "../../../utils/axios";
-import axios from "axios";
+import {postRequest} from "../../../utils/axios";
 import {getCurrentDatasets} from "../utils";
 
 const POLLUTANTS_BY_STATIONS = `${process.env.REACT_APP_API_URL}/api/pollutants-by-stations`
 
 
 export async function getDatasets({pollutant, station, startDate, endDate, groupByTime}) {
-
-    const token = getToken();
-
-    const queryConfig = {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    }
 
     const queryData = {
         pollutants: [pollutant.name],
@@ -23,9 +14,8 @@ export async function getDatasets({pollutant, station, startDate, endDate, group
         groupByTime: groupByTime
     }
 
-    const r = await axios.post(POLLUTANTS_BY_STATIONS, queryData, queryConfig)
-    const { data } = r
-    const { readings } = data
+    const r = await postRequest(POLLUTANTS_BY_STATIONS, queryData)
+    const {readings} = r?.data
 
     return getCurrentDatasets({
         readings: readings,
