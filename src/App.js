@@ -14,7 +14,7 @@ import { NavBarCustumer, DrawnerCustumer } from "./components/Layout/Layout";
 import "./App.css";
 import { cssVariables, theme } from "./theme";
 import PollutionChart from "./views/Charts/pollutionChart";
-import ExceedAirQuality from "./views/Reports";
+import {ExceedAirQuality} from "./views/Reports";
 
 const useStyles = makeStyles((theme) => ({
   root: {

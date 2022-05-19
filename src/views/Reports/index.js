@@ -58,17 +58,14 @@ export const ExceedAirQuality = () => {
 
     }
 
-    const onFinishFailed = () => {
-    }
 
     return <>
         <Form
-            name="basic"
+            // name="basic"
             initialValues={{
                 pollutantIndex: DEFAULT_POLLUTANT_INDEX, stationIndex: DEFAULT_STATION_INDEX
             }}
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
         >
             <Form.Item
                 label={"Contaminante"}
@@ -120,5 +117,3 @@ export const ExceedAirQuality = () => {
         </Form>
     </>
 }
-
-export default ExceedAirQuality;
