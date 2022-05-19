@@ -14,6 +14,7 @@ import { NavBarCustumer, DrawnerCustumer } from "./components/Layout/Layout";
 import "./App.css";
 import { cssVariables, theme } from "./theme";
 import PollutionChart from "./views/Charts/pollutionChart";
+import ExceedAirQuality from "./views/Reports";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,6 +63,7 @@ function App() {
                     <Route exact path="/ingresar" component={Login} />
                     <Route path="/admin" component={Page} />
                     <Route path="/charts" component={PollutionChart} />
+                    <Route path="/reports" component={ExceedAirQuality} />
                   </Switch>
                 </main>
               </div>
