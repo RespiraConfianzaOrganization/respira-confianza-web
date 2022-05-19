@@ -106,8 +106,12 @@ export const ExceedAirQuality = () => {
         </Select>
     }
 
-    return <FlexContainer>
-        <Spin spinning={loading}>
+    return <>
+        <FlexContainer>
+            <br/>
+            <h1>Generación de reporte para la visualización de excesos en los contaminantes</h1><br/>
+
+            <Spin spinning={loading}>
             <StyledForm
                 // name="basic"
                 initialValues={{
@@ -115,7 +119,7 @@ export const ExceedAirQuality = () => {
                 }}
                 onFinish={onFinish}
             >
-                <Form.Item
+                <FormItem
                     label={"Contaminante"}
                     name={"pollutantIndex"}
                     rules={[{
@@ -123,9 +127,9 @@ export const ExceedAirQuality = () => {
                     },]}
                 >
                     <PollutantsChoices />
-                </Form.Item>
+                </FormItem>
 
-                <Form.Item
+                <FormItem
                     label={"Estación"}
                     name={"stationIndex"}
                     rules={[{
@@ -133,9 +137,9 @@ export const ExceedAirQuality = () => {
                     },]}
                 >
                     <StationChoices />
-                </Form.Item>
+                </FormItem>
 
-                <Form.Item
+                <FormItem
                     label={"Rango de fechas"}
                     name={"dateRange"}
                     rules={[{
@@ -143,16 +147,17 @@ export const ExceedAirQuality = () => {
                     },]}
                 >
                     <RangePicker/>
-                </Form.Item>
+                </FormItem>
 
-                <Form.Item>
+                <FormItem>
                     <Button type="primary" htmlType="submit">
                         Generar reporte
                     </Button>
-                </Form.Item>
+                </FormItem>
             </StyledForm>
         </Spin>
     </FlexContainer>
+        </>
 }
 
 const FlexContainer = styled.div`
@@ -160,9 +165,15 @@ const FlexContainer = styled.div`
   flex-direction: column;
   align-content: center;
   vertical-align: center;
+  text-align: center;
   min-height: 100%;
 `
 
 const StyledForm = styled(Form)`
   min-width: 100%;
+`
+
+const FormItem = styled(Form.Item)`
+  display: flex;
+  align-items: flex-end;
 `
