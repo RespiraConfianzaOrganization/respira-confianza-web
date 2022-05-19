@@ -16,12 +16,13 @@ export const getRequest = async (url, params) => {
     return response;
 };
 
-export const postRequest = async (url, body) => {
+export const postRequest = async (url, body, responseType) => {
     const token = getToken();
     const response = await axios.post(url, body, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
+        responseType: responseType || "json"
     });
     return response;
 };
