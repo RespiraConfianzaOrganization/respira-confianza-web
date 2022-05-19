@@ -195,6 +195,10 @@ function LogedOutView(props) {
         <Link to={'/charts'}>
             Charts
         </Link>
+        {'\u00A0'}
+        <Link to={'/reports'}>
+            Reportes
+        </Link>
     </div>;
 }
 
