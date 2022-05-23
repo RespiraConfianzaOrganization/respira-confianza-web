@@ -1,6 +1,6 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {getStationsChoices} from "../Charts/queries/stations";
-import {getPollutantsChoices} from "../Charts/queries/pollutants";
+import {getPollutantChoicesFromThresholds, getPollutantsChoices} from "../Charts/queries/pollutants";
 import {Button, DatePicker, Form, Select, Spin} from 'antd';
 import {postRequest} from "../../utils/axios";
 import {saveAs} from 'file-saver'
@@ -20,37 +20,43 @@ export const ExceedAirQuality = () => {
     const [stationsChoices, setStationsChoices] = useState([])
     const [pollutantChoices, setPollutantChoices] = useState([])
 
-    const [stationsReady, setStationsReady] = useState(false)
-    const [pollutantsReady, setPollutantsReady] = useState(false)
+    const [stationIndex, setStationIndex] = useState(DEFAULT_STATION_INDEX)
+    const [pollutantIndex, setPollutantIndex] = useState(DEFAULT_POLLUTANT_INDEX)
 
     const [loading, setLoading] = useState(false)
 
     const loadStations = stations => {
         setStationsChoices(stations)
-        setStationsReady(true)
     }
 
     const loadPollutants = pollutants => {
         setPollutantChoices(pollutants)
-        setPollutantsReady(true)
     }
 
     useEffect(() => {
         // Stations
         getStationsChoices().then(loadStations)
         // Pollutants
-        getPollutantsChoices().then(loadPollutants)
+        getPollutantChoicesFromThresholds().then(loadPollutants)
     }, [])
+
+    const handlePollutantOnChange = i => {
+        setPollutantIndex(i)
+    }
+    const handleStationOnChange = i => {
+        setStationIndex(i)
+    }
+
+    const downloadPDF = data => {
+        const blob = new Blob([data], {type: 'application/pdf'})
+        setLoading(false)
+        saveAs(blob, 'reporte.pdf')
+    }
 
     const sendForm = inputData => {
         setLoading(true)
         postRequest(REPORT_URL, inputData, "arraybuffer")
-            .then(r => {
-                const {data} = r
-                const blob = new Blob([data], {type: 'application/pdf'})
-                setLoading(false)
-                saveAs(blob, 'reporte.pdf')
-            })
+            .then(r => downloadPDF(r.data))
     }
 
     const validateData = data => {
@@ -61,7 +67,7 @@ export const ExceedAirQuality = () => {
         return null
     }
 
-    const onFinish = ({pollutantIndex, stationIndex, dateRange}) => {
+    const onFinish = ({dateRange}) => {
 
         const [startDate, endDate] = dateRange
         const {name} = pollutantChoices[pollutantIndex]['value']
@@ -86,25 +92,29 @@ export const ExceedAirQuality = () => {
         }
     }
 
-    const StationChoices = () => {
-        return !stationsReady ? null : <Select>
-            {stationsChoices.map((p, idx) => {
+    const StationChoices = useCallback(() => {
+        return <Select
+            defaultValue={DEFAULT_STATION_INDEX}
+            onChange={handleStationOnChange}>
+            {stationsChoices.map(({label}, idx) => {
                 return <Option key={idx} value={idx}>
-                    {p.label}
+                    {label}
                 </Option>
             })}
         </Select>
-    }
+    }, [stationsChoices])
 
-    const PollutantsChoices = () => {
-        return !pollutantsReady ? null : <Select>
-            {pollutantChoices.map((p, idx) => {
+    const PollutantsChoices = useCallback(() => {
+        return <Select
+            defaultValue={DEFAULT_POLLUTANT_INDEX}
+            onChange={handlePollutantOnChange}>
+            {pollutantChoices.map(({label}, idx) => {
                 return <Option key={idx} value={idx}>
-                    {p.label}
+                    {label}
                 </Option>
             })}
         </Select>
-    }
+    }, [pollutantChoices])
 
     return <>
         <FlexContainer>
@@ -115,13 +125,13 @@ export const ExceedAirQuality = () => {
             <StyledForm
                 // name="basic"
                 initialValues={{
-                    pollutantIndex: DEFAULT_POLLUTANT_INDEX, stationIndex: DEFAULT_STATION_INDEX
+                    formPollutant: pollutantIndex, formStation: stationIndex
                 }}
                 onFinish={onFinish}
             >
                 <FormItem
                     label={"Contaminante"}
-                    name={"pollutantIndex"}
+                    name={"formPollutant"}
                     rules={[{
                         required: true, message: 'Debes ingresar un contaminante',
                     },]}
@@ -131,7 +141,7 @@ export const ExceedAirQuality = () => {
 
                 <FormItem
                     label={"Estación"}
-                    name={"stationIndex"}
+                    name={"formStation"}
                     rules={[{
                         required: true, message: 'Debes ingresar una estación',
                     },]}
@@ -143,8 +153,10 @@ export const ExceedAirQuality = () => {
                     label={"Rango de fechas"}
                     name={"dateRange"}
                     rules={[{
-                        required: true, message: 'Debes ingresar un rango de fechas',
-                    },]}
+                        required: true, message: 'Debes ingresar una fecha de inicio y una de término',
+                    },
+                        {validator: async () => console.log('hola')}
+                    ]}
                 >
                     <RangePicker/>
                 </FormItem>
