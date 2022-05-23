@@ -1,4 +1,3 @@
-import {getColorPalette, getRandomColor} from "../../utils/colors";
 import moment from "moment";
 
 export const getOptions = ({pollutantUnit, xScales, yScales}) => {
@@ -65,7 +64,7 @@ export const getCurrentDatasets = ({readings, stations, pollutantName, threshold
     const currentDatasets = []
     // const colors = getColorPalette(stations.length)
 
-    stations.forEach(({id}, idx) => {
+    stations.forEach(({id}) => {
         const stationName = getStationName({stationId: id,
             stations: stations})
         const stationReadings = readings[id]
