@@ -1,4 +1,4 @@
-import {getColorPalette} from "../../utils/colors";
+import {getColorPalette, getRandomColor} from "../../utils/colors";
 import moment from "moment";
 
 export const getOptions = ({pollutantUnit, xScales, yScales}) => {
@@ -43,15 +43,34 @@ const getStationName = ({stations, stationId}) => {
     return station.name
 }
 
-export const getCurrentDatasets = ({readings, stations, pollutantName}) => {
+const getColorDependingOnThreshold = ({value, thresholds}) => {
+    // https://color-hex.org/color-palettes/187
+    const {good, moderate, unhealthy, very_unhealthy} = thresholds
+    let color
+    if (value <= good){
+        color = '#2cba00'
+    } else if (value >= good && value <= moderate){
+        color = '#a3ff00'
+    } else if (value >= moderate && value <= unhealthy){
+        color = '#fff400'
+    } else if (value >= unhealthy && value <= very_unhealthy){
+        color = '#ffa700'
+    } else {
+        color = '#ff0000'
+    }
+    return color
+}
+
+export const getCurrentDatasets = ({readings, stations, pollutantName, thresholds}) => {
     const currentDatasets = []
-    const colors = getColorPalette(stations.length)
+    // const colors = getColorPalette(stations.length)
 
     stations.forEach(({id}, idx) => {
         const stationName = getStationName({stationId: id,
             stations: stations})
         const stationReadings = readings[id]
         const currentValues = []
+        const dotsColors = []
         stationReadings.forEach(o => {
             const xValueA = o.timestamp
             const xValueB = o.recorded_at
@@ -59,14 +78,19 @@ export const getCurrentDatasets = ({readings, stations, pollutantName}) => {
             const yValueB = o[pollutantName.toUpperCase()]
             const value = {
                 x: xValueA || xValueB,
-                y: yValueA || yValueB
+                y: yValueA || yValueB,
             }
+            const currentColor = getColorDependingOnThreshold({
+                value: value.y,
+                thresholds: thresholds
+            })
+            dotsColors.push(currentColor)
             currentValues.push(value)
         })
         currentDatasets.push({
             label: stationName,
             data: currentValues,
-            backgroundColor: colors[idx],
+            backgroundColor: dotsColors
         })
     })
 
