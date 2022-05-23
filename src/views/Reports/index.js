@@ -1,17 +1,21 @@
 import {useCallback, useEffect, useState} from "react";
 import {getStationsChoices} from "../Charts/queries/stations";
-import {getPollutantChoicesFromThresholds, getPollutantsChoices} from "../Charts/queries/pollutants";
-import {Button, DatePicker, Form, Select, Spin} from 'antd';
+import {getPollutantChoicesFromThresholds} from "../Charts/queries/pollutants";
+import {Button, DatePicker, Form, Select, Spin, message} from 'antd';
 import {postRequest} from "../../utils/axios";
 import {saveAs} from 'file-saver'
 import moment from "moment";
 import styled from "styled-components";
+import {validateDatePicker, validateChoices} from "./validators";
 
 const {RangePicker} = DatePicker
 const {Option} = Select;
 
-const REPORT_URL = `${process.env.REACT_APP_API_URL}/api/reports/exceed-threshold`
+message.config({
+    top: 65
+})
 
+const REPORT_URL = `${process.env.REACT_APP_API_URL}/api/reports/exceed-threshold`
 
 const DEFAULT_STATION_INDEX = 0
 const DEFAULT_POLLUTANT_INDEX = 0
@@ -47,7 +51,25 @@ export const ExceedAirQuality = () => {
         setStationIndex(i)
     }
 
-    const downloadPDF = data => {
+    const handleFormErrors = async (error) => {
+        const data = error.response.data
+        const decodedData = new TextDecoder().decode(data)
+        const jsonErrors = JSON.parse(decodedData)
+        const errors = jsonErrors.errors || {}
+
+        setLoading(false)
+
+        for (const field of Object.keys(errors)) {
+            const fieldErrors = errors[field]
+            for (const fieldError of fieldErrors) {
+                const content = `${field}: ${fieldError}`
+                await message.error(content)
+            }
+        }
+    }
+
+    const downloadPDF = response => {
+        const { data } = response
         const blob = new Blob([data], {type: 'application/pdf'})
         setLoading(false)
         saveAs(blob, 'reporte.pdf')
@@ -56,15 +78,8 @@ export const ExceedAirQuality = () => {
     const sendForm = inputData => {
         setLoading(true)
         postRequest(REPORT_URL, inputData, "arraybuffer")
-            .then(r => downloadPDF(r.data))
-    }
-
-    const validateData = data => {
-        return true
-    }
-
-    const plotErrors = () => {
-        return null
+            .then(downloadPDF)
+            .catch(handleFormErrors)
     }
 
     const onFinish = ({dateRange}) => {
@@ -83,13 +98,7 @@ export const ExceedAirQuality = () => {
             requestDate: now
         }
 
-        const isValidData = validateData(data)
-
-        if (isValidData) {
-            sendForm(data)
-        } else {
-            plotErrors()
-        }
+        sendForm(data)
     }
 
     const StationChoices = useCallback(() => {
@@ -134,7 +143,9 @@ export const ExceedAirQuality = () => {
                     name={"formPollutant"}
                     rules={[{
                         required: true, message: 'Debes ingresar un contaminante',
-                    },]}
+                    },
+                    {validator: (info, values) => validateChoices(info, values, pollutantChoices)}
+                    ]}
                 >
                     <PollutantsChoices />
                 </FormItem>
@@ -144,7 +155,9 @@ export const ExceedAirQuality = () => {
                     name={"formStation"}
                     rules={[{
                         required: true, message: 'Debes ingresar una estación',
-                    },]}
+                    },
+                    {validator: (info, values) => validateChoices(info, values, stationsChoices)}
+                    ]}
                 >
                     <StationChoices />
                 </FormItem>
@@ -155,7 +168,7 @@ export const ExceedAirQuality = () => {
                     rules={[{
                         required: true, message: 'Debes ingresar una fecha de inicio y una de término',
                     },
-                        {validator: async () => console.log('hola')}
+                        {validator: validateDatePicker}
                     ]}
                 >
                     <RangePicker/>
@@ -189,3 +202,4 @@ const FormItem = styled(Form.Item)`
   display: flex;
   align-items: flex-end;
 `
+
