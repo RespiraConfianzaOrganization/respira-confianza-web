@@ -132,7 +132,6 @@ export const ExceedAirQuality = () => {
 
             <Spin spinning={loading}>
             <StyledForm
-                // name="basic"
                 initialValues={{
                     formPollutant: pollutantIndex, formStation: stationIndex
                 }}
