@@ -1,12 +1,12 @@
 import {useCallback, useEffect, useState} from "react";
 import {getStationsChoices} from "../Charts/queries/stations";
 import {getPollutantChoicesFromThresholds} from "../Charts/queries/pollutants";
-import {Button, DatePicker, Form, Select, Spin, message} from 'antd';
+import {Button, DatePicker, Form, message, Select, Spin} from 'antd';
 import {postRequest} from "../../utils/axios";
 import {saveAs} from 'file-saver'
 import moment from "moment";
 import styled from "styled-components";
-import {validateDatePicker, validateChoices} from "./validators";
+import {validateChoices, validateDatePicker} from "./validators";
 
 const {RangePicker} = DatePicker
 const {Option} = Select;
@@ -44,12 +44,9 @@ export const ExceedAirQuality = () => {
         getPollutantChoicesFromThresholds().then(loadPollutants)
     }, [])
 
-    const handlePollutantOnChange = i => {
-        setPollutantIndex(i)
-    }
-    const handleStationOnChange = i => {
-        setStationIndex(i)
-    }
+    const handlePollutantOnChange = i => setPollutantIndex(i)
+
+    const handleStationOnChange = i => setStationIndex(i)
 
     const handleFormErrors = async (error) => {
         const data = error.response.data
@@ -140,10 +137,13 @@ export const ExceedAirQuality = () => {
                 <FormItem
                     label={"Contaminante"}
                     name={"formPollutant"}
-                    rules={[{
-                        required: true, message: 'Debes ingresar un contaminante',
-                    },
-                    {validator: (info, values) => validateChoices(info, values, pollutantChoices)}
+                    rules={[
+                        {
+                            required: true, message: 'Debes ingresar un contaminante',
+                        },
+                        {
+                            validator: (info, values) => validateChoices(info, values, pollutantChoices)
+                        }
                     ]}
                 >
                     <PollutantsChoices />
@@ -152,10 +152,13 @@ export const ExceedAirQuality = () => {
                 <FormItem
                     label={"Estación"}
                     name={"formStation"}
-                    rules={[{
-                        required: true, message: 'Debes ingresar una estación',
-                    },
-                    {validator: (info, values) => validateChoices(info, values, stationsChoices)}
+                    rules={[
+                        {
+                            required: true, message: 'Debes ingresar una estación',
+                        },
+                        {
+                            validator: (info, values) => validateChoices(info, values, stationsChoices)
+                        }
                     ]}
                 >
                     <StationChoices />
@@ -164,10 +167,13 @@ export const ExceedAirQuality = () => {
                 <FormItem
                     label={"Rango de fechas"}
                     name={"dateRange"}
-                    rules={[{
-                        required: true, message: 'Debes ingresar una fecha de inicio y una de término',
-                    },
-                        {validator: validateDatePicker}
+                    rules={[
+                        {
+                            required: true, message: 'Debes ingresar una fecha de inicio y una de término',
+                        },
+                        {
+                            validator: validateDatePicker
+                        }
                     ]}
                 >
                     <RangePicker/>
