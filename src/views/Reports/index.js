@@ -73,13 +73,18 @@ export const ExceedAirQuality = () => {
     }
 
     const sendForm = inputData => {
-        setLoading(true)
-        postRequest(REPORT_URL, inputData, "arraybuffer")
-            .then(downloadPDF)
-            .catch(handleFormErrors)
+        try {
+            setLoading(true)
+            postRequest(REPORT_URL, inputData, "arraybuffer")
+                .then(downloadPDF)
+                .catch(handleFormErrors)
+            return true
+        } catch (e) {
+            return false
+        }
     }
 
-    const onFinish = ({dateRange}) => {
+    const onSubmit = ({dateRange}) => {
 
         const [startDate, endDate] = dateRange
         const {name} = pollutantChoices[pollutantIndex]['value']
@@ -95,13 +100,14 @@ export const ExceedAirQuality = () => {
             requestDate: now
         }
 
-        sendForm(data)
+        return sendForm(data)
     }
 
     const StationChoices = useCallback(() => {
         return <Select
-            defaultValue={DEFAULT_STATION_INDEX}
-            onChange={handleStationOnChange}>
+            onChange={handleStationOnChange}
+            placeholder={"Escoge una estación"}
+        >
             {stationsChoices.map(({label}, idx) => {
                 return <Option key={idx} value={idx}>
                     {label}
@@ -112,8 +118,9 @@ export const ExceedAirQuality = () => {
 
     const PollutantsChoices = useCallback(() => {
         return <Select
-            defaultValue={DEFAULT_POLLUTANT_INDEX}
-            onChange={handlePollutantOnChange}>
+            onChange={handlePollutantOnChange}
+            placeholder={"Escoge un contaminante"}
+        >
             {pollutantChoices.map(({label}, idx) => {
                 return <Option key={idx} value={idx}>
                     {label}
@@ -129,10 +136,7 @@ export const ExceedAirQuality = () => {
 
             <Spin spinning={loading}>
             <StyledForm
-                initialValues={{
-                    formPollutant: pollutantIndex, formStation: stationIndex
-                }}
-                onFinish={onFinish}
+                onFinish={onSubmit}
             >
                 <FormItem
                     label={"Contaminante"}
