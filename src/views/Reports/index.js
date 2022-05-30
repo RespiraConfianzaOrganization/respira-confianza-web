@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import {getStationsChoices} from "../Charts/queries/stations";
 import {getPollutantChoicesFromThresholds} from "../Charts/queries/pollutants";
 import {Button, DatePicker, Form, message, Select, Spin} from 'antd';
@@ -54,8 +54,6 @@ export const ExceedAirQuality = () => {
         const jsonErrors = JSON.parse(decodedData)
         const errors = jsonErrors.errors || {}
 
-        setLoading(false)
-
         for (const field of Object.keys(errors)) {
             const fieldErrors = errors[field]
             for (const fieldError of fieldErrors) {
@@ -63,6 +61,8 @@ export const ExceedAirQuality = () => {
                 await message.error(content)
             }
         }
+
+        setLoading(false)
     }
 
     const downloadPDF = response => {
@@ -103,32 +103,6 @@ export const ExceedAirQuality = () => {
         return sendForm(data)
     }
 
-    const StationChoices = useCallback(() => {
-        return <Select
-            onChange={handleStationOnChange}
-            placeholder={"Escoge una estación"}
-        >
-            {stationsChoices.map(({label}, idx) => {
-                return <Option key={idx} value={idx}>
-                    {label}
-                </Option>
-            })}
-        </Select>
-    }, [stationsChoices])
-
-    const PollutantsChoices = useCallback(() => {
-        return <Select
-            onChange={handlePollutantOnChange}
-            placeholder={"Escoge un contaminante"}
-        >
-            {pollutantChoices.map(({label}, idx) => {
-                return <Option key={idx} value={idx}>
-                    {label}
-                </Option>
-            })}
-        </Select>
-    }, [pollutantChoices])
-
     return <>
         <FlexContainer>
             <br/>
@@ -146,11 +120,20 @@ export const ExceedAirQuality = () => {
                             required: true, message: 'Debes ingresar un contaminante',
                         },
                         {
-                            validator: (info, values) => validateChoices(info, values, pollutantChoices)
+                            validator: async (info, values) => await validateChoices(info, values, pollutantChoices)
                         }
                     ]}
                 >
-                    <PollutantsChoices />
+                    <Select
+                        onChange={handlePollutantOnChange}
+                        placeholder={"Escoge un contaminante"}
+                    >
+                        {pollutantChoices.map(({label}, idx) => {
+                            return <Option key={idx} value={idx}>
+                                {label}
+                            </Option>
+                        })}
+                    </Select>
                 </FormItem>
 
                 <FormItem
@@ -161,11 +144,20 @@ export const ExceedAirQuality = () => {
                             required: true, message: 'Debes ingresar una estación',
                         },
                         {
-                            validator: (info, values) => validateChoices(info, values, stationsChoices)
+                            validator: async (info, values) => await validateChoices(info, values, stationsChoices)
                         }
                     ]}
                 >
-                    <StationChoices />
+                    <Select
+                        onChange={handleStationOnChange}
+                        placeholder={"Escoge una estación"}
+                    >
+                        {stationsChoices.map(({label}, idx) => {
+                            return <Option key={idx} value={idx}>
+                                {label}
+                            </Option>
+                        })}
+                    </Select>
                 </FormItem>
 
                 <FormItem

@@ -41,7 +41,6 @@ export const validateDatePicker = async (info, value) => {
 
 export const validateChoices = async (info, value, choices) => {
     try {
-        console.log(value)
         if (!(value < choices.length && value >= 0)) {
             const error = new Error('Debes seleccionar una opción válida')
             return Promise.reject(error)

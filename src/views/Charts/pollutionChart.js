@@ -3,7 +3,7 @@ import { useEffect, useState} from "react";
 import styled from 'styled-components';
 import {Collapse, Layout, Select, Spin} from 'antd';
 import {ChartByTime} from "./chartByTime";
-import {getPollutantChoicesFromThresholds, getPollutantsChoices} from "./queries/pollutants";
+import {getPollutantChoicesFromThresholds} from "./queries/pollutants";
 import {getStationsChoices} from "./queries/stations";
 
 const { Panel } = Collapse;
