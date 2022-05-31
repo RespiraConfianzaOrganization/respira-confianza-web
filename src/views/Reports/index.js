@@ -29,13 +29,9 @@ export const ExceedAirQuality = () => {
 
     const [loading, setLoading] = useState(false)
 
-    const loadStations = stations => {
-        setStationsChoices(stations)
-    }
+    const loadStations = stations => setStationsChoices(stations)
 
-    const loadPollutants = pollutants => {
-        setPollutantChoices(pollutants)
-    }
+    const loadPollutants = pollutants => setPollutantChoices(pollutants)
 
     useEffect(() => {
         // Stations
@@ -63,6 +59,7 @@ export const ExceedAirQuality = () => {
         }
 
         setLoading(false)
+
     }
 
     const downloadPDF = response => {
@@ -104,95 +101,110 @@ export const ExceedAirQuality = () => {
     }
 
     return <>
-        <FlexContainer>
-            <br/>
-            <h1>Generación de reporte para la visualización de excesos en los contaminantes</h1><br/>
+        <ViewContainer>
+            <ColumnsContainer>
+                <img alt={"xd"}
+                     src={"https://static8.depositphotos.com/1439001/918/i/450/depositphotos_9184757-stock-photo-power-plant-emissions.jpg"}/>
+                <FormContainer>
+                    <br/>
+                    <h1>Generación de reporte para la visualización de excesos en los contaminantes</h1><br/>
 
-            <Spin spinning={loading}>
-            <StyledForm
-                onFinish={onSubmit}
-            >
-                <FormItem
-                    label={"Contaminante"}
-                    name={"formPollutant"}
-                    rules={[
-                        {
-                            required: true, message: 'Debes ingresar un contaminante',
-                        },
-                        {
-                            validator: async (info, values) => await validateChoices(info, values, pollutantChoices)
-                        }
-                    ]}
-                >
-                    <Select
-                        onChange={handlePollutantOnChange}
-                        placeholder={"Escoge un contaminante"}
-                    >
-                        {pollutantChoices.map(({label}, idx) => {
-                            return <Option key={idx} value={idx}>
-                                {label}
-                            </Option>
-                        })}
-                    </Select>
-                </FormItem>
+                    <Spin spinning={loading}>
+                        <StyledForm
+                            onFinish={onSubmit}
+                        >
+                            <FormItem
+                                label={"Contaminante"}
+                                name={"formPollutant"}
+                                rules={[
+                                    {
+                                        required: true, message: 'Debes ingresar un contaminante',
+                                    },
+                                    {
+                                        validator: async (info, values) => await validateChoices(info, values, pollutantChoices)
+                                    }
+                                ]}
+                            >
+                                <Select
+                                    onChange={handlePollutantOnChange}
+                                    placeholder={"Escoge un contaminante"}
+                                >
+                                    {pollutantChoices.map(({label}, idx) => {
+                                        return <Option key={idx} value={idx}>
+                                            {label}
+                                        </Option>
+                                    })}
+                                </Select>
+                            </FormItem>
 
-                <FormItem
-                    label={"Estación"}
-                    name={"formStation"}
-                    rules={[
-                        {
-                            required: true, message: 'Debes ingresar una estación',
-                        },
-                        {
-                            validator: async (info, values) => await validateChoices(info, values, stationsChoices)
-                        }
-                    ]}
-                >
-                    <Select
-                        onChange={handleStationOnChange}
-                        placeholder={"Escoge una estación"}
-                    >
-                        {stationsChoices.map(({label}, idx) => {
-                            return <Option key={idx} value={idx}>
-                                {label}
-                            </Option>
-                        })}
-                    </Select>
-                </FormItem>
+                            <FormItem
+                                label={"Estación"}
+                                name={"formStation"}
+                                rules={[
+                                    {
+                                        required: true, message: 'Debes ingresar una estación',
+                                    },
+                                    {
+                                        validator: async (info, values) => await validateChoices(info, values, stationsChoices)
+                                    }
+                                ]}
+                            >
+                                <Select
+                                    onChange={handleStationOnChange}
+                                    placeholder={"Escoge una estación"}
+                                >
+                                    {stationsChoices.map(({label}, idx) => {
+                                        return <Option key={idx} value={idx}>
+                                            {label}
+                                        </Option>
+                                    })}
+                                </Select>
+                            </FormItem>
 
-                <FormItem
-                    label={"Rango de fechas"}
-                    name={"dateRange"}
-                    rules={[
-                        {
-                            required: true, message: 'Debes ingresar una fecha de inicio y una de término',
-                        },
-                        {
-                            validator: validateDatePicker
-                        }
-                    ]}
-                >
-                    <RangePicker/>
-                </FormItem>
+                            <FormItem
+                                label={"Rango de fechas"}
+                                name={"dateRange"}
+                                rules={[
+                                    {
+                                        required: true, message: 'Debes ingresar una fecha de inicio y una de término',
+                                    },
+                                    {
+                                        validator: validateDatePicker
+                                    }
+                                ]}
+                            >
+                                <RangePicker/>
+                            </FormItem>
 
-                <FormItem>
-                    <Button type="primary" htmlType="submit">
-                        Generar reporte
-                    </Button>
-                </FormItem>
-            </StyledForm>
-        </Spin>
-    </FlexContainer>
-        </>
+                            <FormItem>
+                                <></>
+                                <Button type="primary" htmlType="submit">
+                                    Generar reporte
+                                </Button>
+                            </FormItem>
+                        </StyledForm>
+                    </Spin>
+                </FormContainer>
+            </ColumnsContainer>
+        </ViewContainer>
+    </>
 }
 
-const FlexContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-content: center;
+const ViewContainer = styled.div`
+  margin-top: 12vmin;
+  width: 80%;
+  background: white;
+`
+
+const ColumnsContainer = styled.div`
+  display: grid;
+  grid-template-columns: 40% auto;
+`
+
+const FormContainer = styled.div`
   vertical-align: center;
   text-align: center;
-  min-height: 100%;
+  min-width: 30%;
 `
 
 const StyledForm = styled(Form)`
@@ -200,7 +212,19 @@ const StyledForm = styled(Form)`
 `
 
 const FormItem = styled(Form.Item)`
-  display: flex;
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: 30% 1fr;
+  padding-right: 5%;
+
+  .ant-picker {
+    min-width: 100%;
+  }
+  
+  &:last-child {
+    margin-left: 27%;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+  }
 `
 
