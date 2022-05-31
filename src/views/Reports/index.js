@@ -108,36 +108,12 @@ export const ExceedAirQuality = () => {
                      src={pollutantsReportImg}/>
                 <FormContainer>
                     <br/>
-                    <h1>Generación de reporte para la visualización de excesos en los contaminantes</h1><br/>
+                    <h1>Reporte de excesos en la emisión de contaminantes</h1><br/>
 
                     <Spin spinning={loading}>
                         <StyledForm
                             onFinish={onSubmit}
                         >
-                            <FormItem
-                                label={"Contaminante"}
-                                name={"formPollutant"}
-                                rules={[
-                                    {
-                                        required: true, message: 'Debes ingresar un contaminante',
-                                    },
-                                    {
-                                        validator: async (info, values) => await validateChoices(info, values, pollutantChoices)
-                                    }
-                                ]}
-                            >
-                                <Select
-                                    onChange={handlePollutantOnChange}
-                                    placeholder={"Escoge un contaminante"}
-                                >
-                                    {pollutantChoices.map(({label}, idx) => {
-                                        return <Option key={idx} value={idx}>
-                                            {label}
-                                        </Option>
-                                    })}
-                                </Select>
-                            </FormItem>
-
                             <FormItem
                                 label={"Estación"}
                                 name={"formStation"}
@@ -155,6 +131,30 @@ export const ExceedAirQuality = () => {
                                     placeholder={"Escoge una estación"}
                                 >
                                     {stationsChoices.map(({label}, idx) => {
+                                        return <Option key={idx} value={idx}>
+                                            {label}
+                                        </Option>
+                                    })}
+                                </Select>
+                            </FormItem>
+
+                            <FormItem
+                                label={"Contaminante"}
+                                name={"formPollutant"}
+                                rules={[
+                                    {
+                                        required: true, message: 'Debes ingresar un contaminante',
+                                    },
+                                    {
+                                        validator: async (info, values) => await validateChoices(info, values, pollutantChoices)
+                                    }
+                                ]}
+                            >
+                                <Select
+                                    onChange={handlePollutantOnChange}
+                                    placeholder={"Escoge un contaminante"}
+                                >
+                                    {pollutantChoices.map(({label}, idx) => {
                                         return <Option key={idx} value={idx}>
                                             {label}
                                         </Option>
