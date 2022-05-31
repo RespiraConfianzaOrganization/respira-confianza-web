@@ -7,6 +7,7 @@ import {saveAs} from 'file-saver'
 import moment from "moment";
 import styled from "styled-components";
 import {validateChoices, validateDatePicker} from "./validators";
+import {pollutantsReportImg} from "../../assets";
 
 const {RangePicker} = DatePicker
 const {Option} = Select;
@@ -103,8 +104,8 @@ export const ExceedAirQuality = () => {
     return <>
         <ViewContainer>
             <ColumnsContainer>
-                <img alt={"xd"}
-                     src={"https://static8.depositphotos.com/1439001/918/i/450/depositphotos_9184757-stock-photo-power-plant-emissions.jpg"}/>
+                <SideImage alt={"xd"}
+                     src={pollutantsReportImg}/>
                 <FormContainer>
                     <br/>
                     <h1>Generación de reporte para la visualización de excesos en los contaminantes</h1><br/>
@@ -190,15 +191,21 @@ export const ExceedAirQuality = () => {
     </>
 }
 
+const SideImage = styled.img`
+  height: 50vh;
+  border-radius: 10px 0 0 10px;
+`
+
 const ViewContainer = styled.div`
   margin-top: 12vmin;
-  width: 80%;
+  width: 80vmax;
   background: white;
+  border-radius: 10px;
 `
 
 const ColumnsContainer = styled.div`
   display: grid;
-  grid-template-columns: 40% auto;
+  grid-template-columns: min-content auto;
 `
 
 const FormContainer = styled.div`
