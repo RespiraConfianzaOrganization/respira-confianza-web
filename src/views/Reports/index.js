@@ -198,7 +198,7 @@ const SideImage = styled.img`
 
 const ViewContainer = styled.div`
   margin-top: 12vmin;
-  width: 80vmax;
+  width: 85%;
   background: white;
   border-radius: 10px;
 `
