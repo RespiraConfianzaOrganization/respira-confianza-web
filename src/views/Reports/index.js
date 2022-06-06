@@ -46,17 +46,22 @@ export const ExceedAirQuality = () => {
     const handleStationOnChange = i => setStationIndex(i)
 
     const handleFormErrors = async (error) => {
-        const data = error.response.data
-        const decodedData = new TextDecoder().decode(data)
-        const jsonErrors = JSON.parse(decodedData)
-        const errors = jsonErrors.errors || {}
+        try {
+            const data = error.response.data
+            const decodedData = new TextDecoder().decode(data)
+            const jsonErrors = JSON.parse(decodedData)
+            const errors = jsonErrors.errors || {}
 
-        for (const field of Object.keys(errors)) {
-            const fieldErrors = errors[field]
-            for (const fieldError of fieldErrors) {
-                const content = `${field}: ${fieldError}`
-                await message.error(content)
+            for (const field of Object.keys(errors)) {
+                const fieldErrors = errors[field]
+                for (const fieldError of fieldErrors) {
+                    const content = `${field}: ${fieldError}`
+                    await message.error(content)
+                }
             }
+        } catch (e) {
+            const msg = 'Algo ocurrió, vuelve a intentar más tarde'
+            await message.error(msg)
         }
 
         setLoading(false)
