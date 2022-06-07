@@ -1,6 +1,6 @@
-const {getRandomNum} = require("./math");
+import {getRandomNum} from "./math";
 
-const getRandomColor = () => {
+export const getRandomColor = () => {
     const randomNumber = Math.random()
     const amplifiedNumber = randomNumber * 16777215
     const colorNumber = Math.floor(amplifiedNumber)
@@ -8,7 +8,7 @@ const getRandomColor = () => {
     return `#${colorString}`
 }
 
-const getColorPalette = (n) => {
+export const getColorPalette = (n) => {
 
     const letters = '0123456789abcdef'
     const colors = []
@@ -25,8 +25,3 @@ const getColorPalette = (n) => {
 
     return colors
 }
-
-module.exports = {
-    getRandomColor, getColorPalette
-};
-
