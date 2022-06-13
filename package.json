@@ -57,5 +57,9 @@
   },
   "devDependencies": {
     "@ant-design/icons": "^4.7.0"
+  },
+  "engines": {
+    "node": ">=17.4",
+    "npm": ">=8.3.1"
   }
 }
