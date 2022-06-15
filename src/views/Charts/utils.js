@@ -72,17 +72,18 @@ const getColorDependingOnThreshold = ({value, thresholds}) => {
 
 export const getCurrentDatasets = ({readings, stations, pollutantName, thresholds, startDate, endDate}) => {
     const currentDatasets = []
-    const days = [startDate, endDate]
 
-    const keys = ['good', 'moderate', 'unhealthy', 'very_unhealthy', 'dangerous']
-    keys.forEach(threshold => {
+    const thresholdsKeys = ['good', 'moderate', 'unhealthy', 'very_unhealthy', 'dangerous']
+    thresholdsKeys.forEach(threshold => {
         const thresholdColor = getColorDependingOnThreshold({
             value: thresholds[threshold],
             thresholds: thresholds
         })
-        const data = days.map(d => {
-            return {x: d, y: thresholds[threshold]}
-        })
+
+        const data = [
+            {x: startDate, y: thresholds[threshold]},
+            {x: endDate, y: thresholds[threshold]}
+        ]
 
         const thresholdDataset = {
             label: threshold,
