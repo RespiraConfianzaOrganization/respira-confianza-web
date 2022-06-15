@@ -52,16 +52,17 @@ const getStationName = ({stations, stationId}) => {
 const getColorDependingOnThreshold = ({value, thresholds}) => {
     // https://color-hex.org/color-palettes/187
     const {good, moderate, unhealthy, very_unhealthy, dangerous} = thresholds
+    const number = !value ? 0 : Number(value)
     let color
-    if (value.betweenWithoutTouch(0, good)){
+    if (number.betweenWithoutTouch(0, good)){
         color = colors.LessThanGood
-    } else if (value.betweenWithoutTouch(good, moderate)){
+    } else if (number.betweenWithoutTouch(good, moderate)){
         color = colors.BetweenGoodAndModerate
-    } else if (value.betweenWithoutTouch(moderate, unhealthy)){
+    } else if (number.betweenWithoutTouch(moderate, unhealthy)){
         color = colors.BetweenModerateAndUnhealthy
-    } else if (value.betweenWithoutTouch(unhealthy, very_unhealthy)){
+    } else if (number.betweenWithoutTouch(unhealthy, very_unhealthy)){
         color = colors.BetweenUnhealthyAndVeryUnhealthy
-    } else if (value.betweenWithoutTouch(very_unhealthy, dangerous)){
+    } else if (number.betweenWithoutTouch(very_unhealthy, dangerous)){
         color = colors.BetweenVeryUnhealthyAndDangerous
     } else {
         color = colors.MoreThanDangerous
