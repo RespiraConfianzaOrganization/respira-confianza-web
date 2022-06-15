@@ -1,6 +1,13 @@
 import moment from "moment";
 import {colors} from "../../Constants";
 
+Number.prototype.betweenWithoutTouch = function (min, max) {
+    if (min && max) return this >= min && this < max
+    else if (min && !max) return this >= min
+    else if (!min && max) return this < max
+    else return false
+}
+
 export const getOptions = ({pollutantUnit, xScales, yScales}) => {
 
     return {
@@ -46,15 +53,15 @@ const getColorDependingOnThreshold = ({value, thresholds}) => {
     // https://color-hex.org/color-palettes/187
     const {good, moderate, unhealthy, very_unhealthy, dangerous} = thresholds
     let color
-    if (value < good){
+    if (value.betweenWithoutTouch(0, good)){
         color = colors.LessThanGood
-    } else if (value >= good && value < moderate){
+    } else if (value.betweenWithoutTouch(good, moderate)){
         color = colors.BetweenGoodAndModerate
-    } else if (value >= moderate && value < unhealthy){
+    } else if (value.betweenWithoutTouch(moderate, unhealthy)){
         color = colors.BetweenModerateAndUnhealthy
-    } else if (value >= unhealthy && value < very_unhealthy){
+    } else if (value.betweenWithoutTouch(unhealthy, very_unhealthy)){
         color = colors.BetweenUnhealthyAndVeryUnhealthy
-    } else if (value >= very_unhealthy && value < dangerous){
+    } else if (value.betweenWithoutTouch(very_unhealthy, dangerous)){
         color = colors.BetweenVeryUnhealthyAndDangerous
     } else {
         color = colors.MoreThanDangerous
