@@ -28,6 +28,7 @@ import {
 
 import { connect } from "react-redux";
 import './Layout.css'
+import {NavButtons} from "./NavButtons";
 
 const drawerWidth = 270;
 const useStyles = makeStyles((theme) => ({
@@ -188,17 +189,7 @@ function LogedOutView(props) {
     const { classLinksContainer, } = props;
 
     return <div className={classLinksContainer}>
-        <Link to={'/ingresar'}>
-            Ingresar
-        </Link>
-        {'\u00A0'}
-        <Link to={'/charts'}>
-            Charts
-        </Link>
-        {'\u00A0'}
-        <Link to={'/reports'}>
-            Reportes
-        </Link>
+        <NavButtons/>
     </div>;
 }
 
