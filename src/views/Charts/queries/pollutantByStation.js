@@ -1,8 +1,9 @@
-import {postRequest} from "../../../utils/axios";
+import {getRequest, postRequest} from "../../../utils/axios";
 import {getCurrentDatasets} from "../utils";
 
 const POLLUTANTS_BY_STATIONS = `${process.env.REACT_APP_API_URL}/api/pollutants-by-stations`
 
+const THRESHOLDS_URL = `${process.env.REACT_APP_API_URL}/api/pollutant-umbrals/pollutant/:pollutant`
 
 export async function getDatasets({pollutant, station, startDate, endDate, groupByTime}) {
 
@@ -14,12 +15,19 @@ export async function getDatasets({pollutant, station, startDate, endDate, group
         groupByTime: groupByTime
     }
 
-    const r = await postRequest(POLLUTANTS_BY_STATIONS, queryData)
-    const {readings} = r?.data
+    const readingsResponse = await postRequest(POLLUTANTS_BY_STATIONS, queryData)
+    const {readings} = readingsResponse?.data
+
+    const pollutantName = pollutant.name
+
+    const POLLUTANT_THRESHOLDS_URL = THRESHOLDS_URL.replace(':pollutant', pollutantName)
+    const thresholdsResponse = await getRequest(POLLUTANT_THRESHOLDS_URL, {})
+    const {pollutantUmbrals} = thresholdsResponse?.data
 
     return getCurrentDatasets({
         readings: readings,
         stations: [station],
-        pollutantName: pollutant.name
+        pollutantName: pollutant.name,
+        thresholds: pollutantUmbrals,
     })
 }

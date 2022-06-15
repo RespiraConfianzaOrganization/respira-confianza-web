@@ -3,7 +3,7 @@ import { useEffect, useState} from "react";
 import styled from 'styled-components';
 import {Collapse, Layout, Select, Spin} from 'antd';
 import {ChartByTime} from "./chartByTime";
-import {getPollutantsChoices} from "./queries/pollutants";
+import {getPollutantChoicesFromThresholds} from "./queries/pollutants";
 import {getStationsChoices} from "./queries/stations";
 
 const { Panel } = Collapse;
@@ -20,7 +20,7 @@ const sizes = {
 }
 
 const DEFAULT_STATION_INDEX = 0
-const DEFAULT_POLLUTANT_INDEX = 3
+const DEFAULT_POLLUTANT_INDEX = 0
 const DEFAULT_DAYS_QUERY_BY = 365
 
 const PollutionChart = () => {
@@ -49,7 +49,7 @@ const PollutionChart = () => {
         // Stations
         getStationsChoices().then(loadStations)
         // Pollutants
-        getPollutantsChoices().then(loadPollutants)
+        getPollutantChoicesFromThresholds().then(loadPollutants)
     }, [])
 
 
