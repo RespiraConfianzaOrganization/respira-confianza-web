@@ -6,11 +6,7 @@ COPY . /app
 
 ENV NODE_OPTIONS="--openssl-legacy-provider"
 
-RUN yarn
-
-RUN yarn global add serve
-
-RUN yarn build
+RUN yarn && yarn global add serve && yarn build
 
 EXPOSE 3000
 
