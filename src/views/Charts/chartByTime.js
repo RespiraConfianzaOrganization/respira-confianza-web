@@ -8,6 +8,7 @@ import {Chart as ChartJS, LinearScale, LineElement, PointElement, TimeScale, Tit
 import {getChartPrimaryTitle, getChartSecondaryTitle, getOptions} from "./utils";
 import {getDaysBetweenTwoDates} from "../../utils/chart";
 import {getDatasets} from "./queries/pollutantByStation";
+import {ColorExplainByPollutant} from "./ColorExplain";
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, TimeScale);
 
@@ -75,6 +76,9 @@ export const ChartByTime = ({station, pollutant, daysQueryBy}) => {
             <h1>{primaryTitle}</h1>
             <h2>{secondaryTitle}</h2>
             <ChartPollutants />
+            {pollutant?.name && <ColorExplainByPollutant
+                pollutantName={pollutant.name}
+            />}
         </StyledContent>
     </>
 }

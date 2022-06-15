@@ -5,7 +5,6 @@ import {Collapse, Layout, Select, Spin} from 'antd';
 import {ChartByTime} from "./chartByTime";
 import {getPollutantChoicesFromThresholds} from "./queries/pollutants";
 import {getStationsChoices} from "./queries/stations";
-import {ColorExplainByPollutant} from "./ColorExplain";
 
 const { Panel } = Collapse;
 const { Sider } = Layout;
@@ -75,9 +74,6 @@ const PollutionChart = () => {
                 station={stationsChoices[stationIndex]?.value}
                 pollutant={pollutantChoices[pollutantIndex]?.value}
                 daysQueryBy={daysQueryBy}
-            />
-            <ColorExplainByPollutant
-                pollutantName={pollutantChoices[pollutantIndex]?.value?.name}
             />
         </Layout>}
     </StyledLayout>
