@@ -89,7 +89,8 @@ export const getCurrentDatasets = ({readings, stations, pollutantName, threshold
             data: data,
             backgroundColor: thresholdColor,
             borderColor: thresholdColor,
-            showLine: true
+            showLine: true,
+            pointRadius: 0,
         }
 
         currentDatasets.push(thresholdDataset)

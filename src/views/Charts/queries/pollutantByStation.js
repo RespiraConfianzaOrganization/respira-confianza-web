@@ -19,13 +19,13 @@ export async function getDatasets({pollutant, station, startDate, endDate, group
 
     const pollutantName = pollutant.name
 
-    const pollutantUmbrals = await getThresholdsByPollutant(pollutantName)
+    const pollutantThresholds = await getThresholdsByPollutant(pollutantName)
 
     return getCurrentDatasets({
         readings: readings,
         stations: [station],
         pollutantName: pollutant.name,
-        thresholds: pollutantUmbrals,
+        thresholds: pollutantThresholds,
         startDate: startDate,
         endDate: endDate
     })
