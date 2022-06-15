@@ -26,5 +26,7 @@ export async function getDatasets({pollutant, station, startDate, endDate, group
         stations: [station],
         pollutantName: pollutant.name,
         thresholds: pollutantUmbrals,
+        startDate: startDate,
+        endDate: endDate
     })
 }

@@ -4,5 +4,5 @@ export const colors = {
     BetweenModerateAndUnhealthy: '#fff400',
     BetweenUnhealthyAndVeryUnhealthy: '#ffa700',
     BetweenVeryUnhealthyAndDangerous: '#CD2323FF',
-    MoreThanDangerous: '#cd2323'
+    MoreThanDangerous: '#ff0000'
 }

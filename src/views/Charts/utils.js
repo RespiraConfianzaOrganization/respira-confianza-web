@@ -5,7 +5,6 @@ export const getOptions = ({pollutantUnit, xScales, yScales}) => {
 
     return {
         animations: false,
-        showLine: false,
         hover: {
             animationDuration: 0
         },
@@ -63,8 +62,30 @@ const getColorDependingOnThreshold = ({value, thresholds}) => {
     return color
 }
 
-export const getCurrentDatasets = ({readings, stations, pollutantName, thresholds}) => {
+export const getCurrentDatasets = ({readings, stations, pollutantName, thresholds, startDate, endDate}) => {
     const currentDatasets = []
+    const days = [startDate, endDate]
+
+    const keys = ['good', 'moderate', 'unhealthy', 'very_unhealthy', 'dangerous']
+    keys.forEach(threshold => {
+        const thresholdColor = getColorDependingOnThreshold({
+            value: thresholds[threshold],
+            thresholds: thresholds
+        })
+        const data = days.map(d => {
+            return {x: d, y: thresholds[threshold]}
+        })
+
+        const thresholdDataset = {
+            label: threshold,
+            data: data,
+            backgroundColor: thresholdColor,
+            borderColor: thresholdColor,
+            showLine: true
+        }
+
+        currentDatasets.push(thresholdDataset)
+    })
 
     stations.forEach(({id}) => {
         const stationName = getStationName({stationId: id,
@@ -91,7 +112,8 @@ export const getCurrentDatasets = ({readings, stations, pollutantName, threshold
         currentDatasets.push({
             label: stationName,
             data: currentValues,
-            backgroundColor: dotsColors
+            backgroundColor: dotsColors,
+            showLine: false
         })
     })
 
