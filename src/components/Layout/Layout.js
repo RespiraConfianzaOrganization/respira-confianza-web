@@ -23,7 +23,9 @@ import {
     Equalizer as Umbrals,
     Storage as Readings,
     SettingsRemote as Station,
-    Cloud as Pollutant
+    Cloud as Pollutant,
+    BarChart as Charts,
+    Description as Reports,
 } from "@material-ui/icons";
 
 import { connect } from "react-redux";
@@ -224,6 +226,8 @@ function Drawner(props) {
                     { text: "Contaminantes", Icon: Pollutant, url: "/admin/contaminantes" },
                     { text: "Umbrales", Icon: Umbrals, url: "/admin/umbrales-contaminantes" },
                     { text: "Lecturas", Icon: Readings, url: "/admin/lecturas" },
+                    { text: "Visualizaciones", Icon: Charts, url: "/charts" },
+                    { text: "Reportes", Icon: Reports, url: "/reports" },
                 ].map((item) => {
                     const Icon = item.Icon;
                     return (
