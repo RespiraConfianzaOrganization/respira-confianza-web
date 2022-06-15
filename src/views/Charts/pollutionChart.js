@@ -1,10 +1,11 @@
 import 'chart.js/auto';
-import { useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import styled from 'styled-components';
 import {Collapse, Layout, Select, Spin} from 'antd';
 import {ChartByTime} from "./chartByTime";
 import {getPollutantChoicesFromThresholds} from "./queries/pollutants";
 import {getStationsChoices} from "./queries/stations";
+import {ColorExplainByPollutant} from "./ColorExplain";
 
 const { Panel } = Collapse;
 const { Sider } = Layout;
@@ -24,8 +25,6 @@ const DEFAULT_POLLUTANT_INDEX = 0
 const DEFAULT_DAYS_QUERY_BY = 365
 
 const PollutionChart = () => {
-
-    const isAuthenticated = localStorage.getItem("access_token") && true
 
     const [stationsChoices, setStationsChoices] = useState([])
     const [pollutantChoices, setPollutantChoices] = useState([])
@@ -49,64 +48,36 @@ const PollutionChart = () => {
 
     useEffect(() => {
         // Stations
-        getStationsChoices().then(loadStations)
+        setStationsReady(false)
+        getStationsChoices()
+            .then(loadStations)
+            .catch(() => setStationsReady(true))
         // Pollutants
-        getPollutantChoicesFromThresholds().then(loadPollutants)
+        setPollutantsReady(false)
+        getPollutantChoicesFromThresholds()
+            .then(loadPollutants)
+            .catch(() => setPollutantsReady(true))
     }, [])
 
 
     return <>
     <StyledLayout>
-        <StyledSider
-            needsMarginLeft={isAuthenticated}
-        >
-            <div/>
-            <h1>Filtros</h1>
-            <Collapse>
-                {stationsReady && <StyledPanel header={"Selecciona una estación"}>
-                    <StyledSelect
-                        defaultValue={DEFAULT_STATION_INDEX}
-                        onChange={setStationIndex}>
-                        {
-                            stationsChoices.map((s, idx) => {
-                                return <Option key={idx} value={idx}>
-                                    {s.label}
-                                </Option>}
-                            )}
-                    </StyledSelect>
-                </StyledPanel>}
-                {pollutantsReady && <StyledPanel header={"Selecciona un contaminante"}>
-                        <StyledSelect
-                            defaultValue={DEFAULT_POLLUTANT_INDEX}
-                            onChange={setPollutantIndex}>
-                            {
-                                pollutantChoices.map((p, idx) => {
-                                    return <Option key={idx} value={idx}>
-                                        {p.label}
-                                    </Option>}
-                                )}
-                        </StyledSelect>
-                </StyledPanel>}
-                <StyledPanel header={"Selecciona una cantidad de días"}>
-                    <StyledSelect
-                        defaultValue={DEFAULT_DAYS_QUERY_BY}
-                        onChange={setDaysQueryBy}>
-                        {
-                            [1, 7, 30, 365].map((d, idx) => {
-                                return <Option key={idx} value={d}>
-                                    {d}
-                                </Option>}
-                            )}
-                    </StyledSelect>
-                </StyledPanel>
-            </Collapse><br/>
-            <div/>
-        </StyledSider>
+        <ChartFilters
+            stationsChoices={stationsChoices}
+            stationsOnChange={setStationIndex}
+            pollutantsChoices={pollutantChoices}
+            pollutantsOnChange={setPollutantIndex}
+            daysChoices={[1, 7, 30, 365]}
+            daysOnChange={setDaysQueryBy}
+        />
         {!(pollutantsReady && stationsReady) ? <Spin /> : <Layout>
             <ChartByTime
                 station={stationsChoices[stationIndex]?.value}
                 pollutant={pollutantChoices[pollutantIndex]?.value}
                 daysQueryBy={daysQueryBy}
+            />
+            <ColorExplainByPollutant
+                pollutantName={pollutantChoices[pollutantIndex]?.value?.name}
             />
         </Layout>}
     </StyledLayout>
@@ -114,6 +85,67 @@ const PollutionChart = () => {
 }
 
 export default PollutionChart;
+
+const ChartFilters = ({
+    stationsChoices,
+    stationsOnChange,
+    pollutantsChoices,
+    pollutantsOnChange,
+    daysChoices,
+    daysOnChange,
+    }) => {
+
+    const isAuthenticated = localStorage.getItem("access_token") && true
+
+    return <StyledSider
+        needsmarginleft={isAuthenticated}
+    >
+        <div/>
+        <h1>Filtros</h1>
+        <Collapse>
+            <StyledPanel header={"Selecciona una estación"}>
+                <StyledSelect
+                    defaultValue={DEFAULT_STATION_INDEX}
+                    onChange={stationsOnChange}>
+                    {
+                        stationsChoices.map((s, idx) =>
+                            <Option key={idx} value={idx}>
+                                {s.label}
+                            </Option>
+                        )
+                    }
+                </StyledSelect>
+            </StyledPanel>
+            <StyledPanel header={"Selecciona un contaminante"}>
+                <StyledSelect
+                    defaultValue={DEFAULT_POLLUTANT_INDEX}
+                    onChange={pollutantsOnChange}>
+                    {
+                        pollutantsChoices.map((p, idx) =>
+                            <Option key={idx} value={idx}>
+                                {p.label}
+                            </Option>
+                        )
+                    }
+                </StyledSelect>
+            </StyledPanel>
+            <StyledPanel header={"Selecciona una cantidad de días"}>
+                <StyledSelect
+                    defaultValue={DEFAULT_DAYS_QUERY_BY}
+                    onChange={daysOnChange}>
+                    {
+                        daysChoices.map((d, idx) =>
+                            <Option key={idx} value={d}>
+                                {d}
+                            </Option>
+                        )
+                    }
+                </StyledSelect>
+            </StyledPanel>
+        </Collapse><br/>
+        <div/>
+    </StyledSider>
+}
 
 const StyledSelect = styled(Select)`
   min-width: 100%;
@@ -133,7 +165,7 @@ const StyledSider = styled(Sider)`
   flex-direction: column;
   align-content: center;
   background-color: white;
-  margin-left: ${props => !props.needsMarginLeft ? '0px' : '60px'};
+  margin-left: ${props => !props.needsmarginleft ? '0px' : '60px'};
   max-width: ${sizes.sideBar.width} !important;
   min-width: ${sizes.sideBar.width} !important;
   padding-top: 5vh;

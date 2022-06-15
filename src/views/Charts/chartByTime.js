@@ -6,7 +6,7 @@ import "chartjs-adapter-moment";
 import {Line} from 'react-chartjs-2';
 import {Chart as ChartJS, LinearScale, LineElement, PointElement, TimeScale, Title} from 'chart.js';
 import {getChartPrimaryTitle, getChartSecondaryTitle, getOptions} from "./utils";
-import {getNDays} from "../../utils/chart";
+import {getDaysBetweenTwoDates} from "../../utils/chart";
 import {getDatasets} from "./queries/pollutantByStation";
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, TimeScale);
@@ -32,8 +32,9 @@ export const ChartByTime = ({station, pollutant, daysQueryBy}) => {
     }
 
     useEffect(() => {
-        const daysLabels = getNDays({n: daysQueryBy})
+        const daysLabels = getDaysBetweenTwoDates(startDateISO, endDateISO)
         setLabels(daysLabels)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [daysQueryBy])
 
     useEffect(() => {
