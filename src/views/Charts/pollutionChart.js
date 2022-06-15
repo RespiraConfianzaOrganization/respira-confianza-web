@@ -25,6 +25,8 @@ const DEFAULT_DAYS_QUERY_BY = 365
 
 const PollutionChart = () => {
 
+    const isAuthenticated = localStorage.getItem("access_token") && true
+
     const [stationsChoices, setStationsChoices] = useState([])
     const [pollutantChoices, setPollutantChoices] = useState([])
 
@@ -55,7 +57,9 @@ const PollutionChart = () => {
 
     return <>
     <StyledLayout>
-        <StyledSider>
+        <StyledSider
+            needsMarginLeft={isAuthenticated}
+        >
             <div/>
             <h1>Filtros</h1>
             <Collapse>
@@ -129,6 +133,7 @@ const StyledSider = styled(Sider)`
   flex-direction: column;
   align-content: center;
   background-color: white;
+  margin-left: ${props => !props.needsMarginLeft ? '0px' : '60px'};
   max-width: ${sizes.sideBar.width} !important;
   min-width: ${sizes.sideBar.width} !important;
   padding-top: 5vh;
