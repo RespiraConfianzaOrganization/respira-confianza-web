@@ -47,15 +47,15 @@ const getColorDependingOnThreshold = ({value, thresholds}) => {
     // https://color-hex.org/color-palettes/187
     const {good, moderate, unhealthy, very_unhealthy, dangerous} = thresholds
     let color
-    if (value <= good){
+    if (value < good){
         color = colors.LessThanGood
-    } else if (value >= good && value <= moderate){
+    } else if (value >= good && value < moderate){
         color = colors.BetweenGoodAndModerate
-    } else if (value >= moderate && value <= unhealthy){
+    } else if (value >= moderate && value < unhealthy){
         color = colors.BetweenModerateAndUnhealthy
-    } else if (value >= unhealthy && value <= very_unhealthy){
+    } else if (value >= unhealthy && value < very_unhealthy){
         color = colors.BetweenUnhealthyAndVeryUnhealthy
-    } else if (value >= very_unhealthy && value <= dangerous){
+    } else if (value >= very_unhealthy && value < dangerous){
         color = colors.BetweenVeryUnhealthyAndDangerous
     } else {
         color = colors.MoreThanDangerous
@@ -65,7 +65,6 @@ const getColorDependingOnThreshold = ({value, thresholds}) => {
 
 export const getCurrentDatasets = ({readings, stations, pollutantName, thresholds}) => {
     const currentDatasets = []
-    // const colors = getColorPalette(stations.length)
 
     stations.forEach(({id}) => {
         const stationName = getStationName({stationId: id,
