@@ -1,4 +1,5 @@
 import moment from "moment";
+import {colors} from "../../Constants";
 
 export const getOptions = ({pollutantUnit, xScales, yScales}) => {
 
@@ -44,18 +45,20 @@ const getStationName = ({stations, stationId}) => {
 
 const getColorDependingOnThreshold = ({value, thresholds}) => {
     // https://color-hex.org/color-palettes/187
-    const {good, moderate, unhealthy, very_unhealthy} = thresholds
+    const {good, moderate, unhealthy, very_unhealthy, dangerous} = thresholds
     let color
     if (value <= good){
-        color = '#2cba00'
+        color = colors.LessThanGood
     } else if (value >= good && value <= moderate){
-        color = '#a3ff00'
+        color = colors.BetweenGoodAndModerate
     } else if (value >= moderate && value <= unhealthy){
-        color = '#fff400'
+        color = colors.BetweenModerateAndUnhealthy
     } else if (value >= unhealthy && value <= very_unhealthy){
-        color = '#ffa700'
+        color = colors.BetweenUnhealthyAndVeryUnhealthy
+    } else if (value >= very_unhealthy && value <= dangerous){
+        color = colors.BetweenVeryUnhealthyAndDangerous
     } else {
-        color = '#ff0000'
+        color = colors.MoreThanDangerous
     }
     return color
 }

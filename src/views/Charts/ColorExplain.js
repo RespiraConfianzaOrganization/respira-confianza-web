@@ -1,6 +1,7 @@
 import {getThresholdsByPollutant} from "./queries/thresholds";
 import {useEffect, useState} from "react";
 import styled from "styled-components";
+import {colors} from "../../Constants";
 
 export const ColorExplainByPollutant = ({pollutantName}) => {
 
@@ -24,19 +25,43 @@ export const ColorExplainByPollutant = ({pollutantName}) => {
 
     return !isLoaded ? null : <InfoContainer>
         <ul>
-            <li>Menor a {good} ({Pollutant.unit})</li>
-            <li>Entre {good} ({Pollutant.unit}) y {moderate} ({Pollutant.unit})</li>
-            <li>Entre {moderate} ({Pollutant.unit}) y {unhealthy} ({Pollutant.unit})</li>
+            <ListItem color={colors.LessThanGood}>
+                Menor a {good} ({Pollutant.unit})
+            </ListItem>
+            <ListItem color={colors.BetweenGoodAndModerate}>
+                Entre {good} ({Pollutant.unit}) y {moderate} ({Pollutant.unit})
+            </ListItem>
+            <ListItem color={colors.BetweenModerateAndUnhealthy}>
+                Entre {moderate} ({Pollutant.unit}) y {unhealthy} ({Pollutant.unit})
+            </ListItem>
+            <ListItem color={colors.BetweenUnhealthyAndVeryUnhealthy}>
+                Entre {unhealthy} ({Pollutant.unit}) y {very_unhealthy} ({Pollutant.unit})
+            </ListItem>
+            <ListItem color={colors.BetweenVeryUnhealthyAndDangerous}>
+                Entre {very_unhealthy} ({Pollutant.unit}) y {dangerous} ({Pollutant.unit})
+            </ListItem>
+            <ListItem color={colors.MoreThanDangerous}>
+                Mayor a {dangerous} ({Pollutant.unit})
+            </ListItem>
         </ul>
-        <ul>
-            <li>Entre {unhealthy} ({Pollutant.unit}) y {very_unhealthy} ({Pollutant.unit})</li>
-            <li>Entre {very_unhealthy} ({Pollutant.unit}) y {dangerous} ({Pollutant.unit})</li>
-            <li>Mayor a {dangerous} ({Pollutant.unit})</li>
-        </ul>
+
     </InfoContainer>
 }
 
 const InfoContainer = styled.div`
-  display: grid;
-  grid-template-columns: max-content max-content;
+  ul {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+  }
+  
+`
+
+const ListItem = styled.li`
+  display: inline-list-item;
+  padding-left: -1em;
+
+  &::marker {
+    color: ${props => props.color || "black"};
+  }
 `
