@@ -59,13 +59,12 @@ export async function getDatasets({pollutant, station, startDate, endDate, group
         const xValueB = o.recorded_at
         const yValueA = o[pollutantName.toLowerCase()]
         const yValueB = o[pollutantName.toUpperCase()]
-        const value = {
-            x: xValueA || xValueB,
-            y: yValueA || yValueB,
-        }
+        const x = xValueA || xValueB
+        const y = yValueA || yValueB
+        const value = {x, y}
 
         const currentColor = getColorDependingOnThreshold({
-            value: value.y,
+            value: y,
             thresholds: pollutantThresholds
         })
 
