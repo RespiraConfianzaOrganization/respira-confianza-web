@@ -52,7 +52,8 @@ export const ChartByTime = ({station, pollutant, daysQueryBy}) => {
 
     try {
         const interestedDataset = datasets.filter(({label}) => label === station.name)
-        maxDate = interestedDataset[0].maxDate
+        const [interestedValues] = interestedDataset
+        maxDate = interestedValues.maxDate
     } catch (error) {
         maxDate = endDate.valueOf()
     }
