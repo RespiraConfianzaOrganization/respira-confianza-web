@@ -78,16 +78,14 @@ export const ChartByTime = ({station, pollutant, daysQueryBy}) => {
     const primaryTitle = getChartPrimaryTitle({days: daysQueryBy})
     const secondaryTitle = getChartSecondaryTitle({startDate: startDate, endDate: endDate})
 
-    return <>
-        <StyledContent>
-            <h1>{primaryTitle}</h1>
-            <h2>{secondaryTitle}</h2>
-            <ChartPollutants />
-            {pollutant?.name && <ColorExplainByPollutant
-                pollutantName={pollutant.name}
-            />}
-        </StyledContent>
-    </>
+    return <StyledContent>
+        <h1>{primaryTitle}</h1>
+        <h2>{secondaryTitle}</h2>
+        <ChartPollutants />
+        {pollutant?.name && <ColorExplainByPollutant
+            pollutantName={pollutant.name}
+        />}
+    </StyledContent>
 }
 
 const StyledChart = styled(Line)`
