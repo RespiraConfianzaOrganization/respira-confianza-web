@@ -48,11 +48,20 @@ export const ChartByTime = ({station, pollutant, daysQueryBy}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pollutant, station, daysQueryBy])
 
+    let maxDate
+
+    try {
+        const interestedDataset = datasets.filter(({label}) => label === station.name)
+        maxDate = interestedDataset[0].maxDate
+    } catch (error) {
+        maxDate = endDate.valueOf()
+    }
+
     const chartOptions = getOptions({
         pollutantUnit: pollutant.unit,
         xScales: {
             min: startDate.valueOf(),
-            max: endDate.valueOf()
+            max: maxDate
         },
     })
 

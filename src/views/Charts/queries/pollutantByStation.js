@@ -1,6 +1,7 @@
 import {postRequest} from "../../../utils/axios";
 import {getColorDependingOnThreshold, getCurrentDatasets, getStationName} from "../utils";
 import {getThresholdsByPollutant} from "./thresholds";
+import moment from "moment";
 
 const POLLUTANTS_BY_STATIONS = `${process.env.REACT_APP_API_URL}/api/pollutants-by-stations`
 
@@ -25,34 +26,12 @@ export async function getDatasets({pollutant, station, startDate, endDate, group
 
     const thresholdsKeys = ['good', 'moderate', 'unhealthy', 'very_unhealthy', 'dangerous']
 
-    thresholdsKeys.forEach(threshold => {
-
-        const thresholdColor = getColorDependingOnThreshold({
-            value: pollutantThresholds[threshold],
-            thresholds: pollutantThresholds
-        })
-
-        const data = [
-            {x: startDate, y: pollutantThresholds[threshold]},
-            {x: endDate, y: pollutantThresholds[threshold]}
-        ]
-
-        const thresholdDataset = {
-            label: threshold,
-            data: data,
-            backgroundColor: thresholdColor,
-            borderColor: thresholdColor,
-            showLine: true,
-            pointRadius: 0,
-        }
-
-        currentDatasets.push(thresholdDataset)
-    })
-
     const stationName = station.name
     const stationReadings = readings[station.id]
-    const currentValues = []
+    const stationValues = []
     const dotsColors = []
+
+    let maxDate = startDate
 
     stationReadings.forEach(o => {
         const xValueA = o.timestamp
@@ -69,14 +48,48 @@ export async function getDatasets({pollutant, station, startDate, endDate, group
         })
 
         dotsColors.push(currentColor)
-        currentValues.push(value)
+        stationValues.push(value)
+
+        if (moment(x).diff(moment(maxDate), 'seconds') > 0) {
+            maxDate = x
+        }
+
+    })
+
+    const stationHasValues = stationValues.length > 0
+
+    maxDate = stationHasValues ? maxDate : endDate
+
+    thresholdsKeys.forEach(threshold => {
+
+        const thresholdColor = getColorDependingOnThreshold({
+            value: pollutantThresholds[threshold],
+            thresholds: pollutantThresholds
+        })
+
+        const data = [
+            {x: startDate, y: pollutantThresholds[threshold]},
+            {x: maxDate, y: pollutantThresholds[threshold]}
+        ]
+
+        const thresholdDataset = {
+            label: threshold,
+            data: data,
+            backgroundColor: thresholdColor,
+            borderColor: thresholdColor,
+            showLine: true,
+            pointRadius: 0,
+        }
+
+        currentDatasets.push(thresholdDataset)
     })
 
     currentDatasets.push({
         label: stationName,
-        data: currentValues,
+        data: stationValues,
         backgroundColor: dotsColors,
-        showLine: false
+        showLine: false,
+        maxDate
     })
 
     return currentDatasets
