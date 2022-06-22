@@ -1,5 +1,5 @@
 import {postRequest} from "../../../utils/axios";
-import {getColorDependingOnThreshold, getCurrentDatasets, getStationName} from "../utils";
+import {getColorDependingOnThreshold} from "../utils";
 import {getThresholdsByPollutant} from "./thresholds";
 import moment from "moment";
 

@@ -1,6 +1,7 @@
 import moment from "moment";
 import {colors} from "../../Constants";
 
+// eslint-disable-next-line
 Number.prototype.betweenWithoutTouch = function (min, max) {
     if (min && max) return this >= min && this < max
     else if (min && !max) return this >= min
