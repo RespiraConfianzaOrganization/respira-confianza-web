@@ -50,9 +50,9 @@ export async function getDatasets({pollutant, station, startDate, endDate, group
         dotsColors.push(currentColor)
         stationValues.push(value)
 
-        if (moment(x).diff(moment(maxDate), 'seconds') > 0) {
-            maxDate = x
-        }
+        const currentValueIsNewer = moment(x).diff(moment(maxDate), 'seconds') > 0
+
+        maxDate = currentValueIsNewer ? x : maxDate
 
     })
 
