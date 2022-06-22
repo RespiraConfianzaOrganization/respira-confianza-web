@@ -44,13 +44,12 @@ export const getOptions = ({pollutantUnit, xScales, yScales}) => {
     }
 }
 
-const getStationName = ({stations, stationId}) => {
+export const getStationName = ({stations, stationId}) => {
     const [station] = stations.filter(s => s.id === stationId)
     return station.name
 }
 
-const getColorDependingOnThreshold = ({value, thresholds}) => {
-    // https://color-hex.org/color-palettes/187
+export const getColorDependingOnThreshold = ({value, thresholds}) => {
     const {good, moderate, unhealthy, very_unhealthy, dangerous} = thresholds
     const number = !value ? 0 : Number(value)
     let color
@@ -70,65 +69,6 @@ const getColorDependingOnThreshold = ({value, thresholds}) => {
     return color
 }
 
-export const getCurrentDatasets = ({readings, stations, pollutantName, thresholds, startDate, endDate}) => {
-    const currentDatasets = []
-
-    const thresholdsKeys = ['good', 'moderate', 'unhealthy', 'very_unhealthy', 'dangerous']
-    thresholdsKeys.forEach(threshold => {
-        const thresholdColor = getColorDependingOnThreshold({
-            value: thresholds[threshold],
-            thresholds: thresholds
-        })
-
-        const data = [
-            {x: startDate, y: thresholds[threshold]},
-            {x: endDate, y: thresholds[threshold]}
-        ]
-
-        const thresholdDataset = {
-            label: threshold,
-            data: data,
-            backgroundColor: thresholdColor,
-            borderColor: thresholdColor,
-            showLine: true,
-            pointRadius: 0,
-        }
-
-        currentDatasets.push(thresholdDataset)
-    })
-
-    stations.forEach(({id}) => {
-        const stationName = getStationName({stationId: id,
-            stations: stations})
-        const stationReadings = readings[id]
-        const currentValues = []
-        const dotsColors = []
-        stationReadings.forEach(o => {
-            const xValueA = o.timestamp
-            const xValueB = o.recorded_at
-            const yValueA = o[pollutantName.toLowerCase()]
-            const yValueB = o[pollutantName.toUpperCase()]
-            const value = {
-                x: xValueA || xValueB,
-                y: yValueA || yValueB,
-            }
-            const currentColor = getColorDependingOnThreshold({
-                value: value.y,
-                thresholds: thresholds
-            })
-            dotsColors.push(currentColor)
-            currentValues.push(value)
-        })
-        currentDatasets.push({
-            label: stationName,
-            data: currentValues,
-            backgroundColor: dotsColors,
-            showLine: false
-        })
-    })
-
-    return currentDatasets
-}
 
 export const getChartPrimaryTitle = ({days}) => {
     const alternativeA = `Visualización de contaminantes para el último día`

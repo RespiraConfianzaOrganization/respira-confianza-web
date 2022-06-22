@@ -28,9 +28,7 @@ export const ChartByTime = ({station, pollutant, daysQueryBy}) => {
     const endDateISO = endDate.toISOString()
     const startDateISO = startDate.toISOString()
 
-    const loadDatasets = (datasets) => {
-        setDatasets(datasets)
-    }
+    const loadDatasets = (datasets) => setDatasets(datasets)
 
     useEffect(() => {
         const daysLabels = getDaysBetweenTwoDates(startDateISO, endDateISO)
