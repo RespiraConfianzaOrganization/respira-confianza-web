@@ -1,13 +1,10 @@
-import moment from "moment";
-import {range} from "./math";
-
-export const getNDays = ({n}) => {
-    const currentDatetime = moment().toISOString()
-    const inmutableDate = new Date(currentDatetime)
-    return range(n).map(offset => {
-        const newDate = inmutableDate.getDate() + offset;
-        const mutableDate = new Date()
-        mutableDate.setDate(newDate)
-        return mutableDate
-    });
-};
+export const getDaysBetweenTwoDates = (startDate, endDate) => {
+    const date = new Date(startDate);
+    const targetDate = new Date(endDate)
+    const dates = [];
+    while (date <= targetDate) {
+        dates.push(new Date(date));
+        date.setDate(date.getDate() + 1);
+    }
+    return dates;
+}

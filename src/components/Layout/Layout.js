@@ -23,11 +23,14 @@ import {
     Equalizer as Umbrals,
     Storage as Readings,
     SettingsRemote as Station,
-    Cloud as Pollutant
+    Cloud as Pollutant,
+    BarChart as Charts,
+    Description as Reports,
 } from "@material-ui/icons";
 
 import { connect } from "react-redux";
 import './Layout.css'
+import {NavButtons} from "./NavButtons";
 
 const drawerWidth = 270;
 const useStyles = makeStyles((theme) => ({
@@ -188,17 +191,7 @@ function LogedOutView(props) {
     const { classLinksContainer, } = props;
 
     return <div className={classLinksContainer}>
-        <Link to={'/ingresar'}>
-            Ingresar
-        </Link>
-        {'\u00A0'}
-        <Link to={'/charts'}>
-            Charts
-        </Link>
-        {'\u00A0'}
-        <Link to={'/reports'}>
-            Reportes
-        </Link>
+        <NavButtons/>
     </div>;
 }
 
@@ -233,6 +226,8 @@ function Drawner(props) {
                     { text: "Contaminantes", Icon: Pollutant, url: "/admin/contaminantes" },
                     { text: "Umbrales", Icon: Umbrals, url: "/admin/umbrales-contaminantes" },
                     { text: "Lecturas", Icon: Readings, url: "/admin/lecturas" },
+                    { text: "Visualizaciones", Icon: Charts, url: "/charts" },
+                    { text: "Reportes", Icon: Reports, url: "/reports" },
                 ].map((item) => {
                     const Icon = item.Icon;
                     return (

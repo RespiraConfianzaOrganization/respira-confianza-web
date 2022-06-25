@@ -1,10 +1,18 @@
 import moment from "moment";
+import {colors} from "../../Constants";
+
+// eslint-disable-next-line
+Number.prototype.betweenWithoutTouch = function (min, max) {
+    if (min && max) return this >= min && this < max
+    else if (min && !max) return this >= min
+    else if (!min && max) return this < max
+    else return false
+}
 
 export const getOptions = ({pollutantUnit, xScales, yScales}) => {
 
     return {
         animations: false,
-        showLine: false,
         hover: {
             animationDuration: 0
         },
@@ -37,64 +45,31 @@ export const getOptions = ({pollutantUnit, xScales, yScales}) => {
     }
 }
 
-const getStationName = ({stations, stationId}) => {
+export const getStationName = ({stations, stationId}) => {
     const [station] = stations.filter(s => s.id === stationId)
     return station.name
 }
 
-const getColorDependingOnThreshold = ({value, thresholds}) => {
-    // https://color-hex.org/color-palettes/187
-    const {good, moderate, unhealthy, very_unhealthy} = thresholds
+export const getColorDependingOnThreshold = ({value, thresholds}) => {
+    const {good, moderate, unhealthy, very_unhealthy, dangerous} = thresholds
+    const number = !value ? 0 : Number(value)
     let color
-    if (value <= good){
-        color = '#2cba00'
-    } else if (value >= good && value <= moderate){
-        color = '#a3ff00'
-    } else if (value >= moderate && value <= unhealthy){
-        color = '#fff400'
-    } else if (value >= unhealthy && value <= very_unhealthy){
-        color = '#ffa700'
+    if (number.betweenWithoutTouch(0, good)){
+        color = colors.LessThanGood
+    } else if (number.betweenWithoutTouch(good, moderate)){
+        color = colors.BetweenGoodAndModerate
+    } else if (number.betweenWithoutTouch(moderate, unhealthy)){
+        color = colors.BetweenModerateAndUnhealthy
+    } else if (number.betweenWithoutTouch(unhealthy, very_unhealthy)){
+        color = colors.BetweenUnhealthyAndVeryUnhealthy
+    } else if (number.betweenWithoutTouch(very_unhealthy, dangerous)){
+        color = colors.BetweenVeryUnhealthyAndDangerous
     } else {
-        color = '#ff0000'
+        color = colors.MoreThanDangerous
     }
     return color
 }
 
-export const getCurrentDatasets = ({readings, stations, pollutantName, thresholds}) => {
-    const currentDatasets = []
-    // const colors = getColorPalette(stations.length)
-
-    stations.forEach(({id}) => {
-        const stationName = getStationName({stationId: id,
-            stations: stations})
-        const stationReadings = readings[id]
-        const currentValues = []
-        const dotsColors = []
-        stationReadings.forEach(o => {
-            const xValueA = o.timestamp
-            const xValueB = o.recorded_at
-            const yValueA = o[pollutantName.toLowerCase()]
-            const yValueB = o[pollutantName.toUpperCase()]
-            const value = {
-                x: xValueA || xValueB,
-                y: yValueA || yValueB,
-            }
-            const currentColor = getColorDependingOnThreshold({
-                value: value.y,
-                thresholds: thresholds
-            })
-            dotsColors.push(currentColor)
-            currentValues.push(value)
-        })
-        currentDatasets.push({
-            label: stationName,
-            data: currentValues,
-            backgroundColor: dotsColors
-        })
-    })
-
-    return currentDatasets
-}
 
 export const getChartPrimaryTitle = ({days}) => {
     const alternativeA = `Visualización de contaminantes para el último día`

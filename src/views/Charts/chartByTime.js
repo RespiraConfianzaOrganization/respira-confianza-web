@@ -6,8 +6,9 @@ import "chartjs-adapter-moment";
 import {Line} from 'react-chartjs-2';
 import {Chart as ChartJS, LinearScale, LineElement, PointElement, TimeScale, Title} from 'chart.js';
 import {getChartPrimaryTitle, getChartSecondaryTitle, getOptions} from "./utils";
-import {getNDays} from "../../utils/chart";
+import {getDaysBetweenTwoDates} from "../../utils/chart";
 import {getDatasets} from "./queries/pollutantByStation";
+import {ColorExplainByPollutant} from "./ColorExplain";
 
 ChartJS.register(LineElement, PointElement, LinearScale, Title, TimeScale);
 
@@ -27,13 +28,12 @@ export const ChartByTime = ({station, pollutant, daysQueryBy}) => {
     const endDateISO = endDate.toISOString()
     const startDateISO = startDate.toISOString()
 
-    const loadDatasets = (datasets) => {
-        setDatasets(datasets)
-    }
+    const loadDatasets = (datasets) => setDatasets(datasets)
 
     useEffect(() => {
-        const daysLabels = getNDays({n: daysQueryBy})
+        const daysLabels = getDaysBetweenTwoDates(startDateISO, endDateISO)
         setLabels(daysLabels)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [daysQueryBy])
 
     useEffect(() => {
@@ -48,11 +48,21 @@ export const ChartByTime = ({station, pollutant, daysQueryBy}) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pollutant, station, daysQueryBy])
 
+    let maxDate
+
+    try {
+        const interestedDataset = datasets.filter(({label}) => label === station.name)
+        const [interestedValues] = interestedDataset
+        maxDate = interestedValues.maxDate
+    } catch (error) {
+        maxDate = endDate.valueOf()
+    }
+
     const chartOptions = getOptions({
         pollutantUnit: pollutant.unit,
         xScales: {
             min: startDate.valueOf(),
-            max: endDate.valueOf()
+            max: maxDate
         },
     })
 
@@ -69,13 +79,14 @@ export const ChartByTime = ({station, pollutant, daysQueryBy}) => {
     const primaryTitle = getChartPrimaryTitle({days: daysQueryBy})
     const secondaryTitle = getChartSecondaryTitle({startDate: startDate, endDate: endDate})
 
-    return <>
-        <StyledContent>
-            <h1>{primaryTitle}</h1>
-            <h2>{secondaryTitle}</h2>
-            <ChartPollutants />
-        </StyledContent>
-    </>
+    return <StyledContent>
+        <h1>{primaryTitle}</h1>
+        <h2>{secondaryTitle}</h2>
+        <ChartPollutants />
+        {pollutant?.name && <ColorExplainByPollutant
+            pollutantName={pollutant.name}
+        />}
+    </StyledContent>
 }
 
 const StyledChart = styled(Line)`
