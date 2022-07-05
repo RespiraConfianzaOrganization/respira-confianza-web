@@ -14,6 +14,7 @@ class NewStation extends React.Component {
       latitude: "",
       longitude: "",
       status: "",
+      privateKey: ""
     },
     errors: {
       name: "",
@@ -22,6 +23,7 @@ class NewStation extends React.Component {
       latitude: "",
       longitude: "",
       status: "",
+      privateKey: ""
     },
     countries: [],
     cities: [{ id: -1, name: "Seleccionar" }],
@@ -89,7 +91,7 @@ class NewStation extends React.Component {
     let form = this.state.form
 
     Object.keys(form).forEach(field => {
-      if (!form[field]) {
+      if (field !== "privateKey" && !form[field]) {
         errors[field] = "Este campo es obligatorio"
         isValid = false
       }
@@ -214,6 +216,12 @@ class NewStation extends React.Component {
             </Grid>
             <Grid item xs={12} md={5}>
               <TextField name="longitude" label="Longitud" variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.longitude} error={Boolean(this.state.errors.longitude)} />
+            </Grid>
+          </Grid>
+          <h4 className="text__left">Contraseña:</h4>
+          <Grid container spacing={4} justify={"center"}>
+            <Grid item xs={12} md={5}>
+              <TextField name="privateKey" label="Contraseña o Token" variant="outlined" fullWidth size="small" onChange={this.onChange} helperText={this.state.errors.privateKey} error={Boolean(this.state.errors.privateKey)} />
             </Grid>
           </Grid>
           <div className="form__row_button">
