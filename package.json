@@ -26,6 +26,7 @@
     "redux": "^4.1.0",
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
+    "serve": "^13.0.4",
     "styled-components": "^5.3.5",
     "web-vitals": "^1.1.2",
     "worker-loader": "^3.0.8"
@@ -56,9 +57,5 @@
   },
   "devDependencies": {
     "@ant-design/icons": "^4.7.0"
-  },
-  "engines": {
-    "node": ">=17.4",
-    "npm": ">=8.3.1"
   }
 }
